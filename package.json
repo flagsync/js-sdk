@@ -1,23 +1,45 @@
 {
-  "name": "@flagsync/sdk",
-  "version": "0.0.1",
+  "name": "@flagsync/js-sdk",
+  "version": "0.0.2",
   "description": "FlagSync Javascript SDK",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "author": "Mike Chabot",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flagsync/javascript-client"
+  },
+  "type": "module",
+  "types": "build/legacy/index.d.ts",
+  "main": "build/legacy/index.cjs",
+  "module": "build/legacy/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/modern/index.d.ts",
+        "default": "./build/modern/index.js"
+      },
+      "require": {
+        "types": "./build/modern/index.d.cts",
+        "default": "./build/modern/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
+    "src",
     "README.md",
     "package.json"
   ],
+  "engines": {
+    "node": ">=12",
+    "npm": ">=6"
+  },
   "scripts": {
     "build": "tsup",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
-  "keywords": [],
-  "author": "Mike Chabot",
-  "license": "Apache-2.0",
   "dependencies": {
     "eventemitter3": "^5.0.1",
     "eventsource": "^2.0.2"
@@ -26,6 +48,7 @@
     "@types/eventsource": "^1.1.15",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
+    "esbuild-plugin-file-path-extensions": "^2.0.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

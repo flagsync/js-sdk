@@ -14,8 +14,8 @@ export const DEFAULT_CONFIG = {
     pollInterval: 60,
   },
   urls: {
-    sdk: 'http://localhost:3002',
-    events: 'http://localhost:3002/events',
+    sdk: 'https://sdk.flagsync.com',
+    events: 'https://sdk.flagsync.com/events',
   },
   remoteEval: true,
   debug: false,
