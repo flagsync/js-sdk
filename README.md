@@ -13,7 +13,7 @@ npm install @flagsync/js-sdk
 yarn add @flagsync/js-sdk
 pnpm add @flagsync/js-sdk
 ```
-Below is a basic example of how to use the SDK
+Below is a basic example of how to use the SDK. Please consult the documentation for additional details.
 
 ```javascript
 import { FlagSyncFactory } from '@flagsync/js-sdk';
