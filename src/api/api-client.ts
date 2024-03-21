@@ -1,4 +1,4 @@
-import { FlagSyncAPI } from './api';
+import { FlagSyncAPI } from './api-swagger';
 import { FsSettings } from '../config/types';
 
 let instance: FlagSyncAPI<null>;

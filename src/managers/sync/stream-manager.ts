@@ -2,7 +2,7 @@ import EventSource from 'eventsource';
 import { EventManager, FsIntervalEvent } from '../../events/types';
 import { FsFlagSet, FsSettings } from '../../config/types';
 import { SyncManager } from './types';
-import { SdkUserContext } from '../../api/api';
+import { SdkUserContext } from '../../api/api-swagger';
 
 export const streamManager = (
   settings: FsSettings,

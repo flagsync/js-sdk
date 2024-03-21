@@ -1,7 +1,5 @@
 import { defineConfig } from 'tsup';
 
-import { esbuildPluginFilePathExtensions } from 'esbuild-plugin-file-path-extensions'
-
 export function modernConfig(opts: any) {
   return {
     entry: opts.entry,
@@ -11,33 +9,22 @@ export function modernConfig(opts: any) {
     dts: true,
     sourcemap: true,
     clean: true,
-    esbuildPlugins: [esbuildPluginFilePathExtensions({ esmExtension: 'js' })],
-  }
+  };
 }
 
 export function legacyConfig(opts: any) {
   return {
     entry: opts.entry,
     format: ['cjs', 'esm'],
-    target: ['es2020', 'node16'],
+    target: ['es2020', 'node18'],
     outDir: 'dist/legacy',
     dts: true,
     sourcemap: true,
     clean: true,
-    esbuildPlugins: [esbuildPluginFilePathExtensions({ esmExtension: 'js' })],
-  }
+  };
 }
 
 export default defineConfig([
-  modernConfig({ entry: ['src/*.ts', 'src/*.tsx'] }),
-  legacyConfig({ entry: ['src/*.ts', 'src/*.tsx'] }),
-])
-
-// export default defineConfig({
-//   entry: ['src/index.ts'],
-//   splitting: false,
-//   sourcemap: true,
-//   clean: true,
-//   dts: true,
-//   external: ['eventsource', 'eventemitter3'],
-// });
+  modernConfig({ entry: ['src/index.ts'] }),
+  legacyConfig({ entry: ['src/index.ts'] }),
+]);
