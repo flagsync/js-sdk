@@ -32,19 +32,18 @@ const factory = FlagSyncFactory({
 
 const client = factory.client();
 ```
-Once instantiated, there are several ways to observe the readiness of the SDK:
+Once instantiated, there are two ways to observe the readiness of the SDK: events and promises. 
+
 
 ### Events
+
+
 ```ts
 client.once(client.Event.SDK_READY, () => {
   // SDK is ready
   const value = client.flag<string>('my-flag')
 });
-```
-By default, the SDK stores flags in memory, but for Web browser environments, you can choose to persist to `LocalStorage`.
-> 💡 This event only fires using the `LocalStorage` option.  
 
-```ts
 client.once(client.Event.SDK_READY_FROM_STORE, () => {
   // Emitted once the SDK has loaded flags from LocalStorage.
   // Fires quickly since no network request is required.
@@ -52,6 +51,11 @@ client.once(client.Event.SDK_READY_FROM_STORE, () => {
   const value = client.flag<string>('my-flag')
 });
 ```
+
+>💡 The `SDK_READY_FROM_STORE` event is useful for quickly loading flags from LocalStorage in Web browser environments.<br /><br />This event only fires when using the `localstorage` storage type; the default is `memory`.
+
+
+
 
 ### Promises & async/await
 The SDK has two methods that return a promise for initialization, `waitForReady` and `waitForReadyCanThrow`. The former is identical to the `SDK_READY` event.
