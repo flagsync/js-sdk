@@ -1,22 +1,24 @@
-import { SdkUserContext } from './api/api';
-
 import { storageManagerFactory } from './managers/storage/storage-manger-factory';
 import { syncManagerFactory } from './managers/sync/sync-manager-factory';
-import { apiClientFactory } from './api/client';
 
 import { eventManagerFactory } from './events/event-manager-factory';
 import { FsEvent } from './events/types';
 
 import { FlagSyncConfig, FsSettings } from './config/types';
 import { buildSettingsFromConfig } from './config/utils';
+import { apiClientFactory } from './api/api-client';
+import { SdkUserContext } from './api/api-swagger';
+
+import { processApiError } from './api/process-api-error';
+import { FsServiceError } from './api/service-error';
+
+export { FsServiceError };
 
 export type ErrorSource = 'api' | 'sdk';
 export type ErrorEvent = {
   type: ErrorSource;
-  error: Error;
+  error: Error | FsServiceError;
 };
-
-// remoteEvaluation: true / false --> run eval on server
 
 function clientInstanceFactory(settings: FsSettings): () => FsClient {
   const instance = clientFactory(settings);
@@ -43,7 +45,7 @@ function clientFactory(settings: FsSettings) {
   const syncManager = syncManagerFactory(settings, eventManager, apiClient);
   const storageManager = storageManagerFactory(settings, eventManager);
 
-  apiClient.sdk
+  const initWithWithThrow = apiClient.sdk
     .sdkControllerInitContext({
       context,
     })
@@ -54,27 +56,21 @@ function clientFactory(settings: FsSettings) {
     )
     .then((res) => {
       storageManager.set(res?.data?.flags ?? {});
-      log.info('SDK ready');
+      log.debug('SDK ready');
       eventManager.emit(FsEvent.SDK_READY);
     })
-    .catch((e: unknown) => {
-      if (e instanceof Response) {
-        log.error('SDK init failed', [e.url, e.status, e.statusText]);
-        eventManager.emit(FsEvent.ERROR, {
-          type: 'sdk',
-          error: new Error(`SDK init failed: ${e.status} ${e.statusText}`),
-        });
-        return;
-      }
-
-      const error = e as Error;
-
-      log.error('SDK init failed', [error.message, error.stack]);
-      eventManager.emit(FsEvent.ERROR, {
-        type: 'sdk',
-        error,
-      });
+    .catch(async (e: unknown) => {
+      throw await processApiError(e);
     });
+
+  const initWithCatch = initWithWithThrow.catch(async (e: unknown) => {
+    const error = await processApiError(e);
+    log.error('SDK init failed', [error.path, error.errorCode, error.message]);
+    eventManager.emit(FsEvent.ERROR, {
+      type: 'api',
+      error,
+    });
+  });
 
   function flag<T>(flagKey: string, defaultValue?: T): T {
     const flags = storageManager.get();
@@ -89,14 +85,14 @@ function clientFactory(settings: FsSettings) {
     syncManager.stop();
   }
 
-  syncManager.start();
-
   return {
     core,
     on: eventManager.on,
     once: eventManager.once,
     kill,
     flag,
+    waitForReady: () => initWithCatch,
+    waitForReadyCanThrow: () => initWithWithThrow,
     Event: FsEvent,
   };
 }

@@ -1,9 +1,9 @@
-import { EventManager } from '../../events/types';
+import { EventManager, FsEvent } from '../../events/types';
 import { FsSettings } from '../../config/types';
 import { streamManager } from './stream-manager';
-import { FlagSyncAPI } from '../../api/api';
 import { pollManager } from './poll-manager';
 import { SyncManager } from './types';
+import { FlagSyncAPI } from '../../api/api-swagger';
 
 const noop = () => {};
 
@@ -12,14 +12,26 @@ export function syncManagerFactory(
   eventManager: EventManager,
   apiClient: FlagSyncAPI<any>,
 ): SyncManager {
-  if (settings.sync.type === 'off') {
-    return {
-      start: noop,
-      stop: noop,
-    };
+  let manager: SyncManager;
+
+  switch (settings.sync.type) {
+    case 'poll':
+      manager = pollManager(settings, eventManager, apiClient);
+      break;
+    case 'stream':
+      manager = streamManager(settings, eventManager);
+      break;
+    default:
+      manager = {
+        start: noop,
+        stop: noop,
+      };
+      break;
   }
-  if (settings.sync.type === 'stream') {
-    return streamManager(settings, eventManager);
-  }
-  return pollManager(settings, eventManager, apiClient);
+
+  eventManager.on(FsEvent.SDK_READY, () => {
+    manager.start();
+  });
+
+  return manager;
 }

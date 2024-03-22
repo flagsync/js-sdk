@@ -27,7 +27,9 @@ const factory = FlagSyncFactory({
 
 const client = factory.client();
 
+// Use events
 client.once(client.Event.SDK_READY, () => {
+  const value = client.flag<string>('my-flag', 'defaultValue')
   console.log('client is ready');
 });
 
@@ -38,4 +40,10 @@ client.once(client.Event.SDK_READY_FROM_STORE, () => {
 client.on(client.Event.SDK_UPDATE, () => {
   console.log('flag update received');
 });
+
+// Use async/await to determine when client is ready
+await client.waitForReady();
+const value = client.flag<string>('my-flag', 'defaultValue')
+
+// Use promises to determine when client is ready
 ```

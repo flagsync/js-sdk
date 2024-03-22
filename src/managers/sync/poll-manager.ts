@@ -1,7 +1,8 @@
 import { FsSettings } from '../../config/types';
 import { EventManager, FsEvent, FsIntervalEvent } from '../../events/types';
 import { SyncManager } from './types';
-import { FlagSyncAPI, SdkUserContext } from '../../api/api';
+import { processApiError } from '../../api/process-api-error';
+import { FlagSyncAPI, SdkUserContext } from '../../api/api-swagger';
 
 export function pollManager(
   settings: FsSettings,
@@ -30,22 +31,17 @@ export function pollManager(
           res?.data?.flags ?? {},
         );
       })
-      .catch((e: unknown) => {
-        if (e instanceof Response) {
-          log.error('Polling failed', [e.url, e.status, e.statusText]);
-          eventManager.emit(FsEvent.ERROR, {
-            type: 'api',
-            error: new Error(`Polling failed: ${e.status} ${e.statusText}`),
-          });
-          return;
-        }
+      .catch(async (e: unknown) => {
+        const error = await processApiError(e);
+        log.error('Polling failed', [
+          error.path,
+          error.errorCode,
+          error.message,
+        ]);
 
-        const error = e as Error;
-
-        log.error('Polling failed', [error.message, error.stack]);
         eventManager.emit(FsEvent.ERROR, {
           type: 'api',
-          error,
+          error: error,
         });
       })
       .finally(() => {
