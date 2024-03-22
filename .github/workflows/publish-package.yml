@@ -40,7 +40,7 @@ jobs:
           git config --global user.name 'Mike Chabot'
           git config --global user.email 'mikechabot@users.noreply.github.com'
           npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
-          pnpm version prerelease
+          pnpm version patch
           git add .
           pnpm pack
           pnpm publish --no-git-checks --access public
