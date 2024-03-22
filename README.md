@@ -14,7 +14,7 @@ pnpm add @flagsync/js-sdk
 ```
 
 ## Compatibility
-An isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js versions 18+.
+This is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js versions 18+.
 
 ## Getting started
 
