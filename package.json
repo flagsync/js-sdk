@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/flagsync/javascript-client"
   },
+  "homepage": "https://www.flagsync.com",
   "type": "module",
   "types": "dist/legacy/index.d.ts",
   "main": "dist/legacy/index.cjs",
