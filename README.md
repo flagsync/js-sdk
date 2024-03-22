@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/%40flagsync%2Fjs-sdk.svg)](https://badge.fury.io/js/%40flagsync%2Fjs-sdk)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/flagsync.svg?style=social&label=Follow%20%40flagsync)](https://twitter.com/flagsync)
 
-FlagSync is a dead-simple feature management platform that allows you to manage feature flags, remote configurations, perform A/B experimentation, and manage feature rollouts for your applications. 
+FlagSync is a feature management platform designed for simplicity and efficiency. It supports feature flags, remote configurations, A/B testing, and controlled rollouts. Ideal for teams looking to integrate feature management without the complexity.
 
 This SDK allows you to interact with the FlagSync API to retrieve feature flags and configurations.
 
@@ -14,7 +14,7 @@ pnpm add @flagsync/js-sdk
 ```
 
 ## Compatibility
-This is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js versions 18+.
+This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 18+ and ES5.
 
 ## Getting started
 
