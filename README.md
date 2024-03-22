@@ -13,37 +13,74 @@ npm install @flagsync/js-sdk
 yarn add @flagsync/js-sdk
 pnpm add @flagsync/js-sdk
 ```
-Below is a basic example of how to use the SDK. Please consult the documentation for additional details.
+Below is the most basic example of how to use the SDK.
 
-```javascript
+```ts
 import { FlagSyncFactory } from '@flagsync/js-sdk';
 
 const factory = FlagSyncFactory({
   sdkKey: 'YOUR_SDK_KEY',
   core: {
-    key: 'userId_0x123',
+    key: 'userId_0x123'
   },
 });
 
 const client = factory.client();
 
-// Use events
+```
+There are several ways to observe the readiness of the SDK.
+
+### Events
+```ts
 client.once(client.Event.SDK_READY, () => {
-  const value = client.flag<string>('my-flag', 'defaultValue')
   console.log('client is ready');
+  const value = client.flag<string>('my-flag')
 });
+```
+### Promises & async/await
+The SDK has two methods of that return a promise for initialization. `waitForReady` and `waitForReadyCanThrow`.
 
-client.once(client.Event.SDK_READY_FROM_STORE, () => {
-  console.log('flag update received');
-});
+```ts
+client
+  .waitForReady()
+  .then(() => {
+    const value = client.flag<string>('my-flag')
+    // Work with the value
+  })
 
-client.on(client.Event.SDK_UPDATE, () => {
-  console.log('flag update received');
-});
 
-// Use async/await to determine when client is ready
+// Or with await
 await client.waitForReady();
-const value = client.flag<string>('my-flag', 'defaultValue')
+const value = client.flag<string>('my-flag')
+```
 
-// Use promises to determine when client is ready
+The other method, `waitForReadyCanThrow`, will throw an error if the SDK fails to initialize.
+>💡 All client-facing errors are normalized to `FsServiceError` in the SDK.
+
+```ts
+client
+  .waitForReadyCanThrow()
+  .then(() => {
+    const value = client.flag<string>('my-flag')
+  })
+  .catch(e => {
+    const error = e as FsServiceError;
+    console.error(error);
+  });
+
+// Or with await
+try {
+  await client.waitForReadyCanThrow();
+  const value = client.flag<string>('my-flag')
+} catch (e) {
+  // Initialization failed
+  const error = e as FsServiceError;
+}
+```
+
+### Flag Updates
+```ts
+client.on(client.Event.SDK_UPDATE, () => {
+  // The SDK received an update
+});
 ```
