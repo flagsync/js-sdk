@@ -1,6 +1,6 @@
 # FlagSync SDK for JavaScript
 
-[![npm version](https://badge.fury.io/js/%40flagsync%2Fjavascript-sdk.svg)](https://badge.fury.io/js/%40flagsync%2Fjavascript-sdk)
+[![npm version](https://badge.fury.io/js/%40flagsync%2Fjs-sdk.svg)](https://badge.fury.io/js/%40flagsync%2Fjs-sdk)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/flagsync.svg?style=social&label=Follow%20%40flagsync)](https://twitter.com/flagsync)
 
 ## Compatibility
