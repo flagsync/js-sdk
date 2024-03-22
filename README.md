@@ -7,14 +7,16 @@ FlagSync is a feature management platform designed for simplicity and efficiency
 
 This SDK allows you to interact with the FlagSync API to retrieve feature flags and configurations.
 
+## Compatibility
+This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 18+ and ES5.
+
+## Installation
+
 ```bash
 npm install @flagsync/js-sdk
 yarn add @flagsync/js-sdk
 pnpm add @flagsync/js-sdk
 ```
-
-## Compatibility
-This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 18+ and ES5.
 
 ## Getting started
 
