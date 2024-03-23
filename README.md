@@ -20,7 +20,7 @@ This SDK allows you to interact with the FlagSync API to retrieve feature flags 
 
 ---
 ## Compatibility
-This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 18+ and ES5.
+This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 14+ and ES5.
 
 ## Installation
 

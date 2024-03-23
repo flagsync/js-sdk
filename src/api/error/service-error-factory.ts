@@ -1,5 +1,5 @@
 import { FsServiceError } from './service-error';
-import { FlagSyncErrorResponse } from './types';
+import { FlagSyncErrorResponse } from '../types/data-contracts';
 
 export class ServiceErrorFactory {
   /**

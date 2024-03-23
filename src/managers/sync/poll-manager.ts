@@ -1,26 +1,27 @@
 import { FsSettings } from '../../config/types';
 import { EventManager, FsEvent, FsIntervalEvent } from '../../events/types';
 import { SyncManager } from './types';
-import { processApiError } from '../../api/process-api-error';
-import { FlagSyncAPI, SdkUserContext } from '../../api/api-swagger';
+import { processApiError } from '../../api/error/process-api-error';
+import { SdkUserContext } from '../../api/data-contracts';
+import { Sdk } from '../../api/Sdk';
 
 export function pollManager(
   settings: FsSettings,
   eventManager: EventManager,
-  apiClient: FlagSyncAPI<any>,
+  apiClient: Sdk<null>,
 ): SyncManager {
   const { log, sync, core } = settings;
 
   const context: SdkUserContext = {
     key: core.key,
-    email: core.attributes.email,
-    custom: core.attributes,
+    email: core.attributes?.email,
+    custom: core.attributes ?? {},
   };
 
-  let timeout: number;
+  let timeout: number | NodeJS.Timeout;
 
   function poll() {
-    apiClient.sdk
+    apiClient
       .sdkControllerGetFlags({
         context,
       })
@@ -28,7 +29,7 @@ export function pollManager(
         log.debug('Polling event complete');
         eventManager.internal.emit(
           FsIntervalEvent.UPDATE_RECEIVED,
-          res?.data?.flags ?? {},
+          res?.flags ?? {},
         );
       })
       .catch(async (e: unknown) => {

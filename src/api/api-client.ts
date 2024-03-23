@@ -1,21 +1,18 @@
-import { FlagSyncAPI } from './api-swagger';
 import { FsSettings } from '../config/types';
+import { Sdk } from './Sdk';
 
-let instance: FlagSyncAPI<null>;
+let instance: Sdk<any>;
 
 export function apiClientFactory(params: FsSettings) {
   if (instance) {
     return instance;
   }
-
-  instance = new FlagSyncAPI({
-    baseUrl: params.urls.sdk,
-    baseApiParams: {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-ridgeline-key': params.sdkKey,
-      },
+  instance = new Sdk({
+    baseURL: params.urls.sdk,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-ridgeline-key': params.sdkKey,
     },
   });
 

@@ -3,14 +3,14 @@ import { FsSettings } from '../../config/types';
 import { streamManager } from './stream-manager';
 import { pollManager } from './poll-manager';
 import { SyncManager } from './types';
-import { FlagSyncAPI } from '../../api/api-swagger';
+import { Sdk } from '../../api/Sdk';
 
 const noop = () => {};
 
 export function syncManagerFactory(
   settings: FsSettings,
   eventManager: EventManager,
-  apiClient: FlagSyncAPI<any>,
+  apiClient: Sdk<null>,
 ): SyncManager {
   let manager: SyncManager;
 

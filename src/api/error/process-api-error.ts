@@ -1,7 +1,8 @@
 import { FsServiceError } from './service-error';
-import { FlagSyncErrorResponse } from './types';
+
 import { ServiceErrorFactory } from './service-error-factory';
-import { HttpResponse } from './api-swagger';
+import { HttpResponse } from '../http-client';
+import { FlagSyncErrorResponse } from '../types/data-contracts';
 
 export async function processApiError(e: unknown): Promise<FsServiceError> {
   let apiError: FsServiceError;
