@@ -13,6 +13,9 @@ const legacyFactory = Legacy({
   core: {
     key: 'mikechabot',
   },
+  sync: {
+    type: 'off',
+  },
   logLevel: 'DEBUG',
 });
 
@@ -20,6 +23,9 @@ const modernFactory = Modern({
   sdkKey: SDK_KEY,
   core: {
     key: 'mikechabot',
+  },
+  sync: {
+    type: 'off',
   },
   logLevel: 'DEBUG',
 });
