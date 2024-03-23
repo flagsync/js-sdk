@@ -37,11 +37,11 @@ Promise.allSettled([
   .then((data) => {
     const [legacy, modern] = data;
     if (legacy.status === 'rejected') {
-      console.log('Legacy failed');
+      console.error('Legacy failed');
       throw legacy.reason;
     }
     if (modern.status === 'rejected') {
-      console.log('Modern failed');
+      console.error('Modern failed');
       throw modern.reason;
     }
     process.exit(0);
@@ -49,6 +49,6 @@ Promise.allSettled([
   })
   .catch((err) => {
     console.error(err);
-    console.log('Failed on ' + NODE_VERSION);
+    console.error('Failed on ' + NODE_VERSION);
     process.kill(PID, 'SIGTERM');
   });
