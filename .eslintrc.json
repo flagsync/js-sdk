@@ -14,7 +14,7 @@
     "node": true,
     "jest": true
   },
-  "ignorePatterns": [".eslintrc.js", "tsup.config.ts", "dist", "scripts"],
+  "ignorePatterns": [".eslintrc.js", "tsup.config.ts", "dist", "scripts", "vite.config.ts"],
   "rules": {
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",

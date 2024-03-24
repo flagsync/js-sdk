@@ -1,9 +1,9 @@
 import { FsSettings } from '../../config/types';
 import { EventManager, FsEvent, FsIntervalEvent } from '../../events/types';
 import { SyncManager } from './types';
-import { processApiError } from '../../api/error/process-api-error';
 import { SdkUserContext } from '../../api/data-contracts';
 import { Sdk } from '../../api/Sdk';
+import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 
 export function pollManager(
   settings: FsSettings,
@@ -18,7 +18,7 @@ export function pollManager(
     custom: core.attributes ?? {},
   };
 
-  let timeout: number | NodeJS.Timeout;
+  let timeout: number;
 
   function poll() {
     apiClient
@@ -33,7 +33,7 @@ export function pollManager(
         );
       })
       .catch(async (e: unknown) => {
-        const error = await processApiError(e);
+        const error = ServiceErrorFactory.create(e);
         log.error('Polling failed', [
           error.path,
           error.errorCode,

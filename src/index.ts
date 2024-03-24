@@ -6,10 +6,11 @@ import { FlagSyncConfig, FsSettings } from './config/types';
 import { buildSettingsFromConfig } from './config/utils';
 import { apiClientFactory } from './api/api-client';
 import { FsServiceError } from './api/error/service-error';
-import { processApiError } from './api/error/process-api-error';
 import { SdkUserContext } from './api/data-contracts';
+import { ServiceErrorFactory } from './api/error/service-error-factory';
 
 export { FsServiceError };
+export { ServiceErrorFactory };
 
 export type ErrorSource = 'api' | 'sdk';
 export type ErrorEvent = {
@@ -56,16 +57,15 @@ function clientFactory(settings: FsSettings) {
       log.debug('SDK ready');
       eventManager.emit(FsEvent.SDK_READY);
     })
-    .catch(async (e: unknown) => {
-      throw await processApiError(e);
+    .catch((e: unknown) => {
+      throw ServiceErrorFactory.create(e);
     });
 
-  const initWithCatch = initWithWithThrow.catch(async (e: unknown) => {
-    const error = await processApiError(e);
-    log.error('SDK init failed', [error.path, error.errorCode, error.message]);
+  const initWithCatch = initWithWithThrow.catch((e: FsServiceError) => {
+    log.error('SDK init failed', [e.path, e.errorCode, e.message]);
     eventManager.emit(FsEvent.ERROR, {
       type: 'api',
-      error,
+      error: e,
     });
   });
 
