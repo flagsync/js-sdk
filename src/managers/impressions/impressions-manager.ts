@@ -2,8 +2,8 @@ import { SdkImpression, SdkUserContext } from '../../api/data-contracts';
 import { apiClientFactory } from '../../api/clients/api-client';
 import { FsSettings } from '../../config/types';
 import { ImpressionsManager } from './types';
-import { EventManager, FsEvent } from '../../events/types';
 import { ServiceErrorFactory } from '../../api/error/service-error-factory';
+import { EventManager, FsEvent } from '../events/types';
 
 export function impressionsManager(
   settings: FsSettings,
@@ -25,7 +25,7 @@ export function impressionsManager(
     custom: core.attributes ?? {},
   };
 
-  let timeout: number;
+  let timeout: number | NodeJS.Timeout;
   const interval = impressions.pushRate * 1000;
 
   async function batchSend() {

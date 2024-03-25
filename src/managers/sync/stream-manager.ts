@@ -1,8 +1,9 @@
 import EventSource from 'eventsource';
-import { EventManager, FsIntervalEvent } from '../../events/types';
+
 import { FsFlagSet, FsSettings } from '../../config/types';
 import { SyncManager } from './types';
 import { SdkUserContext } from '../../api/data-contracts';
+import { EventManager, FsIntervalEvent } from '../events/types';
 
 export const streamManager = (
   settings: FsSettings,

@@ -1,8 +1,8 @@
-import { EventManager, FsEvent } from '../../events/types';
 import { FsSettings } from '../../config/types';
 import { streamManager } from './stream-manager';
 import { pollManager } from './poll-manager';
 import { SyncManager } from './types';
+import { EventManager, FsEvent } from '../events/types';
 
 const noop = () => {};
 

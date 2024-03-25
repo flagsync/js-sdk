@@ -1,9 +1,9 @@
 import { localStorageManager } from './localstorage-manager';
 import { memoryManager } from './memory-manager';
 import { isLocalStorageAvailable } from './is-local-storage-available';
-import { EventManager, FsEvent, FsIntervalEvent } from '../../events/types';
 import { StoreManager } from './types';
 import { FsFlagSet, FsSettings } from '../../config/types';
+import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
 
 export function storageManagerFactory(
   params: FsSettings,

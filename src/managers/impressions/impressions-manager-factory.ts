@@ -1,7 +1,7 @@
 import { FsSettings } from '../../config/types';
 import { ImpressionsManager } from './types';
 import { impressionsManager } from './impressions-manager';
-import { EventManager, FsEvent } from '../../events/types';
+import { EventManager, FsEvent } from '../events/types';
 
 export function impressionsManagerFactory(
   settings: FsSettings,

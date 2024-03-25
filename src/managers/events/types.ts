@@ -1,5 +1,5 @@
-import { ErrorEvent } from '../index';
-import { FsFlagSet } from '../config/types';
+import { FsErrorEvent } from '../../index';
+import { FsFlagSet } from '../../config/types';
 
 export type EventCallback<T extends FsEventType> = (
   payload: FsEventTypePayload[T],
@@ -47,7 +47,7 @@ export type FsIntervalEventType =
   (typeof FsIntervalEvent)[keyof typeof FsIntervalEvent];
 
 type EventVoidPayload = void;
-type EventErrorPayload = ErrorEvent;
+type EventErrorPayload = FsErrorEvent;
 type EventFlagSetPayload = FsFlagSet;
 
 export interface FsEventTypePayload {

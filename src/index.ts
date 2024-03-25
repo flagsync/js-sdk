@@ -1,7 +1,6 @@
 import { storageManagerFactory } from './managers/storage/storage-manger-factory';
 import { syncManagerFactory } from './managers/sync/sync-manager-factory';
-import { eventManagerFactory } from './events/event-manager-factory';
-import { FsEvent } from './events/types';
+
 import { FlagSyncConfig, FsSettings } from './config/types';
 import { buildSettingsFromConfig } from './config/utils';
 
@@ -10,13 +9,15 @@ import { SdkUserContext } from './api/data-contracts';
 import { ServiceErrorFactory } from './api/error/service-error-factory';
 import { apiClientFactory } from './api/clients/api-client';
 import { impressionsManagerFactory } from './managers/impressions/impressions-manager-factory';
+import { eventManagerFactory } from './managers/events/event-manager-factory';
+import { FsEvent } from './managers/events/types';
 
 export { FsServiceError };
 export { ServiceErrorFactory };
 
-export type ErrorSource = 'api' | 'sdk';
-export type ErrorEvent = {
-  type: ErrorSource;
+export type FsErrorSource = 'api' | 'sdk';
+export type FsErrorEvent = {
+  type: FsErrorSource;
   error: Error | FsServiceError;
 };
 
@@ -33,7 +34,6 @@ export type FsClient = ReturnType<typeof clientFactory>;
 function clientFactory(settings: FsSettings) {
   const { core, log } = settings;
 
-  const eventManager = eventManagerFactory();
   const { sdk } = apiClientFactory(settings);
 
   const context: SdkUserContext = {
@@ -42,6 +42,7 @@ function clientFactory(settings: FsSettings) {
     custom: core.attributes ?? {},
   };
 
+  const eventManager = eventManagerFactory();
   const syncManager = syncManagerFactory(settings, eventManager);
   const storageManager = storageManagerFactory(settings, eventManager);
   const impressionsManager = impressionsManagerFactory(settings, eventManager);
