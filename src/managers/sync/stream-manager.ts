@@ -24,7 +24,7 @@ export const streamManager = (
     /**
      * Create a new EventSource instance and listen for incoming flag updates.
      */
-    es = new EventSource(urls.events, {
+    es = new EventSource(`${urls.events}/sdk-updates`, {
       withCredentials: true,
       headers: {
         'x-ridgeline-key': settings.sdkKey,

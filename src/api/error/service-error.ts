@@ -1,22 +1,10 @@
 export enum ServiceErrorCode {
-  AmqpParseError = 'AMQP_PARSE_ERROR',
-  AmqpHandlerError = 'AMQP_HANDLER_ERROR',
-  AmqpInvalidMessagePayload = 'AMQP_INVALID_MESSAGE_PAYLOAD',
-  AmqpInvalidQueueActionType = 'AMQP_INVALID_QUEUE_ACTION_TYPE',
-  AmqpUnknownError = 'AMQP_ERROR_UNKNOWN',
-  ApiKeyNotFound = 'API_KEY_NOT_FOUND',
-  JwtNotFound = 'JWT_NOT_FOUND',
-  JwtInvalid = 'JWT_INVALID',
-  FlagNotFound = 'FLAG_NOT_FOUND',
-  FlagStateNotFound = 'FLAG_STATE_NOT_FOUND',
   InvalidSdkKey = 'INVALID_SDK_KEY',
-  MissingApiKeyValues = 'MISSING_API_KEY_VALUES',
+  InvalidConfiguration = 'INVALID_CONFIGURATION',
   UnknownError = 'UNKNOWN_ERROR',
-  UnsupportedVariantDataType = 'UNSUPPORTED_VARIANT_DATA_TYPE',
   UserContextNotFound = 'USER_CONTEXT_NOT_FOUND',
-  VariantNotFound = 'VARIANT_NOT_FOUND',
-  ValidationGuard = 'VALIDATION_GUARD',
 }
+
 export type FlagSyncErrorResponse = {
   path: string;
   message: string;

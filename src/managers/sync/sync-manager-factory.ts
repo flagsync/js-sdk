@@ -3,20 +3,18 @@ import { FsSettings } from '../../config/types';
 import { streamManager } from './stream-manager';
 import { pollManager } from './poll-manager';
 import { SyncManager } from './types';
-import { Sdk } from '../../api/Sdk';
 
 const noop = () => {};
 
 export function syncManagerFactory(
   settings: FsSettings,
   eventManager: EventManager,
-  apiClient: Sdk<null>,
 ): SyncManager {
   let manager: SyncManager;
 
   switch (settings.sync.type) {
     case 'poll':
-      manager = pollManager(settings, eventManager, apiClient);
+      manager = pollManager(settings, eventManager);
       break;
     case 'stream':
       manager = streamManager(settings, eventManager);

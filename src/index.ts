@@ -4,10 +4,12 @@ import { eventManagerFactory } from './events/event-manager-factory';
 import { FsEvent } from './events/types';
 import { FlagSyncConfig, FsSettings } from './config/types';
 import { buildSettingsFromConfig } from './config/utils';
-import { apiClientFactory } from './api/api-client';
+
 import { FsServiceError } from './api/error/service-error';
 import { SdkUserContext } from './api/data-contracts';
 import { ServiceErrorFactory } from './api/error/service-error-factory';
+import { apiClientFactory } from './api/clients/api-client';
+import { impressionsManagerFactory } from './managers/impressions/impressions-manager-factory';
 
 export { FsServiceError };
 export { ServiceErrorFactory };
@@ -32,7 +34,7 @@ function clientFactory(settings: FsSettings) {
   const { core, log } = settings;
 
   const eventManager = eventManagerFactory();
-  const apiClient = apiClientFactory(settings);
+  const { sdk } = apiClientFactory(settings);
 
   const context: SdkUserContext = {
     key: core.key,
@@ -40,15 +42,16 @@ function clientFactory(settings: FsSettings) {
     custom: core.attributes ?? {},
   };
 
-  const syncManager = syncManagerFactory(settings, eventManager, apiClient);
+  const syncManager = syncManagerFactory(settings, eventManager);
   const storageManager = storageManagerFactory(settings, eventManager);
+  const impressionsManager = impressionsManagerFactory(settings, eventManager);
 
-  const initWithWithThrow = apiClient
+  const initWithWithThrow = sdk
     .sdkControllerInitContext({
       context,
     })
     .then(() =>
-      apiClient.sdkControllerGetFlags({
+      sdk.sdkControllerGetFlags({
         context,
       }),
     )
@@ -71,7 +74,9 @@ function clientFactory(settings: FsSettings) {
 
   function flag<T>(flagKey: string, defaultValue?: T): T {
     const flags = storageManager.get();
-    return flags[flagKey] ?? defaultValue ?? 'control';
+    const flagValue = flags[flagKey] ?? defaultValue ?? 'control';
+    impressionsManager.enqueue({ flagKey, flagValue });
+    return flagValue as T;
   }
 
   function kill() {
@@ -80,6 +85,15 @@ function clientFactory(settings: FsSettings) {
       eventManager.off(FsEvent[eventKey as keyof typeof FsEvent]);
     }
     syncManager.stop();
+    impressionsManager.stop();
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', kill);
+  } else {
+    process.on('exit', kill); // Process termination event
+    process.on('SIGINT', kill); // Signal handling (SIGINT)
+    process.on('SIGTERM', kill); // Signal handling (SIGTERM)
   }
 
   return {

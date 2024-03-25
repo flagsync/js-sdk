@@ -2,15 +2,16 @@ import { FsSettings } from '../../config/types';
 import { EventManager, FsEvent, FsIntervalEvent } from '../../events/types';
 import { SyncManager } from './types';
 import { SdkUserContext } from '../../api/data-contracts';
-import { Sdk } from '../../api/Sdk';
 import { ServiceErrorFactory } from '../../api/error/service-error-factory';
+import { apiClientFactory } from '../../api/clients/api-client';
 
 export function pollManager(
   settings: FsSettings,
   eventManager: EventManager,
-  apiClient: Sdk<null>,
 ): SyncManager {
   const { log, sync, core } = settings;
+
+  const { sdk } = apiClientFactory(settings);
 
   const context: SdkUserContext = {
     key: core.key,
@@ -19,9 +20,10 @@ export function pollManager(
   };
 
   let timeout: number;
+  const interval = sync.pollRate * 1000;
 
   function poll() {
-    apiClient
+    sdk
       .sdkControllerGetFlags({
         context,
       })
@@ -46,13 +48,13 @@ export function pollManager(
         });
       })
       .finally(() => {
-        setTimeout(poll, sync.pollInterval);
+        timeout = setTimeout(poll, interval);
       });
   }
 
   function start() {
     log.debug('Polling started');
-    timeout = setTimeout(poll, sync.pollInterval);
+    timeout = setTimeout(poll, interval);
   }
 
   function stop() {

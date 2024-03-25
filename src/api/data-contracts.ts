@@ -9,10 +9,20 @@
  * ---------------------------------------------------------------
  */
 
+export interface SdkImpression {
+  flagKey: string;
+  flagValue: object;
+}
+
 export interface SdkUserContext {
   key: string;
   email?: string;
   custom?: object;
+}
+
+export interface SdkImpressionsPostRequest {
+  impressions: SdkImpression[];
+  context: SdkUserContext;
 }
 
 export interface SdkEnvironmentFlagsGetRequest {

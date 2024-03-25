@@ -22,7 +22,13 @@ export interface FlagSyncConfig {
   };
   readonly sync?: {
     type?: SyncType;
-    pollInterval?: number;
+    pollRate?: number;
+  };
+  readonly events?: {
+    impressions?: {
+      maxQueueSize: number;
+      pushRate: number;
+    };
   };
   readonly urls?: {
     sdk?: string;
@@ -45,7 +51,13 @@ export interface FsSettings {
   };
   readonly sync: {
     type: SyncType;
-    pollInterval?: number;
+    pollRate: number;
+  };
+  readonly events: {
+    impressions: {
+      maxQueueSize: number;
+      pushRate: number;
+    };
   };
   readonly urls: {
     sdk: string;

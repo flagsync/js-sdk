@@ -1,3 +1,5 @@
+import { FsSettings } from './types';
+
 export const DEFAULT_CONFIG = {
   sdkKey: undefined,
   core: {
@@ -11,7 +13,13 @@ export const DEFAULT_CONFIG = {
   },
   sync: {
     type: 'stream',
-    pollInterval: 60,
+    pollRate: 60,
+  },
+  events: {
+    impressions: {
+      maxQueueSize: 50,
+      pushRate: 60,
+    },
   },
   urls: {
     sdk: 'https://sdk.flagsync.com',
@@ -19,4 +27,4 @@ export const DEFAULT_CONFIG = {
   },
   remoteEval: true,
   debug: false,
-};
+} as unknown as FsSettings;
