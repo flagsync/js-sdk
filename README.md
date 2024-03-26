@@ -27,8 +27,13 @@ This SDK is an isomorphic library capable of running on Node.js and web browsers
 ## Installation
 
 ```bash
+# npm
 npm install @flagsync/js-sdk
+
+# yarn
 yarn add @flagsync/js-sdk
+
+# pnpm
 pnpm add @flagsync/js-sdk
 ```
 
@@ -229,3 +234,16 @@ export interface FlagSyncConfig {
   readonly logLevel?: LogLevel;
 }
 ```
+### Vite
+
+Vite does not automatically polyfill Node.js built-ins. To use the SDK in a Vite project, you must add a polyfill plugin: [vite-plugin-node-polyfills](https://github.com/davidmyersdev/vite-plugin-node-polyfills).
+
+```ts
+import { defineConfig } from 'vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+
+export default defineConfig({
+  plugins: [nodePolyfills()],
+});
+```
+>💡 See https://github.com/davidmyersdev/vite-plugin-node-polyfills
