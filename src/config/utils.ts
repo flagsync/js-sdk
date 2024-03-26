@@ -37,6 +37,14 @@ export function buildSettingsFromConfig(config: FlagSyncConfig): FsSettings {
     config,
   );
   settings.log = loggerFactory(settings);
+
   validateSettings(settings);
+
+  settings.context = {
+    key: settings.core.key,
+    email: settings.core.attributes?.email,
+    custom: settings.core.attributes ?? {},
+  };
+
   return settings;
 }

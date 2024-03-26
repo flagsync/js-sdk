@@ -1,7 +1,7 @@
-import { SdkImpression } from '../../api/data-contracts';
+import { ImpressionsCache } from '../storage/caches/impressions-cache';
 
 export type ImpressionsManager = {
   start: () => void;
   stop: () => void;
-  enqueue: (event: SdkImpression) => void;
+  cache: ImpressionsCache;
 };

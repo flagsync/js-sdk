@@ -2,22 +2,15 @@ import EventSource from 'eventsource';
 
 import { FsFlagSet, FsSettings } from '../../config/types';
 import { SyncManager } from './types';
-import { SdkUserContext } from '../../api/data-contracts';
 import { EventManager, FsIntervalEvent } from '../events/types';
 
 export const streamManager = (
   settings: FsSettings,
   eventManager: EventManager,
 ): SyncManager => {
-  const { urls, log, core } = settings;
+  const { urls, log, context } = settings;
 
   let es: EventSource;
-
-  const context: SdkUserContext = {
-    key: core.key,
-    email: core.attributes?.email,
-    custom: core.attributes ?? {},
-  };
 
   function start() {
     log.debug('Streaming started');

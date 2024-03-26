@@ -1,9 +1,9 @@
-import { SdkImpression, SdkUserContext } from '../../api/data-contracts';
 import { apiClientFactory } from '../../api/clients/api-client';
 import { FsSettings } from '../../config/types';
 import { ImpressionsManager } from './types';
 import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 import { EventManager, FsEvent } from '../events/types';
+import { ImpressionsCache } from '../storage/caches/impressions-cache';
 
 export function impressionsManager(
   settings: FsSettings,
@@ -11,27 +11,19 @@ export function impressionsManager(
 ): ImpressionsManager {
   const {
     log,
-    core,
+    context,
     events: { impressions },
   } = settings;
 
-  const queue: SdkImpression[] = [];
+  const cache = new ImpressionsCache(settings, flushQueue);
 
   const { events } = apiClientFactory(settings);
-
-  const context: SdkUserContext = {
-    key: core.key,
-    email: core.attributes?.email,
-    custom: core.attributes ?? {},
-  };
 
   let timeout: number | NodeJS.Timeout;
   const interval = impressions.pushRate * 1000;
 
   async function batchSend() {
-    const sendQueue = queue.splice(0, queue.length);
-    if (sendQueue.length === 0) {
-      log.debug('Impressions queue empty');
+    if (cache.isEmpty()) {
       if (timeout) {
         clearTimeout(timeout);
       }
@@ -39,7 +31,7 @@ export function impressionsManager(
       return;
     }
 
-    log.debug('Flushing impressions queue');
+    const sendQueue = cache.pop();
 
     events
       .sdkEventControllerPostBatchImpressions({
@@ -67,6 +59,7 @@ export function impressionsManager(
   }
 
   async function flushQueue() {
+    log.debug('Flushing impressions queue');
     await batchSend();
   }
 
@@ -87,12 +80,6 @@ export function impressionsManager(
   return {
     start,
     stop,
-    enqueue: (event: SdkImpression) => {
-      queue.push(event);
-      log.debug('Event enqueued:', [event.flagKey, event.flagValue]);
-      if (queue.length >= impressions.maxQueueSize) {
-        flushQueue();
-      }
-    },
+    cache,
   };
 }

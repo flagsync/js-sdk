@@ -1,7 +1,6 @@
 import { FsSettings } from '../../config/types';
 
 import { SyncManager } from './types';
-import { SdkUserContext } from '../../api/data-contracts';
 import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 import { apiClientFactory } from '../../api/clients/api-client';
 import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
@@ -10,15 +9,9 @@ export function pollManager(
   settings: FsSettings,
   eventManager: EventManager,
 ): SyncManager {
-  const { log, sync, core } = settings;
+  const { log, sync, context } = settings;
 
   const { sdk } = apiClientFactory(settings);
-
-  const context: SdkUserContext = {
-    key: core.key,
-    email: core.attributes?.email,
-    custom: core.attributes ?? {},
-  };
 
   let timeout: number | NodeJS.Timeout;
   const interval = sync.pollRate * 1000;

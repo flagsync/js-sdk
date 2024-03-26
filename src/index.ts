@@ -5,7 +5,6 @@ import { FlagSyncConfig, FsSettings } from './config/types';
 import { buildSettingsFromConfig } from './config/utils';
 
 import { FsServiceError } from './api/error/service-error';
-import { SdkUserContext } from './api/data-contracts';
 import { ServiceErrorFactory } from './api/error/service-error-factory';
 import { apiClientFactory } from './api/clients/api-client';
 import { impressionsManagerFactory } from './managers/impressions/impressions-manager-factory';
@@ -32,15 +31,9 @@ function clientInstanceFactory(settings: FsSettings): () => FsClient {
 export type FsClient = ReturnType<typeof clientFactory>;
 
 function clientFactory(settings: FsSettings) {
-  const { core, log } = settings;
+  const { core, log, context } = settings;
 
   const { sdk } = apiClientFactory(settings);
-
-  const context: SdkUserContext = {
-    key: core.key,
-    email: core.attributes?.email,
-    custom: core.attributes ?? {},
-  };
 
   const eventManager = eventManagerFactory();
   const syncManager = syncManagerFactory(settings, eventManager);
@@ -76,10 +69,18 @@ function clientFactory(settings: FsSettings) {
   function flag<T>(flagKey: string, defaultValue?: T): T {
     const flags = storageManager.get();
     const flagValue = flags[flagKey] ?? defaultValue ?? 'control';
-    impressionsManager.enqueue({ flagKey, flagValue });
+    impressionsManager.cache.track({
+      flagKey,
+      flagValue,
+      timestamp: new Date().toISOString(),
+    });
     return flagValue as T;
   }
 
+  /**
+   * TODO: Instead of XHR, Send beacons on kill
+   *       https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
+   */
   function kill() {
     log.info('Destroying client instance');
     for (const eventKey in FsEvent) {

@@ -12,6 +12,7 @@
 export interface SdkImpression {
   flagKey: string;
   flagValue: object;
+  timestamp: string;
 }
 
 export interface SdkUserContext {
