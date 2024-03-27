@@ -5,7 +5,6 @@ FlagSync is a feature management platform designed for simplicity. It supports f
 This SDK allows you to interact with the FlagSync API to retrieve feature flags and configurations.
 
 [![npm version](https://badge.fury.io/js/%40flagsync%2Fjs-sdk.svg)](https://badge.fury.io/js/%40flagsync%2Fjs-sdk)
-![Test node versions](https://github.com/flagsync/javascript-client/actions/workflows/test-node.yml/badge.svg)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/flagsync.svg?style=social&label=Follow%20%40flagsync)](https://twitter.com/flagsync)
 
 
