@@ -27,21 +27,4 @@ export class Events<
       method: 'GET',
       ...params,
     });
-  /**
-   * No description
-   *
-   * @name SdkEventControllerPostBatchImpressions
-   * @request POST:/events/impressions
-   */
-  sdkEventControllerPostBatchImpressions = (
-    data: SdkImpressionsPostRequest,
-    params: RequestParams = {},
-  ) =>
-    this.request<void, void>({
-      path: `/events/impressions`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
 }

@@ -9,21 +9,10 @@
  * ---------------------------------------------------------------
  */
 
-export interface SdkImpression {
-  flagKey: string;
-  flagValue: object;
-  timestamp: string;
-}
-
 export interface SdkUserContext {
   key: string;
   email?: string;
   custom?: object;
-}
-
-export interface SdkImpressionsPostRequest {
-  impressions: SdkImpression[];
-  context: SdkUserContext;
 }
 
 export interface SdkEnvironmentFlagsGetRequest {
@@ -41,5 +30,16 @@ export interface SdkEnvironmentFlagGetRequest {
 
 export interface SdkEnvironmentFlagGetResponse {
   flag: object;
+  context: SdkUserContext;
+}
+
+export interface SdkImpression {
+  flagKey: string;
+  flagValue: object;
+  timestamp: string;
+}
+
+export interface SdkImpressionsPostRequest {
+  impressions: SdkImpression[];
   context: SdkUserContext;
 }

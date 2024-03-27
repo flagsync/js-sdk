@@ -20,7 +20,7 @@ export function impressionsManager(
   const cache = new ImpressionsCache(settings, flushQueue);
   cache.setOnFullQueueCb(flushQueue);
 
-  const { events } = apiClientFactory(settings);
+  const { impressions: api } = apiClientFactory(settings);
 
   let timeout: number | NodeJS.Timeout;
   const interval = impressions.pushRate * 1000;
@@ -36,8 +36,8 @@ export function impressionsManager(
 
     const sendQueue = cache.pop();
 
-    events
-      .sdkEventControllerPostBatchImpressions({
+    api
+      .sdkImpressionsControllerPostBatchImpressions({
         context,
         impressions: sendQueue,
       })
@@ -83,6 +83,6 @@ export function impressionsManager(
   return {
     start,
     stop,
-    cache,
+    track: cache.track.bind(cache),
   };
 }

@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+/scripts/legacy/node_modules
+/scripts/modern/node_modules
+
 # Logs
 logs
 *.log

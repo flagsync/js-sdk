@@ -75,11 +75,13 @@ function clientFactory(settings: FsSettings) {
   function flag<T>(flagKey: string, defaultValue?: T): T {
     const flags = storageManager.get();
     const flagValue = flags[flagKey] ?? defaultValue ?? 'control';
-    impressionsManager.cache.track({
+
+    impressionsManager.track({
       flagKey,
       flagValue,
       timestamp: new Date().toISOString(),
     });
+
     return flagValue as T;
   }
 
@@ -87,7 +89,6 @@ function clientFactory(settings: FsSettings) {
    * TODO: Instead of XHR, Send beacons on kill
    *       https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
    */
-
   let isExiting = false;
   function kill() {
     if (!isExiting) {
