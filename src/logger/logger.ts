@@ -1,4 +1,5 @@
 import { FsLogger, LogLevel } from './types';
+import { formatISODateToCustom } from './utils';
 
 export const LogLevels = {
   DEBUG: 'DEBUG',
@@ -66,6 +67,6 @@ export class Logger implements FsLogger {
       level === LogLevels.INFO || level === LogLevels.WARN ? ' ' : '';
     const filteredArgs = args?.filter((arg) => !!arg);
     const argsString = filteredArgs ? `: ${filteredArgs.join(' ')}` : '';
-    return `[${level}]${padding} flagsync => ${msg}${argsString}`;
+    return `flagsync [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${msg}${argsString}`;
   }
 }

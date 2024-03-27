@@ -9,6 +9,7 @@ type CustomAttributes = Record<string, CustomAttributeValue>;
 
 type StorageType = 'memory' | 'localstorage';
 type SyncType = 'stream' | 'poll' | 'off';
+type Platform = 'node' | 'browser';
 
 export interface FlagSyncConfig {
   readonly sdkKey: string;
@@ -68,4 +69,5 @@ export interface FsSettings {
   readonly logLevel?: LogLevel;
   log: FsLogger;
   context: SdkUserContext;
+  platform: Platform;
 }

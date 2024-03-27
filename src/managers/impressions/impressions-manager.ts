@@ -5,6 +5,8 @@ import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 import { EventManager, FsEvent } from '../events/types';
 import { ImpressionsCache } from '../storage/caches/impressions-cache';
 
+const logPrefix = 'impressions-manager';
+
 export function impressionsManager(
   settings: FsSettings,
   eventManager: EventManager,
@@ -16,6 +18,7 @@ export function impressionsManager(
   } = settings;
 
   const cache = new ImpressionsCache(settings, flushQueue);
+  cache.setOnFullQueueCb(flushQueue);
 
   const { events } = apiClientFactory(settings);
 
@@ -39,11 +42,11 @@ export function impressionsManager(
         impressions: sendQueue,
       })
       .then(() => {
-        log.debug(`Batch sent ${sendQueue.length} impressions`);
+        log.debug(`${logPrefix}: batch sent ${sendQueue.length} impressions`);
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error('Batch impression send failed', [
+        log.error(`${logPrefix}: batch impression send failed`, [
           error.path,
           error.errorCode,
           error.message,
@@ -59,19 +62,19 @@ export function impressionsManager(
   }
 
   async function flushQueue() {
-    log.debug('Flushing impressions queue');
+    log.debug(`${logPrefix}: flushing impressions queue`);
     await batchSend();
   }
 
   function start() {
-    log.debug('Impressions queue started');
+    log.debug(`${logPrefix}: impressions submitter started`);
     timeout = setTimeout(batchSend, interval);
   }
 
   function stop() {
     flushQueue().then(() => {
       if (timeout) {
-        log.debug('Impression queue stopped');
+        log.debug(`${logPrefix}: gracefully stopping impressions submitter`);
         clearTimeout(timeout);
       }
     });

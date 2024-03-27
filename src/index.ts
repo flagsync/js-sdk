@@ -20,6 +20,8 @@ export type FsErrorEvent = {
   error: Error | FsServiceError;
 };
 
+const logPrefix = 'client';
+
 function clientInstanceFactory(settings: FsSettings): () => FsClient {
   const instance = clientFactory(settings);
 
@@ -51,7 +53,7 @@ function clientFactory(settings: FsSettings) {
     )
     .then((res) => {
       storageManager.set(res?.flags ?? {});
-      log.debug('SDK ready');
+      log.debug(`${logPrefix}: SDK ready`);
       eventManager.emit(FsEvent.SDK_READY);
     })
     .catch((e: unknown) => {
@@ -59,7 +61,11 @@ function clientFactory(settings: FsSettings) {
     });
 
   const initWithCatch = initWithWithThrow.catch((e: FsServiceError) => {
-    log.error('SDK init failed', [e.path, e.errorCode, e.message]);
+    log.error(`${logPrefix}: SDK init failed`, [
+      e.path,
+      e.errorCode,
+      e.message,
+    ]);
     eventManager.emit(FsEvent.ERROR, {
       type: 'api',
       error: e,
@@ -81,15 +87,26 @@ function clientFactory(settings: FsSettings) {
    * TODO: Instead of XHR, Send beacons on kill
    *       https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
    */
+
+  let isExiting = false;
   function kill() {
-    log.info('Destroying client instance');
-    for (const eventKey in FsEvent) {
-      eventManager.off(FsEvent[eventKey as keyof typeof FsEvent]);
+    if (!isExiting) {
+      isExiting = true;
+      log.info(`${logPrefix}: SDK shutting down`);
+      for (const eventKey in FsEvent) {
+        eventManager.off(FsEvent[eventKey as keyof typeof FsEvent]);
+      }
+      syncManager.stop();
+      impressionsManager.stop();
+    } else {
+      log.info(`${logPrefix}: already handling kill, skipping...`);
     }
-    syncManager.stop();
-    impressionsManager.stop();
   }
 
+  /**
+   * TODO: don't use beforeunload. use visibilitychange/pagehide with sendBeacon
+   *       for flushing queues
+   */
   if (typeof window !== 'undefined') {
     window.addEventListener('beforeunload', kill);
   } else {

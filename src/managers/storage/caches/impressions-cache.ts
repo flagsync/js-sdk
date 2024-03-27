@@ -3,6 +3,8 @@ import { ImpressionsBaseCache } from './types';
 import { FsSettings } from '../../../config/types';
 import { FsLogger } from '../../../logger/types';
 
+const logPrefix = 'impressions-cache';
+
 export class ImpressionsCache implements ImpressionsBaseCache {
   private queue: SdkImpression[] = [];
 
@@ -22,9 +24,9 @@ export class ImpressionsCache implements ImpressionsBaseCache {
 
   track(impression: SdkImpression): void {
     this.queue.push(impression);
-    this.log.debug('Event enqueued:', [
+    this.log.debug(`${logPrefix}: event enqueued`, [
       impression.flagKey,
-      impression.flagValue,
+      JSON.stringify(impression.flagValue),
     ]);
     if (this.queue.length >= this.maxQueue && this.onFullQueue) {
       this.onFullQueue();

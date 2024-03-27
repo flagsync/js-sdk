@@ -5,6 +5,8 @@ import { StoreManager } from './types';
 import { FsFlagSet, FsSettings } from '../../config/types';
 import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
 
+const logPrefix = 'storage-manager-factory';
+
 export function storageManagerFactory(
   params: FsSettings,
   eventManager: EventManager,
@@ -16,10 +18,12 @@ export function storageManagerFactory(
   if (storage.type === 'localstorage') {
     if (isLocalStorageAvailable()) {
       manager = localStorageManager(params);
-      log.info('SDK ready from store');
+      log.info(`${logPrefix}: SDK ready from store'`);
       eventManager.emit(FsEvent.SDK_READY_FROM_STORE);
     } else {
-      log.warn('LocalStorage not available, using memory');
+      log.warn(
+        `${logPrefix}: LocalStorage not available, falling back to memory store`,
+      );
       manager = memoryManager(params);
     }
   } else {

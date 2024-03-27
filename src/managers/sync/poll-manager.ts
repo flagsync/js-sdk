@@ -5,6 +5,8 @@ import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 import { apiClientFactory } from '../../api/clients/api-client';
 import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
 
+const logPrefix = 'poll-manager';
+
 export function pollManager(
   settings: FsSettings,
   eventManager: EventManager,
@@ -22,7 +24,7 @@ export function pollManager(
         context,
       })
       .then((res) => {
-        log.debug('Polling event complete');
+        log.debug(`${logPrefix}: polling success`);
         eventManager.internal.emit(
           FsIntervalEvent.UPDATE_RECEIVED,
           res?.flags ?? {},
@@ -30,7 +32,7 @@ export function pollManager(
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error('Polling failed', [
+        log.error(`${logPrefix}: polling failed`, [
           error.path,
           error.errorCode,
           error.message,
@@ -47,13 +49,13 @@ export function pollManager(
   }
 
   function start() {
-    log.debug('Polling started');
+    log.debug(`${logPrefix}: polling started`);
     timeout = setTimeout(poll, interval);
   }
 
   function stop() {
     if (timeout) {
-      log.debug('Polling stopped');
+      log.debug(`${logPrefix}: gracefully stopping poller`);
       clearTimeout(timeout);
     }
   }

@@ -46,5 +46,7 @@ export function buildSettingsFromConfig(config: FlagSyncConfig): FsSettings {
     custom: settings.core.attributes ?? {},
   };
 
+  settings.platform = typeof window !== 'undefined' ? 'browser' : 'node';
+
   return settings;
 }
