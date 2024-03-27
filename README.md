@@ -19,6 +19,7 @@ This SDK allows you to interact with the FlagSync API to retrieve feature flags 
 - [Flag updates](#flag-updates)
 - [Bootstrapping](#bootstrapping)
 - [Additional configurations](#additional-configurations)
+- [Vite](#vite)
 
 ---
 ## Compatibility
