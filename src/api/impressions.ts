@@ -1,5 +1,5 @@
-import { ContentType, HttpClient, RequestParams } from '../clients/http-client';
-import { SdkImpressionsPostRequest } from '../data-contracts';
+import { ContentType, HttpClient, RequestParams } from './clients/http-client';
+import { SdkImpressionsPostRequest } from './data-contracts';
 
 export class Impressions<
   SecurityDataType = unknown,

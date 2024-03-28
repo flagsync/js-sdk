@@ -11,8 +11,7 @@
 
 export interface SdkUserContext {
   key: string;
-  email?: string;
-  custom?: object;
+  attributes?: object;
 }
 
 export interface SdkEnvironmentFlagsGetRequest {

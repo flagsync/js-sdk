@@ -1,7 +1,7 @@
 import { FsSettings } from '../../config/types';
 import { Sdk } from '../sdk';
 import { Events } from '../events';
-import { Impressions } from '../error/impressions';
+import { Impressions } from '../impressions';
 
 type ApiClient = {
   sdk: Sdk<any>;

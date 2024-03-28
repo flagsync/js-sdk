@@ -42,8 +42,7 @@ export function buildSettingsFromConfig(config: FlagSyncConfig): FsSettings {
 
   settings.context = {
     key: settings.core.key,
-    email: settings.core.attributes?.email,
-    custom: settings.core.attributes ?? {},
+    attributes: settings.core.attributes ?? {},
   };
 
   settings.platform = typeof window !== 'undefined' ? 'browser' : 'node';
