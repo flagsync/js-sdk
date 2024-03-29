@@ -67,8 +67,8 @@ export function impressionsManager(
   }
 
   function start() {
-    log.debug(`${logPrefix}: impressions submitter started`);
-    timeout = setTimeout(batchSend, interval);
+    log.debug(`${logPrefix}: impressions submitter starting in 5000ms`);
+    timeout = setTimeout(batchSend, 5000);
   }
 
   function stop() {
