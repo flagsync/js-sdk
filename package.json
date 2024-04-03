@@ -39,8 +39,7 @@
     "build": "tsup",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "test": "vitest",
-    "test:node": "node scripts/node-tester.js"
+    "test": "vitest"
   },
   "dependencies": {
     "axios": "^1.6.8",
