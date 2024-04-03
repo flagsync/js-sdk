@@ -15,8 +15,8 @@ dependencies:
     specifier: ^5.0.1
     version: 5.0.1
   extended-eventsource:
-    specifier: ^1.4.6
-    version: 1.4.6
+    specifier: ^1.4.9
+    version: 1.4.9
 
 devDependencies:
   '@types/node':
@@ -1426,8 +1426,8 @@ packages:
       strip-final-newline: 3.0.0
     dev: true
 
-  /extended-eventsource@1.4.6:
-    resolution: {integrity: sha512-5KvOiwRph/8hQbxU5V3WGmdNTN4NaqBVdlREyOdA4Tza8kupkOTKdev2O445kspfCE3KFpRG072lOme+BFZ3Hg==}
+  /extended-eventsource@1.4.9:
+    resolution: {integrity: sha512-x0SMAw57jEaiBKLQWTatVBZkT/PRuL5hdiEP6s8GKqeQOapBRwnohI6e8zGM0XStolQrQe+L6Wvin8G0UthRbw==}
     dev: false
 
   /fast-deep-equal@3.1.3:

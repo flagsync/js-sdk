@@ -7,6 +7,8 @@ import { ImpressionsCache } from '../storage/caches/impressions-cache';
 
 const logPrefix = 'impressions-manager';
 
+const START_DELY_MS = 3000;
+
 export function impressionsManager(
   settings: FsSettings,
   eventManager: EventManager,
@@ -67,8 +69,10 @@ export function impressionsManager(
   }
 
   function start() {
-    log.debug(`${logPrefix}: impressions submitter starting in 5000ms`);
-    timeout = setTimeout(batchSend, 5000);
+    log.debug(
+      `${logPrefix}: impressions submitter starting in ${START_DELY_MS}ms`,
+    );
+    timeout = setTimeout(batchSend, START_DELY_MS);
   }
 
   function stop() {
