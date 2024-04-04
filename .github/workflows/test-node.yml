@@ -44,14 +44,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org
 
-      - name:  Run HTTP integration tests (Legacy)
-        run: pnpm start
+      - name: Run HTTP integration tests (Legacy)
+        run: npm run start
         working-directory: ./scripts/legacy
         env:
           SDK_KEY: ${{ secrets.SDK_KEY }}
 
-      - name:  Run HTTP integration tests (Modern)
-        run: pnpm start
+      - name: Run HTTP integration tests (Modern)
+        run: npm run start
         working-directory: ./scripts/modern
         env:
           SDK_KEY: ${{ secrets.SDK_KEY }}
