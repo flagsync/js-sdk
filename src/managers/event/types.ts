@@ -1,5 +1,6 @@
-import { FsErrorEvent } from '../../index';
-import { FsFlagSet } from '../../config/types';
+import { FsErrorEvent } from '~sdk/index';
+
+import { FsFlagSet } from '~config/types';
 
 export type EventCallback<T extends FsEventType> = (
   payload: FsEventTypePayload[T],
@@ -9,7 +10,7 @@ export type EventInternalCallback<T extends FsIntervalEventType> = (
   payload: FsInternalEventTypePayload[T],
 ) => void;
 
-export interface EventManager {
+export interface IEventManager {
   on<T extends FsEventType>(event: T, callback: EventCallback<T>): void;
   once<T extends FsEventType>(event: T, callback: EventCallback<T>): void;
   emit<T extends FsEventType>(event: T, payload?: FsEventTypePayload[T]): void;

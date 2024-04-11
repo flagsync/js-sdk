@@ -1,19 +1,20 @@
-import { localStorageManager } from './localstorage-manager';
-import { memoryManager } from './memory-manager';
-import { isLocalStorageAvailable } from './is-local-storage-available';
-import { StoreManager } from './types';
-import { FsFlagSet, FsSettings } from '../../config/types';
-import { EventManager, FsEvent, FsIntervalEvent } from '../event/types';
+import { FsFlagSet, FsSettings } from '~config/types';
+
+import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
+import { isLocalStorageAvailable } from '~managers/storage/is-local-storage-available';
+import { localStorageManager } from '~managers/storage/localstorage-manager';
+import { memoryManager } from '~managers/storage/memory-manager';
+import { IStoreManager } from '~managers/storage/types';
 
 const logPrefix = 'storage-manager-factory';
 
 export function storageManagerFactory(
   params: FsSettings,
-  eventManager: EventManager,
-): StoreManager {
+  eventManager: IEventManager,
+): IStoreManager {
   const { storage, log } = params;
 
-  let manager: StoreManager;
+  let manager: IStoreManager;
 
   if (storage.type === 'localstorage') {
     if (isLocalStorageAvailable()) {

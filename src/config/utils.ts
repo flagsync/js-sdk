@@ -1,8 +1,11 @@
-import { FlagSyncConfig, FsSettings } from './types';
-import { loggerFactory } from '../logger/logger-factory';
-import { DEFAULT_CONFIG } from './constants';
-import { FsServiceError, ServiceErrorCode } from '../api/error/service-error';
 import deepmerge from 'deepmerge';
+
+import { DEFAULT_CONFIG } from '~config/constants';
+import { FlagSyncConfig, FsSettings } from '~config/types';
+
+import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
+
+import { loggerFactory } from '~logger/logger-factory';
 
 function validateSettings(settings: FsSettings): void {
   if (!settings.sdkKey) {

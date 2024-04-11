@@ -1,4 +1,4 @@
-export interface SyncManager {
+export interface ISyncManager {
   start: () => void;
   stop: () => void;
 }

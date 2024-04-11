@@ -2,6 +2,8 @@
   "include": ["src"],
   "exclude": ["node_modules", "dist", "tsup.config.ts"],
   "compilerOptions": {
+    "baseUrl": "./",
+
     /* Code runs in the DOM: */
     "lib": ["es2022", "dom", "dom.iterable"],
 
@@ -27,6 +29,13 @@
     "moduleResolution": "node",
     "module": "ES2015",
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "~sdk/*": ["src/*"],
+      "~api/*": ["src/api/*"],
+      "~config/*": ["src/config/*"],
+      "~logger/*": ["src/logger/*"],
+      "~managers/*": ["src/managers/*"],
+    }
   }
 }

@@ -1,9 +1,10 @@
-import { FsSettings, FsFlagSet } from '../../config/types';
-import { StoreManager } from './types';
+import { FsFlagSet, FsSettings } from '~config/types';
+
+import { IStoreManager } from '~managers/storage/types';
 
 const logPrefix = 'localstorage-manager';
 
-export function localStorageManager(settings: FsSettings): StoreManager {
+export function localStorageManager(settings: FsSettings): IStoreManager {
   const { log, bootstrap, storage } = settings;
 
   let flagSet: FsFlagSet = {
@@ -19,12 +20,12 @@ export function localStorageManager(settings: FsSettings): StoreManager {
       ...flagSet,
       ...incoming,
     };
-    log.debug(`${logPrefix}: saving flags to storage`);
+    log.debug(`${logPrefix}: persisting flags`);
     localStorage.setItem(buildKey(), JSON.stringify(flagSet));
   }
 
   function get(): FsFlagSet {
-    log.debug(`${logPrefix}: getting flags from storage`);
+    log.debug(`${logPrefix}: getting flags`);
     const cached = localStorage.getItem(buildKey());
 
     if (!cached) {

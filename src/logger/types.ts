@@ -1,6 +1,6 @@
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'NONE';
 
-export interface FsLogger {
+export interface ILogger {
   setLogLevel(logLevel: LogLevel): void;
   debug(msg: string | number, args?: any[]): void;
   info(msg: string | number, args?: any[]): void;

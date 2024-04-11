@@ -1,7 +1,8 @@
-import { FsSettings } from '../../config/types';
-import { Sdk } from '../sdk';
-import { Track } from '../track';
-import { Sse } from '../sse';
+import { FsSettings } from '~config/types';
+
+import { Sdk } from '~api/sdk';
+import { Sse } from '~api/sse';
+import { Track } from '~api/track';
 
 type ApiClient = {
   sdk: Sdk<any>;

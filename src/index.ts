@@ -1,16 +1,15 @@
-import { storageManagerFactory } from './managers/storage/storage-manger-factory';
-import { syncManagerFactory } from './managers/sync/sync-manager-factory';
+import { FlagSyncConfig, FsSettings } from '~config/types';
+import { buildSettingsFromConfig } from '~config/utils';
 
-import { FlagSyncConfig, FsSettings } from './config/types';
-import { buildSettingsFromConfig } from './config/utils';
+import { apiClientFactory } from '~api/clients/api-client';
+import { FsServiceError } from '~api/error/service-error';
+import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
-import { FsServiceError } from './api/error/service-error';
-import { ServiceErrorFactory } from './api/error/service-error-factory';
-import { apiClientFactory } from './api/clients/api-client';
-
-import { eventManagerFactory } from './managers/event/event-manager-factory';
-import { trackManagerFactory } from './managers/track/track-manager-factory';
-import { FsEvent } from './managers/event/types';
+import { eventManagerFactory } from '~managers/event/event-manager-factory';
+import { FsEvent } from '~managers/event/types';
+import { storageManagerFactory } from '~managers/storage/storage-manger-factory';
+import { syncManagerFactory } from '~managers/sync/sync-manager-factory';
+import { trackManagerFactory } from '~managers/track/track-manager-factory';
 
 export { FsServiceError };
 export { ServiceErrorFactory };

@@ -1,18 +1,19 @@
-import { FsSettings } from '../../config/types';
-import { pollManager } from './poll-manager';
-import { SyncManager } from './types';
-import { EventManager, FsEvent } from '../event/types';
-import { streamManager } from './stream-manager';
+import { FsSettings } from '~config/types';
+
+import { FsEvent, IEventManager } from '~managers/event/types';
+import { pollManager } from '~managers/sync/poll-manager';
+import { streamManager } from '~managers/sync/stream-manager';
+import { ISyncManager } from '~managers/sync/types';
 
 const noop = () => {};
 
 export function syncManagerFactory(
   settings: FsSettings,
-  eventManager: EventManager,
-): SyncManager {
+  eventManager: IEventManager,
+): ISyncManager {
   const { sync } = settings;
 
-  let manager: SyncManager;
+  let manager: ISyncManager;
 
   switch (sync.type) {
     case 'poll':

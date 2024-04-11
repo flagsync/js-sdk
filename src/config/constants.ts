@@ -1,4 +1,4 @@
-import { FsSettings } from './types';
+import { FsSettings } from '~config/types';
 
 export const DEFAULT_CONFIG = {
   sdkKey: undefined,

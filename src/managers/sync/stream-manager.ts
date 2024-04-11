@@ -1,15 +1,16 @@
 import { EventSource } from 'extended-eventsource';
 
-import { FsFlagSet, FsSettings } from '../../config/types';
-import { SyncManager } from './types';
-import { EventManager, FsIntervalEvent } from '../event/types';
+import { FsFlagSet, FsSettings } from '~config/types';
+
+import { FsIntervalEvent, IEventManager } from '~managers/event/types';
+import { ISyncManager } from '~managers/sync/types';
 
 const logPrefix = 'stream-manager';
 
 export const streamManager = (
   settings: FsSettings,
-  eventManager: EventManager,
-): SyncManager => {
+  eventManager: IEventManager,
+): ISyncManager => {
   const { urls, log, context } = settings;
 
   let es: EventSource;

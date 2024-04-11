@@ -1,11 +1,13 @@
-import { FsSettings } from '../../../config/types';
-import { EventManager, FsEvent } from '../../event/types';
-import { ImpressionsManager } from './types';
-import { apiClientFactory } from '../../../api/clients/api-client';
-import { ServiceErrorFactory } from '../../../api/error/service-error-factory';
-import { TrackCache } from '../caches/track-cache';
-import { SdkTrackImpression } from '../../../api/data-contracts';
-import { ImpressionLogStrategy } from './impressions-log-strategy';
+import { FsSettings } from '~config/types';
+
+import { apiClientFactory } from '~api/clients/api-client';
+import { SdkTrackImpression } from '~api/data-contracts';
+import { ServiceErrorFactory } from '~api/error/service-error-factory';
+
+import { FsEvent, IEventManager } from '~managers/event/types';
+import { TrackCache } from '~managers/track/caches/track-cache';
+import { ImpressionLogStrategy } from '~managers/track/impressions/impressions-log-strategy';
+import { IImpressionsManager } from '~managers/track/impressions/types';
 
 const logPrefix = 'impressions-manager';
 
@@ -13,17 +15,19 @@ const START_DELAY_MS = 3000;
 
 export function impressionsManager(
   settings: FsSettings,
-  eventManager: EventManager,
-): ImpressionsManager {
+  eventManager: IEventManager,
+): IImpressionsManager {
   const {
     log,
     context,
-    tracking: { impressions },
+    tracking: {
+      impressions: { maxQueueSize, pushRate },
+    },
   } = settings;
 
   const cache = new TrackCache<SdkTrackImpression>({
-    settings: settings,
-    maxQueueSize: settings.tracking.impressions.maxQueueSize,
+    log,
+    maxQueueSize,
     logPrefix: 'impressions-cache',
     logStrategy: new ImpressionLogStrategy(),
     onFullQueue: flushQueue,
@@ -32,7 +36,7 @@ export function impressionsManager(
   const { track } = apiClientFactory(settings);
 
   let timeout: number | NodeJS.Timeout;
-  const interval = impressions.pushRate * 1000;
+  const interval = pushRate * 1000;
 
   async function batchSend() {
     if (cache.isEmpty()) {
@@ -55,7 +59,7 @@ export function impressionsManager(
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error(`${logPrefix}: batch impression send failed`, [
+        log.error(`${logPrefix}: batch send failed`, [
           error.path,
           error.errorCode,
           error.message,
@@ -71,21 +75,19 @@ export function impressionsManager(
   }
 
   async function flushQueue() {
-    log.debug(`${logPrefix}: flushing impressions queue`);
+    log.debug(`${logPrefix}: flushing queue`);
     await batchSend();
   }
 
   function start() {
-    log.debug(
-      `${logPrefix}: impressions submitter starting in ${START_DELAY_MS}ms`,
-    );
+    log.debug(`${logPrefix}: submitter starting in ${START_DELAY_MS}ms`);
     timeout = setTimeout(batchSend, START_DELAY_MS);
   }
 
   function stop() {
     flushQueue().then(() => {
       if (timeout) {
-        log.debug(`${logPrefix}: gracefully stopping impressions submitter`);
+        log.debug(`${logPrefix}: gracefully stopping submitter`);
         clearTimeout(timeout);
       }
     });

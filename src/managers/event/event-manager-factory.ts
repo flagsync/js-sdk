@@ -1,16 +1,15 @@
-import { DeferredEventEmitter } from './deferred-event-emitter';
-
+import { DeferredEventEmitter } from '~managers/event/deferred-event-emitter';
 import {
   EventCallback,
   EventInternalCallback,
-  EventManager,
   FsEventType,
   FsEventTypePayload,
   FsInternalEventTypePayload,
   FsIntervalEventType,
-} from './types';
+  IEventManager,
+} from '~managers/event/types';
 
-export function eventManagerFactory(): EventManager {
+export function eventManagerFactory(): IEventManager {
   const emitter = new DeferredEventEmitter();
 
   function on<T extends FsEventType>(event: T, callback: EventCallback<T>) {

@@ -1,5 +1,6 @@
-import { FsLogger, LogLevel } from '../logger/types';
-import { SdkUserContext } from '../api/data-contracts';
+import { SdkUserContext } from '~api/data-contracts';
+
+import { ILogger, LogLevel } from '~logger/types';
 
 type FsFlagValue = any;
 export type FsFlagSet = Record<string, FsFlagValue>;
@@ -71,7 +72,7 @@ export interface FsSettings {
     sdk: string;
   };
   readonly logLevel?: LogLevel;
-  log: FsLogger;
+  log: ILogger;
   context: SdkUserContext;
   platform: Platform;
 }

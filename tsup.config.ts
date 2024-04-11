@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup';
+import { defineConfig, Options } from 'tsup';
 
-export function modernConfig(opts: any) {
+export function modernConfig(opts: Options): Options {
   return {
     entry: opts.entry,
     format: ['cjs', 'esm'],
@@ -11,7 +11,7 @@ export function modernConfig(opts: any) {
       'safari15',
       'ios15',
       'opera77',
-      'node14',
+      'node16',
     ],
     outDir: 'dist/modern',
     dts: true,
@@ -20,11 +20,11 @@ export function modernConfig(opts: any) {
   };
 }
 
-export function legacyConfig(opts: any) {
+export function legacyConfig(opts: Options): Options {
   return {
     entry: opts.entry,
     format: ['cjs', 'esm'],
-    target: ['es2020', 'node14'],
+    target: ['es2020', 'node16'],
     outDir: 'dist/legacy',
     dts: true,
     sourcemap: true,

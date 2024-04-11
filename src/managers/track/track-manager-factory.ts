@@ -1,13 +1,13 @@
-import { FsSettings } from '../../config/types';
-import { EventManager } from '../event/types';
+import { FsSettings } from '~config/types';
 
-import { TrackManager } from './types';
-import { impressionsManagerFactory } from './impressions/impressions-manager-factory';
-import { eventsManagerFactory } from './events/events-manager-factory';
+import { IEventManager } from '~managers/event/types';
+import { eventsManagerFactory } from '~managers/track/events/events-manager-factory';
+import { impressionsManagerFactory } from '~managers/track/impressions/impressions-manager-factory';
+import { TrackManager } from '~managers/track/types';
 
 export function trackManagerFactory(
   settings: FsSettings,
-  eventManager: EventManager,
+  eventManager: IEventManager,
 ): TrackManager {
   const impressionsManager = impressionsManagerFactory(settings, eventManager);
   const eventsManager = eventsManagerFactory(settings, eventManager);

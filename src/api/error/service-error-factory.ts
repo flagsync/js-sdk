@@ -1,9 +1,10 @@
+import { AxiosError, isAxiosError } from 'axios';
+
 import {
   FlagSyncErrorResponse,
   FsServiceError,
   ServiceErrorCode,
-} from './service-error';
-import { AxiosError, isAxiosError } from 'axios';
+} from '~api/error/service-error';
 
 type WithData = {
   response: {

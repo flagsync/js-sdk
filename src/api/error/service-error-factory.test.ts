@@ -1,11 +1,12 @@
 import { AxiosError, AxiosHeaders, AxiosResponse } from 'axios';
+import { beforeEach, describe, expect, test } from 'vitest';
+
 import {
   FlagSyncErrorResponse,
   FsServiceError,
   ServiceErrorCode,
-} from './service-error';
-import { describe, expect, test, beforeEach } from 'vitest';
-import { ServiceErrorFactory } from './service-error-factory';
+} from '~api/error/service-error';
+import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 export function createFakeResponse({
   status,

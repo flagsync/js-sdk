@@ -1,7 +1,7 @@
-import { SdkTrackImpression } from '../../../api/data-contracts';
+import { SdkTrackImpression } from '~api/data-contracts';
 
-export type ImpressionsManager = {
+export interface IImpressionsManager {
   start: () => void;
   stop: () => void;
   track: (impression: SdkTrackImpression) => void;
-};
+}

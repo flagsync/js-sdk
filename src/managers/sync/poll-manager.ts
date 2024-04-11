@@ -1,16 +1,17 @@
-import { FsSettings } from '../../config/types';
+import { FsSettings } from '~config/types';
 
-import { SyncManager } from './types';
-import { ServiceErrorFactory } from '../../api/error/service-error-factory';
-import { apiClientFactory } from '../../api/clients/api-client';
-import { EventManager, FsEvent, FsIntervalEvent } from '../event/types';
+import { apiClientFactory } from '~api/clients/api-client';
+import { ServiceErrorFactory } from '~api/error/service-error-factory';
+
+import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
+import { ISyncManager } from '~managers/sync/types';
 
 const logPrefix = 'poll-manager';
 
 export function pollManager(
   settings: FsSettings,
-  eventManager: EventManager,
-): SyncManager {
+  eventManager: IEventManager,
+): ISyncManager {
   const { log, sync, context } = settings;
 
   const { sdk } = apiClientFactory(settings);

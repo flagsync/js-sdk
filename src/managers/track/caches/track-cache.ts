@@ -1,27 +1,28 @@
-import { FsLogger } from '../../../logger/types';
 import {
   ITrackCache,
   ITrackCacheConfig,
   ITrackCacheLogStrategy,
-} from './types';
+} from '~managers/track/caches/types';
+
+import { ILogger } from '~logger/types';
 
 export class TrackCache<T> implements ITrackCache<T> {
   private queue: T[] = [];
 
   private onFullQueue?: () => void;
-  private readonly log: FsLogger;
+  private readonly log: ILogger;
   private readonly maxQueueSize: number;
   private readonly logPrefix: string;
   private readonly logStrategy: ITrackCacheLogStrategy<T>;
 
   constructor({
-    settings,
+    log,
     onFullQueue,
     maxQueueSize,
     logPrefix,
     logStrategy,
   }: ITrackCacheConfig<T>) {
-    this.log = settings.log;
+    this.log = log;
     this.maxQueueSize = maxQueueSize;
     this.onFullQueue = onFullQueue;
     this.logPrefix = logPrefix;
@@ -35,7 +36,7 @@ export class TrackCache<T> implements ITrackCache<T> {
   track(event: T): void {
     this.queue.push(event);
 
-    const vals = this.logStrategy.logItem(event);
+    const vals = this.logStrategy.getLogItem(event);
     this.log.debug(`${this.logPrefix}: item enqueued`, vals);
 
     if (this.queue.length >= this.maxQueueSize && this.onFullQueue) {

@@ -1,7 +1,7 @@
-import { ImpressionsManager } from './impressions/types';
-import { EventsManager } from './events/types';
+import { IEventsManager } from './events/types';
+import { IImpressionsManager } from './impressions/types';
 
 export type TrackManager = {
-  eventsManager: EventsManager;
-  impressionsManager: ImpressionsManager;
+  eventsManager: IEventsManager;
+  impressionsManager: IImpressionsManager;
 };

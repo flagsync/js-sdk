@@ -1,7 +1,7 @@
-import { SdkTrackEvent } from '../../../api/data-contracts';
+import { SdkTrackEvent } from '~api/data-contracts';
 
-export type EventsManager = {
+export interface IEventsManager {
   start: () => void;
   stop: () => void;
   track: (event: SdkTrackEvent) => void;
-};
+}

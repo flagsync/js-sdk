@@ -1,12 +1,13 @@
-import { EventsManager } from './types';
-import { FsSettings } from '../../../config/types';
-import { EventManager, FsEvent } from '../../event/types';
-import { eventsManager } from './events-manager';
+import { FsSettings } from '~config/types';
+
+import { FsEvent, IEventManager } from '~managers/event/types';
+import { eventsManager } from '~managers/track/events/events-manager';
+import { IEventsManager } from '~managers/track/events/types';
 
 export function eventsManagerFactory(
   settings: FsSettings,
-  eventManager: EventManager,
-): EventsManager {
+  eventManager: IEventManager,
+): IEventsManager {
   const manager = eventsManager(settings, eventManager);
 
   eventManager.on(FsEvent.SDK_READY, () => {

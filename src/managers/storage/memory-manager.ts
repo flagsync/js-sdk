@@ -1,9 +1,9 @@
-import { FsSettings, FsFlagSet } from '../../config/types';
-import { StoreManager } from './types';
+import { FsFlagSet, FsSettings } from '../../config/types';
+import { IStoreManager } from './types';
 
 const logPrefix = 'memory-manager';
 
-export function memoryManager(params: FsSettings): StoreManager {
+export function memoryManager(params: FsSettings): IStoreManager {
   const { log, bootstrap } = params;
 
   let flagSet: FsFlagSet = {
@@ -11,7 +11,7 @@ export function memoryManager(params: FsSettings): StoreManager {
   };
 
   function set(incoming: FsFlagSet) {
-    log.debug(`${logPrefix}: saving flags to memory`);
+    log.debug(`${logPrefix}: saving flags`);
     flagSet = {
       ...flagSet,
       ...incoming,
@@ -19,7 +19,7 @@ export function memoryManager(params: FsSettings): StoreManager {
   }
 
   function get(): FsFlagSet {
-    log.debug(`${logPrefix}: getting flags from memory`);
+    log.debug(`${logPrefix}: getting flags`);
     return {
       ...flagSet,
     };

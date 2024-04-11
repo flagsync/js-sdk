@@ -1,5 +1,7 @@
 /* eslint-disable */
+
 /* tslint:disable */
+
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,14 +10,17 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
+import {
+  ContentType,
+  HttpClient,
+  RequestParams,
+} from '~api/clients/http-client';
 import {
   SdkEnvironmentFlagGetRequest,
   SdkEnvironmentFlagGetResponse,
   SdkEnvironmentFlagsGetRequest,
   SdkEnvironmentFlagsGetResponse,
-} from './data-contracts';
-import { ContentType, HttpClient, RequestParams } from './clients/http-client';
+} from '~api/data-contracts';
 
 export class Sdk<
   SecurityDataType = unknown,

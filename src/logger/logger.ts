@@ -1,4 +1,4 @@
-import { FsLogger, LogLevel } from './types';
+import { ILogger, LogLevel } from './types';
 import { formatISODateToCustom } from './utils';
 
 export const LogLevels = {
@@ -17,7 +17,7 @@ const LogLevelIndices = {
   NONE: 5,
 };
 
-export class Logger implements FsLogger {
+export class Logger implements ILogger {
   private logLevel: number;
 
   constructor({ logLevel }: { logLevel: LogLevel }) {
