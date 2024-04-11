@@ -13,8 +13,8 @@ export interface ITrackCacheConfig<T> {
 }
 
 export interface ITrackCache<T> {
-  track(event: T): void;
   clear(): void;
+  push(item: T): void;
   pop: () => T[];
   isEmpty: () => boolean;
   setOnFullQueueCb(cb: () => void): void;

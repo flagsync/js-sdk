@@ -1,12 +1,10 @@
 import { FsSettings } from '~config/types';
 
 import { apiClientFactory } from '~api/clients/api-client';
-import { SdkTrackImpression } from '~api/data-contracts';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
-import { TrackCache } from '~managers/track/caches/track-cache';
-import { ImpressionLogStrategy } from '~managers/track/impressions/impressions-log-strategy';
+import { ImpressionsCache } from '~managers/track/impressions/impressions-cache';
 import { IImpressionsManager } from '~managers/track/impressions/types';
 
 const logPrefix = 'impressions-manager';
@@ -21,17 +19,11 @@ export function impressionsManager(
     log,
     context,
     tracking: {
-      impressions: { maxQueueSize, pushRate },
+      impressions: { pushRate },
     },
   } = settings;
 
-  const cache = new TrackCache<SdkTrackImpression>({
-    log,
-    maxQueueSize,
-    logPrefix: 'impressions-cache',
-    logStrategy: new ImpressionLogStrategy(),
-    onFullQueue: flushQueue,
-  });
+  const cache = new ImpressionsCache(settings, flushQueue);
 
   const { track } = apiClientFactory(settings);
 

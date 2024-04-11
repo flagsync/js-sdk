@@ -82,7 +82,6 @@ function clientFactory(settings: FsSettings) {
     impressionsManager.track({
       flagKey,
       flagValue,
-      timestamp: new Date().toISOString(),
     });
 
     return flagValue as T;

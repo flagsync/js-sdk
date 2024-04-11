@@ -33,10 +33,10 @@ export class TrackCache<T> implements ITrackCache<T> {
     this.onFullQueue = cb;
   }
 
-  track(event: T): void {
-    this.queue.push(event);
+  push(item: T): void {
+    this.queue.push(item);
 
-    const vals = this.logStrategy.getLogItem(event);
+    const vals = this.logStrategy.getLogItem(item);
     this.log.debug(`${this.logPrefix}: item enqueued`, vals);
 
     if (this.queue.length >= this.maxQueueSize && this.onFullQueue) {

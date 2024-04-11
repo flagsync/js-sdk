@@ -34,8 +34,8 @@ export interface SdkEnvironmentFlagGetResponse {
 
 export interface SdkTrackEvent {
   eventKey: string;
-  value: number;
-  properties: object;
+  value?: number | null;
+  properties?: object;
   timestamp: string;
 }
 

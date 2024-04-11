@@ -1,12 +1,10 @@
 import { FsSettings } from '~config/types';
 
 import { apiClientFactory } from '~api/clients/api-client';
-import { SdkTrackEvent } from '~api/data-contracts';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
-import { TrackCache } from '~managers/track/caches/track-cache';
-import { EventLogStrategy } from '~managers/track/events/events-log-strategy';
+import { EventsCache } from '~managers/track/events/events-cache';
 import { IEventsManager } from '~managers/track/events/types';
 
 const logPrefix = 'events-manager';
@@ -21,17 +19,11 @@ export function eventsManager(
     log,
     context,
     tracking: {
-      events: { maxQueueSize, pushRate },
+      events: { pushRate },
     },
   } = settings;
 
-  const cache = new TrackCache<SdkTrackEvent>({
-    log,
-    maxQueueSize,
-    logPrefix: 'events-cache',
-    logStrategy: new EventLogStrategy(),
-    onFullQueue: flushQueue,
-  });
+  const cache = new EventsCache(settings, flushQueue);
 
   const { track } = apiClientFactory(settings);
 
