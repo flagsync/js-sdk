@@ -1,4 +1,4 @@
-import { DeferredEventEmitter } from './event-emitter';
+import { DeferredEventEmitter } from './deferred-event-emitter';
 
 import {
   EventCallback,
@@ -32,6 +32,11 @@ export function eventManagerFactory(): EventManager {
     emitter.off(event, callback);
   }
 
+  /**
+   * Interval events are meant to serve as messaging between
+   * certain parts of the SDK that are not directly consumed
+   * by the public API.
+   */
   const internal = {
     on: <T extends FsIntervalEventType>(
       event: T,

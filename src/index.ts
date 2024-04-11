@@ -8,9 +8,9 @@ import { FsServiceError } from './api/error/service-error';
 import { ServiceErrorFactory } from './api/error/service-error-factory';
 import { apiClientFactory } from './api/clients/api-client';
 
-import { eventManagerFactory } from './managers/events/event-manager-factory';
+import { eventManagerFactory } from './managers/event/event-manager-factory';
 import { trackManagerFactory } from './managers/track/track-manager-factory';
-import { FsEvent } from './managers/events/types';
+import { FsEvent } from './managers/event/types';
 
 export { FsServiceError };
 export { ServiceErrorFactory };
@@ -38,10 +38,13 @@ function clientFactory(settings: FsSettings) {
 
   const { sdk } = apiClientFactory(settings);
 
-  const eventManager = eventManagerFactory();
-  const syncManager = syncManagerFactory(settings, eventManager);
-  const storageManager = storageManagerFactory(settings, eventManager);
-  const { impressionsManager } = trackManagerFactory(settings, eventManager);
+  const eventEmitter = eventManagerFactory();
+  const syncManager = syncManagerFactory(settings, eventEmitter);
+  const storageManager = storageManagerFactory(settings, eventEmitter);
+  const { impressionsManager, eventsManager } = trackManagerFactory(
+    settings,
+    eventEmitter,
+  );
 
   const initWithWithThrow = sdk
     .sdkControllerInitContext({
@@ -55,7 +58,7 @@ function clientFactory(settings: FsSettings) {
     .then((res) => {
       storageManager.set(res?.flags ?? {});
       log.debug(`${logPrefix}: SDK ready`);
-      eventManager.emit(FsEvent.SDK_READY);
+      eventEmitter.emit(FsEvent.SDK_READY);
     })
     .catch((e: unknown) => {
       throw ServiceErrorFactory.create(e);
@@ -67,7 +70,7 @@ function clientFactory(settings: FsSettings) {
       e.errorCode,
       e.message,
     ]);
-    eventManager.emit(FsEvent.ERROR, {
+    eventEmitter.emit(FsEvent.ERROR, {
       type: 'api',
       error: e,
     });
@@ -96,10 +99,11 @@ function clientFactory(settings: FsSettings) {
       isExiting = true;
       log.info(`${logPrefix}: SDK shutting down`);
       for (const eventKey in FsEvent) {
-        eventManager.off(FsEvent[eventKey as keyof typeof FsEvent]);
+        eventEmitter.off(FsEvent[eventKey as keyof typeof FsEvent]);
       }
       syncManager.stop();
       impressionsManager.stop();
+      eventsManager.stop();
     } else {
       log.info(`${logPrefix}: already handling kill, skipping...`);
     }
@@ -119,10 +123,11 @@ function clientFactory(settings: FsSettings) {
 
   return {
     core,
-    on: eventManager.on,
-    once: eventManager.once,
-    kill,
     flag,
+    kill,
+    on: eventEmitter.on,
+    once: eventEmitter.once,
+    track: eventsManager.track,
     waitForReady: () => initWithCatch,
     waitForReadyCanThrow: () => initWithWithThrow,
     Event: FsEvent,

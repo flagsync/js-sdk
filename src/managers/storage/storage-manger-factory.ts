@@ -3,7 +3,7 @@ import { memoryManager } from './memory-manager';
 import { isLocalStorageAvailable } from './is-local-storage-available';
 import { StoreManager } from './types';
 import { FsFlagSet, FsSettings } from '../../config/types';
-import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
+import { EventManager, FsEvent, FsIntervalEvent } from '../event/types';
 
 const logPrefix = 'storage-manager-factory';
 

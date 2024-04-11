@@ -1,13 +1,13 @@
-import { ImpressionsManager } from './types';
-import { impressionsManager } from './impressions-manager';
+import { EventsManager } from './types';
 import { FsSettings } from '../../../config/types';
 import { EventManager, FsEvent } from '../../event/types';
+import { eventsManager } from './events-manager';
 
-export function impressionsManagerFactory(
+export function eventsManagerFactory(
   settings: FsSettings,
   eventManager: EventManager,
-): ImpressionsManager {
-  const manager = impressionsManager(settings, eventManager);
+): EventsManager {
+  const manager = eventsManager(settings, eventManager);
 
   eventManager.on(FsEvent.SDK_READY, () => {
     manager.start();

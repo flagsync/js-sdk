@@ -3,7 +3,7 @@ import { FsSettings } from '../../config/types';
 import { SyncManager } from './types';
 import { ServiceErrorFactory } from '../../api/error/service-error-factory';
 import { apiClientFactory } from '../../api/clients/api-client';
-import { EventManager, FsEvent, FsIntervalEvent } from '../events/types';
+import { EventManager, FsEvent, FsIntervalEvent } from '../event/types';
 
 const logPrefix = 'poll-manager';
 

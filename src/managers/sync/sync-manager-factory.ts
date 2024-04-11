@@ -1,7 +1,7 @@
 import { FsSettings } from '../../config/types';
 import { pollManager } from './poll-manager';
 import { SyncManager } from './types';
-import { EventManager, FsEvent } from '../events/types';
+import { EventManager, FsEvent } from '../event/types';
 import { streamManager } from './stream-manager';
 
 const noop = () => {};

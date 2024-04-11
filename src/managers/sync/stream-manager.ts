@@ -2,7 +2,7 @@ import { EventSource } from 'extended-eventsource';
 
 import { FsFlagSet, FsSettings } from '../../config/types';
 import { SyncManager } from './types';
-import { EventManager, FsIntervalEvent } from '../events/types';
+import { EventManager, FsIntervalEvent } from '../event/types';
 
 const logPrefix = 'stream-manager';
 

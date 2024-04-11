@@ -26,8 +26,12 @@ export interface FlagSyncConfig {
     type?: SyncType;
     pollRate?: number;
   };
-  readonly events?: {
+  readonly tracking?: {
     impressions?: {
+      maxQueueSize: number;
+      pushRate: number;
+    };
+    events?: {
       maxQueueSize: number;
       pushRate: number;
     };
@@ -35,7 +39,6 @@ export interface FlagSyncConfig {
   readonly urls?: {
     sdk?: string;
   };
-  readonly remoteEval?: boolean;
   readonly logLevel?: LogLevel;
 }
 
@@ -54,8 +57,12 @@ export interface FsSettings {
     type: SyncType;
     pollRate: number;
   };
-  readonly events: {
+  readonly tracking: {
     impressions: {
+      maxQueueSize: number;
+      pushRate: number;
+    };
+    events: {
       maxQueueSize: number;
       pushRate: number;
     };
@@ -63,7 +70,6 @@ export interface FsSettings {
   readonly urls: {
     sdk: string;
   };
-  readonly remoteEval: boolean;
   readonly logLevel?: LogLevel;
   log: FsLogger;
   context: SdkUserContext;

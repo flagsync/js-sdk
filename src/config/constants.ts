@@ -15,8 +15,12 @@ export const DEFAULT_CONFIG = {
     type: 'stream',
     pollRate: 60,
   },
-  events: {
+  tracking: {
     impressions: {
+      maxQueueSize: 50,
+      pushRate: 60,
+    },
+    events: {
       maxQueueSize: 50,
       pushRate: 60,
     },
@@ -24,6 +28,5 @@ export const DEFAULT_CONFIG = {
   urls: {
     sdk: 'https://sdk.flagsync.com',
   },
-  remoteEval: true,
   debug: false,
 } as unknown as FsSettings;

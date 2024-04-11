@@ -17,16 +17,22 @@ function validateSettings(settings: FsSettings): void {
       message: 'core.key is required',
     });
   }
-  if (settings.events.impressions.pushRate < 30) {
+  if (settings.tracking.impressions.pushRate < 30) {
     throw new FsServiceError({
       errorCode: ServiceErrorCode.InvalidConfiguration,
-      message: 'impressions.sendInterval must be greater than 30',
+      message: 'track.impressions.pushRate must be greater than 30',
+    });
+  }
+  if (settings.tracking.events.pushRate < 30) {
+    throw new FsServiceError({
+      errorCode: ServiceErrorCode.InvalidConfiguration,
+      message: 'track.events.pushRate must be greater than 30',
     });
   }
   if (settings.sync.pollRate < 30) {
     throw new FsServiceError({
       errorCode: ServiceErrorCode.InvalidConfiguration,
-      message: 'sync.pollInterval must be greater than 30',
+      message: 'sync.pollRate must be greater than 30',
     });
   }
 }
