@@ -32,13 +32,25 @@ export interface SdkEnvironmentFlagGetResponse {
   context: SdkUserContext;
 }
 
-export interface SdkImpression {
+export interface SdkTrackEvent {
+  eventKey: string;
+  value: number;
+  properties: object;
+  timestamp: string;
+}
+
+export interface SdkTrackEventRequest {
+  context: SdkUserContext;
+  events: SdkTrackEvent[];
+}
+
+export interface SdkTrackImpression {
   flagKey: string;
   flagValue: object;
   timestamp: string;
 }
 
-export interface SdkImpressionsPostRequest {
-  impressions: SdkImpression[];
+export interface SdkTrackImpressionsRequest {
+  impressions: SdkTrackImpression[];
   context: SdkUserContext;
 }

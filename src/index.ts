@@ -7,8 +7,9 @@ import { buildSettingsFromConfig } from './config/utils';
 import { FsServiceError } from './api/error/service-error';
 import { ServiceErrorFactory } from './api/error/service-error-factory';
 import { apiClientFactory } from './api/clients/api-client';
-import { impressionsManagerFactory } from './managers/impressions/impressions-manager-factory';
+
 import { eventManagerFactory } from './managers/events/event-manager-factory';
+import { trackManagerFactory } from './managers/track/track-manager-factory';
 import { FsEvent } from './managers/events/types';
 
 export { FsServiceError };
@@ -40,7 +41,7 @@ function clientFactory(settings: FsSettings) {
   const eventManager = eventManagerFactory();
   const syncManager = syncManagerFactory(settings, eventManager);
   const storageManager = storageManagerFactory(settings, eventManager);
-  const impressionsManager = impressionsManagerFactory(settings, eventManager);
+  const { impressionsManager } = trackManagerFactory(settings, eventManager);
 
   const initWithWithThrow = sdk
     .sdkControllerInitContext({

@@ -1,13 +1,13 @@
-import { apiClientFactory } from '../../api/clients/api-client';
-import { FsSettings } from '../../config/types';
+import { FsSettings } from '../../../config/types';
+import { EventManager, FsEvent } from '../../events/types';
 import { ImpressionsManager } from './types';
-import { ServiceErrorFactory } from '../../api/error/service-error-factory';
-import { EventManager, FsEvent } from '../events/types';
-import { ImpressionsCache } from '../storage/caches/impressions-cache';
+import { ImpressionsCache } from '../../storage/caches/impressions-cache';
+import { apiClientFactory } from '../../../api/clients/api-client';
+import { ServiceErrorFactory } from '../../../api/error/service-error-factory';
 
 const logPrefix = 'impressions-manager';
 
-const START_DELY_MS = 3000;
+const START_DELAY_MS = 3000;
 
 export function impressionsManager(
   settings: FsSettings,
@@ -22,7 +22,7 @@ export function impressionsManager(
   const cache = new ImpressionsCache(settings, flushQueue);
   cache.setOnFullQueueCb(flushQueue);
 
-  const { impressions: api } = apiClientFactory(settings);
+  const { track } = apiClientFactory(settings);
 
   let timeout: number | NodeJS.Timeout;
   const interval = impressions.pushRate * 1000;
@@ -38,8 +38,8 @@ export function impressionsManager(
 
     const sendQueue = cache.pop();
 
-    api
-      .sdkImpressionsControllerPostBatchImpressions({
+    track
+      .sdkTrackControllerPostBatchImpressions({
         context,
         impressions: sendQueue,
       })
@@ -70,9 +70,9 @@ export function impressionsManager(
 
   function start() {
     log.debug(
-      `${logPrefix}: impressions submitter starting in ${START_DELY_MS}ms`,
+      `${logPrefix}: impressions submitter starting in ${START_DELAY_MS}ms`,
     );
-    timeout = setTimeout(batchSend, START_DELY_MS);
+    timeout = setTimeout(batchSend, START_DELAY_MS);
   }
 
   function stop() {

@@ -9,21 +9,20 @@
  * ---------------------------------------------------------------
  */
 
-import { ContentType, HttpClient, RequestParams } from './clients/http-client';
-import { SdkImpressionsPostRequest } from './data-contracts';
+import { HttpClient, RequestParams } from './clients/http-client';
 
-export class Events<
+export class Sse<
   SecurityDataType = unknown,
 > extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @name SdkEventControllerSse
-   * @request GET:/events/sdk-updates
+   * @name SdkSseControllerSse
+   * @request GET:/sse/sdk-updates
    */
-  sdkEventControllerSse = (params: RequestParams = {}) =>
+  sdkSseControllerSse = (params: RequestParams = {}) =>
     this.request<void, any>({
-      path: `/events/sdk-updates`,
+      path: `/sse/sdk-updates`,
       method: 'GET',
       ...params,
     });

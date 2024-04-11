@@ -1,12 +1,12 @@
 import { FsSettings } from '../../config/types';
 import { Sdk } from '../sdk';
-import { Events } from '../events';
-import { Impressions } from '../impressions';
+import { Track } from '../track';
+import { Sse } from '../sse';
 
 type ApiClient = {
   sdk: Sdk<any>;
-  events: Events<any>;
-  impressions: Impressions<any>;
+  sse: Sse<any>;
+  track: Track<any>;
 };
 
 let client: ApiClient;
@@ -27,8 +27,8 @@ export function apiClientFactory(params: FsSettings) {
 
   client = {
     sdk: new Sdk(apiParams),
-    events: new Events(apiParams),
-    impressions: new Impressions(apiParams),
+    sse: new Sse(apiParams),
+    track: new Track(apiParams),
   };
 
   return client;
