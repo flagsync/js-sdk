@@ -18,7 +18,7 @@ export class ImpressionsCache
     super({
       log: settings.log,
       maxQueueSize: settings.tracking.impressions.maxQueueSize,
-      logPrefix: 'events-cache',
+      logPrefix: 'impressions-cache',
       logStrategy: new ImpressionLogStrategy(),
       onFullQueue: onFullQueue,
     });
