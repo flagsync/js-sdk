@@ -29,6 +29,12 @@ function validateSettings(settings: FsSettings): void {
       message: 'sync.pollInterval must be greater than 30',
     });
   }
+  if (!settings.urls.sdk || !settings.urls.events) {
+    throw new FsServiceError({
+      errorCode: ServiceErrorCode.InvalidConfiguration,
+      message: 'sync.urls must contain sdk and events urls',
+    });
+  }
 }
 
 export function buildSettingsFromConfig(config: FlagSyncConfig): FsSettings {
