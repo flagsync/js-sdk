@@ -23,7 +23,6 @@ export const DEFAULT_CONFIG = {
   },
   urls: {
     sdk: 'https://sdk.flagsync.com',
-    sse: 'https://sdk.flagsync.com/sse',
   },
   remoteEval: true,
   debug: false,

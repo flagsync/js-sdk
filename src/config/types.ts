@@ -34,8 +34,6 @@ export interface FlagSyncConfig {
   };
   readonly urls?: {
     sdk?: string;
-    events?: string;
-    impressions?: string;
   };
   readonly remoteEval?: boolean;
   readonly logLevel?: LogLevel;
@@ -64,8 +62,6 @@ export interface FsSettings {
   };
   readonly urls: {
     sdk: string;
-    events: string;
-    impressions: string;
   };
   readonly remoteEval: boolean;
   readonly logLevel?: LogLevel;
