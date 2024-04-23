@@ -10,7 +10,7 @@ export class TrackCache<T> implements ITrackCache<T> {
   private queue: T[] = [];
 
   private onFullQueue?: () => void;
-  private readonly log: ILogger;
+  protected readonly log: ILogger;
   private readonly maxQueueSize: number;
   private readonly logPrefix: string;
   private readonly logStrategy: ITrackCacheLogStrategy<T>;
