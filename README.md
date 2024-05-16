@@ -121,7 +121,7 @@ try {
 ```
 
 ## Get flag values
-Use the `flag` method to retrieve a flag value.
+Use the `flag` method to retrieve a flag value based on the user context.
 >💡 If the SDK is not ready, the method will return the default value, or `control` if one is not provided.
 
 ```ts
@@ -130,6 +130,9 @@ Use the `flag` method to retrieve a flag value.
  *     "my-flag": "value-1"
  *   } 
  */
+
+// Usage
+client.flag<T>(flagKey, defaultValue)
 
 // SDK not ready
 client.flag<string>('my-flag'); // 'control'
