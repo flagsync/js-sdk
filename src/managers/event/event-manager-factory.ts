@@ -57,11 +57,16 @@ export function eventManagerFactory(): IEventManager {
     },
   };
 
+  const stop = () => {
+    emitter.removeAllListeners();
+  };
+
   return {
     on,
     once,
     emit,
     off,
     internal,
+    stop,
   };
 }

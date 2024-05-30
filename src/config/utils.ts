@@ -26,10 +26,22 @@ function validateSettings(settings: FsSettings): void {
       message: 'track.impressions.pushRate must be greater than 30',
     });
   }
+  if (settings.tracking.impressions.maxQueueSize < 50) {
+    throw new FsServiceError({
+      errorCode: ServiceErrorCode.InvalidConfiguration,
+      message: 'track.impressions.maxQueueSize must be greater than 50',
+    });
+  }
   if (settings.tracking.events.pushRate < 30) {
     throw new FsServiceError({
       errorCode: ServiceErrorCode.InvalidConfiguration,
       message: 'track.events.pushRate must be greater than 30',
+    });
+  }
+  if (settings.tracking.events.maxQueueSize < 50) {
+    throw new FsServiceError({
+      errorCode: ServiceErrorCode.InvalidConfiguration,
+      message: 'track.events.maxQueueSize must be greater than 50',
     });
   }
   if (settings.sync.pollRate < 30) {

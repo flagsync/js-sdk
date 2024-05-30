@@ -5,7 +5,10 @@ import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { ImpressionsCache } from '~managers/track/impressions/impressions-cache';
-import { IImpressionsManager } from '~managers/track/impressions/types';
+import {
+  IImpressionsManager,
+  PartialTrackImpression,
+} from '~managers/track/impressions/types';
 
 const logPrefix = 'impressions-manager';
 
@@ -85,9 +88,16 @@ export function impressionsManager(
     });
   }
 
+  function publicTrack(impression: PartialTrackImpression) {
+    cache.track({
+      ...impression,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   return {
     start,
     stop,
-    track: cache.track.bind(cache),
+    track: publicTrack,
   };
 }

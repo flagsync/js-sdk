@@ -76,6 +76,10 @@ function clientFactory(settings: FsSettings) {
   });
 
   function flag<T>(flagKey: string, defaultValue?: T): T {
+    if (!flagKey || typeof flagKey !== 'string') {
+      return 'control' as T;
+    }
+
     const flags = storageManager.get();
     const flagValue = flags[flagKey] ?? defaultValue ?? 'control';
 
@@ -102,6 +106,7 @@ function clientFactory(settings: FsSettings) {
       syncManager.stop();
       impressionsManager.stop();
       eventsManager.stop();
+      eventEmitter.stop();
     } else {
       log.info(`${logPrefix}: already handling kill, skipping...`);
     }

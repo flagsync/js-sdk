@@ -25,7 +25,6 @@ export class ImpressionsCache
   }
 
   track(impression: SdkTrackImpression): void {
-    impression.timestamp = new Date().toISOString();
     this.push(impression);
   }
 }
