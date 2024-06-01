@@ -132,6 +132,7 @@ function clientFactory(settings: FsSettings) {
     kill,
     on: eventEmitter.on,
     once: eventEmitter.once,
+    off: eventEmitter.off,
     track: eventsManager.track,
     waitForReady: () => initWithCatch,
     waitForReadyCanThrow: () => initWithWithThrow,
