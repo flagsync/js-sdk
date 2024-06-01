@@ -1,4 +1,5 @@
-import { FsFlagSet, FsSettings } from '../../config/types';
+import { FsFlagSet, FsSettings } from '~config/types';
+
 import { IStoreManager } from './types';
 
 const logPrefix = 'memory-manager';

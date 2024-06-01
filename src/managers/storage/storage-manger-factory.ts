@@ -1,4 +1,4 @@
-import { FsFlagSet, FsSettings } from '~config/types';
+import { FsFlagSet, FsSettings, StorageType } from '~config/types';
 
 import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { isLocalStorageAvailable } from '~managers/storage/is-local-storage-available';
@@ -16,7 +16,7 @@ export function storageManagerFactory(
 
   let manager: IStoreManager;
 
-  if (storage.type === 'localstorage') {
+  if (storage.type === StorageType.LocalStorage) {
     if (isLocalStorageAvailable()) {
       manager = localStorageManager(params);
       log.info(`${logPrefix}: SDK ready from store'`);

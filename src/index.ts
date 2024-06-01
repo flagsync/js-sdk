@@ -13,6 +13,8 @@ import { trackManagerFactory } from '~managers/track/track-manager-factory';
 
 export { FsServiceError };
 export { ServiceErrorFactory };
+export * from '~config/types';
+export type { LogLevel } from '~logger/types';
 
 export type FsErrorSource = 'api' | 'sdk';
 export type FsErrorEvent = {

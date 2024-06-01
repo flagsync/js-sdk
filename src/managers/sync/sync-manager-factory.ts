@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types';
+import { FsSettings, SyncType } from '~config/types';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { pollManager } from '~managers/sync/poll-manager';
@@ -16,10 +16,10 @@ export function syncManagerFactory(
   let manager: ISyncManager;
 
   switch (sync.type) {
-    case 'poll':
+    case SyncType.Poll:
       manager = pollManager(settings, eventManager);
       break;
-    case 'stream':
+    case SyncType.Stream:
       manager = streamManager(settings, eventManager);
       break;
     default:

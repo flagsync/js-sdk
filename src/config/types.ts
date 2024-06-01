@@ -2,15 +2,27 @@ import { SdkUserContext } from '~api/data-contracts';
 
 import { ILogger, LogLevel } from '~logger/types';
 
-type FsFlagValue = any;
+export type FsFlagValue = any;
 export type FsFlagSet = Record<string, FsFlagValue>;
 
-type CustomAttributeValue = any;
-type CustomAttributes = Record<string, CustomAttributeValue>;
+export type CustomAttributeValue = any;
+export type CustomAttributes = Record<string, CustomAttributeValue>;
 
-type StorageType = 'memory' | 'localstorage';
-type SyncType = 'stream' | 'poll' | 'off';
-type Platform = 'node' | 'browser';
+export const StorageType = {
+  Memory: 'memory',
+  LocalStorage: 'localstorage',
+} as const;
+
+export const SyncType = {
+  Stream: 'stream',
+  Poll: 'poll',
+  Off: 'off',
+} as const;
+
+export const Platform = {
+  Node: 'node',
+  Browser: 'browser',
+} as const;
 
 export interface FlagSyncConfig {
   readonly sdkKey: string;
@@ -20,11 +32,11 @@ export interface FlagSyncConfig {
   };
   readonly bootstrap?: FsFlagSet;
   readonly storage?: {
-    type?: StorageType;
+    type?: (typeof StorageType)[keyof typeof StorageType];
     prefix?: string;
   };
   readonly sync?: {
-    type?: SyncType;
+    type?: (typeof SyncType)[keyof typeof SyncType];
     pollRate?: number;
   };
   readonly tracking?: {
@@ -51,11 +63,11 @@ export interface FsSettings {
   };
   readonly bootstrap?: FsFlagSet;
   readonly storage: {
-    type: StorageType;
+    type: (typeof StorageType)[keyof typeof StorageType];
     prefix: string;
   };
   readonly sync: {
-    type: SyncType;
+    type: (typeof SyncType)[keyof typeof SyncType];
     pollRate: number;
   };
   readonly tracking: {
@@ -74,5 +86,5 @@ export interface FsSettings {
   readonly logLevel?: LogLevel;
   log: ILogger;
   context: SdkUserContext;
-  platform: Platform;
+  platform: (typeof Platform)[keyof typeof Platform];
 }
