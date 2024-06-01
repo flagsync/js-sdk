@@ -104,6 +104,7 @@ export function impressionsManager(
       }
     },
     pop: () => cache.pop(),
+    isEmpty: () => cache.isEmpty(),
     track: publicTrack,
   };
 }

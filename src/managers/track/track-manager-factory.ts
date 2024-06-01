@@ -1,5 +1,7 @@
 import { FsSettings } from '~config/types';
 
+import { SdkTrackEvent, SdkTrackImpression } from '~api/data-contracts';
+
 import { IEventManager } from '~managers/event/types';
 import { eventsManagerFactory } from '~managers/track/events/events-manager-factory';
 import { impressionsManagerFactory } from '~managers/track/impressions/impressions-manager-factory';
@@ -31,30 +33,36 @@ export function trackManagerFactory(
   const impressionsManager = impressionsManagerFactory(settings, eventManager);
   const eventsManager = eventsManagerFactory(settings, eventManager);
 
+  function _sendBeacon(
+    url: string,
+    payload: SdkTrackImpression[] | SdkTrackEvent[],
+  ) {
+    if (!canSendBeacon()) {
+      return;
+    }
+    try {
+      navigator.sendBeacon(url, JSON.stringify(payload));
+    } catch (e) {
+      log.error(`${logPrefix}: failed to send with beacon to ${url}`);
+      console.log(e);
+    }
+  }
+
   function flushWithBeacon() {
-    log.debug(`${logPrefix}: flushing with beacon`);
-
-    const impressions = impressionsManager.pop();
-    const events = eventsManager.pop();
-
-    if (impressions.length > 0) {
-      try {
-        const payload = JSON.stringify(impressions);
-        navigator.sendBeacon(`${urls.sdk}/track/impressions`, payload);
-      } catch (e) {
-        log.error(`${logPrefix}: failed to send impressions with beacon`);
-        console.log(e);
-      }
+    if (!canSendBeacon()) {
+      return;
     }
 
-    if (events.length > 0) {
-      try {
-        const payload = JSON.stringify(events);
-        navigator.sendBeacon(`${urls.sdk}/track/events`, payload);
-      } catch (e) {
-        log.error(`${logPrefix}: failed to send events with beacon`);
-        console.log(e);
-      }
+    log.debug(`${logPrefix}: flushing with beacon`);
+
+    if (!impressionsManager.isEmpty()) {
+      const impressions = impressionsManager.pop();
+      _sendBeacon(`${urls.sdk}/track/impressions`, impressions);
+    }
+
+    if (!eventsManager.isEmpty) {
+      const events = eventsManager.pop();
+      _sendBeacon(`${urls.sdk}/track/events`, events);
     }
   }
 

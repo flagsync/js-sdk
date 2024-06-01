@@ -4,6 +4,7 @@ export interface IEventsManager {
   start: () => void;
   stop: () => void;
   pop: () => SdkTrackEvent[];
+  isEmpty: () => boolean;
   softStop: () => void;
   track: (
     eventKey: string,

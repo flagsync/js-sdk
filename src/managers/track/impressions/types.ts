@@ -9,6 +9,7 @@ export interface IImpressionsManager {
   start: () => void;
   stop: () => void;
   softStop: () => void;
+  isEmpty: () => boolean;
   pop: () => SdkTrackImpression[];
   track: (impression: PartialTrackImpression) => void;
 }

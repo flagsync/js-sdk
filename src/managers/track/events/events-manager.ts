@@ -94,6 +94,7 @@ export function eventsManager(
       }
     },
     pop: () => cache.pop(),
+    isEmpty: () => cache.isEmpty(),
     track: cache.track.bind(cache),
   };
 }
