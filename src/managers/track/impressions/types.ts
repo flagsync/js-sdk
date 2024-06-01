@@ -8,5 +8,7 @@ export type PartialTrackImpression = Pick<
 export interface IImpressionsManager {
   start: () => void;
   stop: () => void;
+  softStop: () => void;
+  pop: () => SdkTrackImpression[];
   track: (impression: PartialTrackImpression) => void;
 }

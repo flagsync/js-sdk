@@ -98,6 +98,12 @@ export function impressionsManager(
   return {
     start,
     stop,
+    softStop: () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    },
+    pop: () => cache.pop(),
     track: publicTrack,
   };
 }

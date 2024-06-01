@@ -42,10 +42,9 @@ function clientFactory(settings: FsSettings) {
   const eventEmitter = eventManagerFactory();
   const syncManager = syncManagerFactory(settings, eventEmitter);
   const storageManager = storageManagerFactory(settings, eventEmitter);
-  const { impressionsManager, eventsManager } = trackManagerFactory(
-    settings,
-    eventEmitter,
-  );
+  const trackManager = trackManagerFactory(settings, eventEmitter);
+
+  trackManager.start();
 
   const initWithWithThrow = sdk
     .sdkControllerInitContext({
@@ -85,7 +84,7 @@ function clientFactory(settings: FsSettings) {
     const flags = storageManager.get();
     const flagValue = flags[flagKey] ?? defaultValue ?? 'control';
 
-    impressionsManager.track({
+    trackManager.impressionsManager.track({
       flagKey,
       flagValue,
     });
@@ -93,34 +92,23 @@ function clientFactory(settings: FsSettings) {
     return flagValue as T;
   }
 
-  /**
-   * TODO: Instead of XHR, Send beacons on kill
-   *       https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
-   */
-  let isExiting = false;
+  let isKilling = false;
   function kill() {
-    if (!isExiting) {
-      isExiting = true;
+    if (!isKilling) {
+      isKilling = true;
       log.info(`${logPrefix}: SDK shutting down`);
       for (const eventKey in FsEvent) {
         eventEmitter.off(FsEvent[eventKey as keyof typeof FsEvent]);
       }
       syncManager.stop();
-      impressionsManager.stop();
-      eventsManager.stop();
+      trackManager.stop();
       eventEmitter.stop();
     } else {
       log.info(`${logPrefix}: already handling kill, skipping...`);
     }
   }
 
-  /**
-   * TODO: don't use beforeunload. use visibilitychange/pagehide with sendBeacon
-   *       for flushing queues
-   */
-  if (typeof window !== 'undefined') {
-    window.addEventListener('beforeunload', kill);
-  } else {
+  if (typeof window === 'undefined') {
     process.on('exit', kill); // Process termination event
     process.on('SIGINT', kill); // Signal handling (SIGINT)
     process.on('SIGTERM', kill); // Signal handling (SIGTERM)
@@ -133,7 +121,7 @@ function clientFactory(settings: FsSettings) {
     on: eventEmitter.on,
     once: eventEmitter.once,
     off: eventEmitter.off,
-    track: eventsManager.track,
+    track: trackManager.eventsManager.track,
     waitForReady: () => initWithCatch,
     waitForReadyCanThrow: () => initWithWithThrow,
     Event: FsEvent,

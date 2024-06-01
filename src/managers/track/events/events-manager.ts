@@ -88,6 +88,12 @@ export function eventsManager(
   return {
     start,
     stop,
+    softStop: () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    },
+    pop: () => cache.pop(),
     track: cache.track.bind(cache),
   };
 }
