@@ -36,6 +36,7 @@ export function trackManagerFactory(
     url: string,
     payload: SdkTrackEventRequest | SdkTrackImpressionsRequest,
   ) {
+    console.log('Sending payload', payload);
     try {
       fetch(url, {
         method: 'POST',
