@@ -1,4 +1,4 @@
-import { FlagSyncConfig, FsSettings } from '~config/types';
+import { FlagSyncConfig, FsFlagSet, FsSettings } from '~config/types';
 import { buildSettingsFromConfig } from '~config/utils';
 
 import { apiClientFactory } from '~api/clients/api-client';
@@ -92,6 +92,20 @@ function clientFactory(settings: FsSettings) {
     return flagValue as T;
   }
 
+  function flags(): FsFlagSet {
+    const flags: FsFlagSet = {};
+    const cached = storageManager.get();
+    for (const flagKey in flags) {
+      const flagValue = cached[flagKey] ?? 'control';
+      flags[flagKey] = flagValue;
+      trackManager.impressionsManager.track({
+        flagKey,
+        flagValue,
+      });
+    }
+    return flags;
+  }
+
   let isKilling = false;
   function kill() {
     if (!isKilling) {
@@ -117,6 +131,7 @@ function clientFactory(settings: FsSettings) {
   return {
     core,
     flag,
+    flags,
     kill,
     on: eventEmitter.on,
     once: eventEmitter.once,
