@@ -12,10 +12,6 @@ const logPrefix = 'track-manager';
 const PAGE_HIDE_EVENT = 'pagehide';
 const VISIBILITY_CHANGE_EVENT = 'visibilitychange';
 
-function canSendBeacon() {
-  return typeof navigator !== 'undefined' && navigator.sendBeacon;
-}
-
 function canListenToDocument() {
   return typeof document !== 'undefined' && document.addEventListener;
 }
@@ -37,18 +33,16 @@ export function trackManagerFactory(
     url: string,
     payload: SdkTrackImpression[] | SdkTrackEvent[],
   ) {
-    if (!canSendBeacon()) {
-      return;
-    }
-
-    const headers = {
-      type: 'application/json',
-      'x-ridgeline-key': settings.sdkKey,
-    };
-
     try {
-      const blob = new Blob([JSON.stringify(payload)], headers);
-      navigator.sendBeacon(url, blob);
+      fetch(url, {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ridgeline-key': settings.sdkKey,
+        },
+        body: JSON.stringify(payload),
+      });
     } catch (e) {
       log.error(`${logPrefix}: failed to send with beacon to ${url}`);
       console.log(e);
@@ -56,10 +50,6 @@ export function trackManagerFactory(
   }
 
   function flushWithBeacon() {
-    if (!canSendBeacon()) {
-      return;
-    }
-
     log.debug(`${logPrefix}: flushing with beacon`);
 
     if (!impressionsManager.isEmpty()) {
@@ -98,7 +88,7 @@ export function trackManagerFactory(
    * stop the impressions and events managers via the XHR transport.
    */
   function stop() {
-    if (canSendBeacon()) {
+    if (settings.platform === 'browser') {
       impressionsManager.softStop();
       eventsManager.softStop();
       flushWithBeacon();
