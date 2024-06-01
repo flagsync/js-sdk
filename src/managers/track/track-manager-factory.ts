@@ -1,6 +1,9 @@
 import { FsSettings } from '~config/types';
 
-import { SdkTrackEvent, SdkTrackImpression } from '~api/data-contracts';
+import {
+  SdkTrackEventRequest,
+  SdkTrackImpressionsRequest,
+} from '~api/data-contracts';
 
 import { IEventManager } from '~managers/event/types';
 import { eventsManagerFactory } from '~managers/track/events/events-manager-factory';
@@ -31,7 +34,7 @@ export function trackManagerFactory(
 
   function _sendBeacon(
     url: string,
-    payload: SdkTrackImpression[] | SdkTrackEvent[],
+    payload: SdkTrackEventRequest | SdkTrackImpressionsRequest,
   ) {
     try {
       fetch(url, {
@@ -54,12 +57,18 @@ export function trackManagerFactory(
 
     if (!impressionsManager.isEmpty()) {
       const impressions = impressionsManager.pop();
-      _sendBeacon(`${urls.sdk}/track/impressions`, impressions);
+      _sendBeacon(`${urls.sdk}/track/impressions`, {
+        context: settings.context,
+        impressions,
+      });
     }
 
     if (!eventsManager.isEmpty) {
       const events = eventsManager.pop();
-      _sendBeacon(`${urls.sdk}/track/events`, events);
+      _sendBeacon(`${urls.sdk}/track/events`, {
+        context: settings.context,
+        events,
+      });
     }
   }
 
@@ -83,9 +92,9 @@ export function trackManagerFactory(
   }
 
   /**
-   * Stops the track manager. If the browser supports sendBeacon, it will flush
-   * the queues with it, and also clear any pending timeouts. Otherwise, it will
-   * stop the impressions and events managers via the XHR transport.
+   * Stops the track manager. If on browser, it will flush the queues with it,
+   * and also clear any pending timeouts. Otherwise, it will stop the impressions
+   * and events managers via the XHR transport (axios)
    */
   function stop() {
     if (settings.platform === 'browser') {
