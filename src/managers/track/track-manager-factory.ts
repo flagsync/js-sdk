@@ -92,9 +92,9 @@ export function trackManagerFactory(
    */
   function stop() {
     if (canSendBeacon()) {
-      flushWithBeacon();
       impressionsManager.softStop();
       eventsManager.softStop();
+      flushWithBeacon();
     } else {
       impressionsManager.stop();
       eventsManager.stop();
