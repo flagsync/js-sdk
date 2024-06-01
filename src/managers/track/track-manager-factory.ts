@@ -40,8 +40,15 @@ export function trackManagerFactory(
     if (!canSendBeacon()) {
       return;
     }
+
+    const headers = {
+      type: 'application/json',
+      'x-ridgeline-key': settings.sdkKey,
+    };
+
     try {
-      navigator.sendBeacon(url, JSON.stringify(payload));
+      const blob = new Blob([JSON.stringify(payload)], headers);
+      navigator.sendBeacon(url, blob);
     } catch (e) {
       log.error(`${logPrefix}: failed to send with beacon to ${url}`);
       console.log(e);
