@@ -5,7 +5,7 @@ import {
   SdkTrackImpressionsRequest,
 } from '~api/data-contracts';
 
-import { IEventManager } from '~managers/event/types';
+import { FsEvent, IEventManager } from '~managers/event/types';
 import { eventsManagerFactory } from '~managers/track/events/events-manager-factory';
 import { impressionsManagerFactory } from '~managers/track/impressions/impressions-manager-factory';
 import { TrackManager } from '~managers/track/types';
@@ -90,6 +90,10 @@ export function trackManagerFactory(
       window.addEventListener(PAGE_HIDE_EVENT, flushWithBeacon);
     }
   }
+
+  eventManager.on(FsEvent.SDK_READY, () => {
+    start();
+  });
 
   /**
    * Stops the track manager. If on browser, it will flush the queues with it,

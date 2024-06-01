@@ -44,8 +44,6 @@ function clientFactory(settings: FsSettings) {
   const storageManager = storageManagerFactory(settings, eventEmitter);
   const trackManager = trackManagerFactory(settings, eventEmitter);
 
-  trackManager.start();
-
   const initWithWithThrow = sdk
     .sdkControllerInitContext({
       context,
@@ -92,11 +90,11 @@ function clientFactory(settings: FsSettings) {
     return flagValue as T;
   }
 
-  function flags(): FsFlagSet {
+  function flags(defaultValues: FsFlagSet = {}): FsFlagSet {
     const flags: FsFlagSet = {};
     const cached = storageManager.get();
     for (const flagKey in flags) {
-      const flagValue = cached[flagKey] ?? 'control';
+      const flagValue = cached[flagKey] ?? defaultValues[flagKey] ?? 'control';
       flags[flagKey] = flagValue;
       trackManager.impressionsManager.track({
         flagKey,
