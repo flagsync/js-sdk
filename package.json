@@ -1,6 +1,6 @@
 {
   "name": "@flagsync/js-sdk",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "FlagSync Javascript SDK",
   "author": "Mike Chabot",
   "license": "Apache-2.0",
