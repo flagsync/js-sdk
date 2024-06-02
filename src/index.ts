@@ -93,7 +93,8 @@ function clientFactory(settings: FsSettings) {
   function flags(defaultValues: FsFlagSet = {}): FsFlagSet {
     const flags: FsFlagSet = {};
     const cached = storageManager.get();
-    for (const flagKey in flags) {
+
+    for (const flagKey in cached) {
       const flagValue = cached[flagKey] ?? defaultValues[flagKey] ?? 'control';
       flags[flagKey] = flagValue;
       trackManager.impressionsManager.track({
@@ -101,6 +102,7 @@ function clientFactory(settings: FsSettings) {
         flagValue,
       });
     }
+
     return flags;
   }
 
