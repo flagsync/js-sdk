@@ -32,11 +32,11 @@ pnpm add @flagsync/js-sdk
 
 ## Getting Started
 
-Refer to the [SDK documentation](https://docs.flagsync.com/sdks/node-javascript) for information on how to use the SDK.
+Refer to the [SDK documentation](https://docs.flagsync.com/sdks/node-javascript) for more information on how to use this library.
 
 
 ## React
 
-This SDK can be used in both Node.js and web browser environments. For React applications, we provide a separate [React SDK](https://github.com/flagsync/react-client) that integrates better with the React ecosystem.
+This SDK is not framework-specific and can be used in both Node.js and web browser environments. For React applications, we provide a separate [React SDK](https://github.com/flagsync/react-client) that integrates better with the React ecosystem.
 
 
