@@ -81,11 +81,15 @@ function clientFactory(settings: FsSettings) {
   }
 
   function setCore(core: FsCore) {
-    if (!settings.core.key) {
+    if (!core?.key) {
       log.error(`${logPrefix}: core.key is required`);
       return;
     }
     settings.core = core;
+    settings.context = {
+      key: core.key,
+      attributes: core.attributes ?? {},
+    };
   }
 
   let isKilling = false;
