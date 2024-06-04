@@ -8,7 +8,7 @@ export type CustomAttributes = Record<string, CustomAttributeValue>;
 
 export type FsCore = {
   key: string;
-  attributes: CustomAttributes;
+  attributes?: CustomAttributes;
 };
 
 export const StorageType = {

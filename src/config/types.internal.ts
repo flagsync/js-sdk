@@ -1,5 +1,5 @@
 import {
-  CustomAttributes,
+  FsCore,
   FsFlagSet,
   Platform,
   StorageType,
@@ -12,10 +12,7 @@ import { ILogger, LogLevel } from '~logger/types';
 
 export interface FsSettings {
   readonly sdkKey: string;
-  core: {
-    key: string;
-    attributes: CustomAttributes;
-  };
+  core: FsCore;
   readonly bootstrap?: FsFlagSet;
   readonly storage: {
     type: (typeof StorageType)[keyof typeof StorageType];
