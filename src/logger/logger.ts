@@ -101,7 +101,7 @@ export class Logger implements ILogger {
         method = this.customLogger.debug;
         break;
       case LogLevels.INFO:
-        method = this.customLogger.info || this.customLogger.log;
+        method = this.customLogger.log ?? this.customLogger.info;
         break;
       case LogLevels.WARN:
         method = this.customLogger.warn;
