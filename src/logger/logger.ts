@@ -40,27 +40,27 @@ export class Logger implements ILogger {
 
   debug(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.DEBUG)) {
-      this._log(LogLevels.DEBUG, message, optionalParams);
+      this._log(LogLevels.DEBUG, message, ...optionalParams);
     }
   }
   log(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.INFO)) {
-      this._log(LogLevels.INFO, message, optionalParams);
+      this._log(LogLevels.INFO, message, ...optionalParams);
     }
   }
   info(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.INFO)) {
-      this._log(LogLevels.INFO, message, optionalParams);
+      this._log(LogLevels.INFO, message, ...optionalParams);
     }
   }
   warn(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.WARN)) {
-      this._log(LogLevels.WARN, message, optionalParams);
+      this._log(LogLevels.WARN, message, ...optionalParams);
     }
   }
   error(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.ERROR)) {
-      this._log(LogLevels.ERROR, message, optionalParams);
+      this._log(LogLevels.ERROR, message, ...optionalParams);
     }
   }
 
@@ -76,22 +76,18 @@ export class Logger implements ILogger {
     if (this.customLogger) {
       const method = this.getCustomLoggerMethod(level);
       method(message, ...optionalParams);
+      return;
     }
 
-    const msg = this.buildMessage(level, message, optionalParams);
-    console.log(msg);
+    const msg = this.buildMessage(level, message);
+    console.log(msg, ...optionalParams);
   }
 
-  private buildMessage(
-    level: LogLevel,
-    message: any,
-    ...optionalParams: [...any, string?, string?]
-  ) {
+  private buildMessage(level: LogLevel, message: any) {
     const padding =
       level === LogLevels.INFO || level === LogLevels.WARN ? ' ' : '';
-    const filteredArgs = optionalParams?.filter((arg) => !!arg);
-    const argsString = filteredArgs ? `: ${filteredArgs.join(' ')}` : '';
-    return `${logPrefix} [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${message}${argsString}`;
+
+    return `${logPrefix} [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${message}`;
   }
 
   private getCustomLoggerMethod(level: LogLevel) {
