@@ -1,5 +1,5 @@
 import { UNREADY_FLAG_VALUE } from '~config/constants';
-import { FsConfig, FsCore, FsFlagSet } from '~config/types';
+import { FsConfig, FsFlagSet } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 import { buildSettingsFromConfig } from '~config/utils';
 
@@ -80,18 +80,6 @@ function clientFactory(settings: FsSettings) {
     return flags;
   }
 
-  function setCore(core: FsCore) {
-    if (!core?.key) {
-      log.error(`${logPrefix}: core.key is required`);
-      return;
-    }
-    settings.core = core;
-    settings.context = {
-      key: core.key,
-      attributes: core.attributes ?? {},
-    };
-  }
-
   let isKilling = false;
   function kill() {
     if (!isKilling) {
@@ -119,7 +107,6 @@ function clientFactory(settings: FsSettings) {
     flag,
     flags,
     kill,
-    setCore,
     on: eventEmitter.on,
     once: eventEmitter.once,
     off: eventEmitter.off,
