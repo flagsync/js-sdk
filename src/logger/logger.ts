@@ -75,24 +75,19 @@ export class Logger implements ILogger {
   ) {
     if (this.customLogger) {
       const method = this.getCustomLoggerMethod(level);
-      method(message, optionalParams?.length ? optionalParams : undefined);
+      method(message, ...optionalParams);
       return;
     }
 
-    const msg = this.buildMessage(level, message, optionalParams);
-    console.log(msg);
+    const msg = this.buildMessage(level, message);
+    console.log(msg, ...optionalParams);
   }
 
-  private buildMessage(
-    level: LogLevel,
-    message: any,
-    ...optionalParams: [...any, string?, string?]
-  ) {
+  private buildMessage(level: LogLevel, message: any) {
     const padding =
       level === LogLevels.INFO || level === LogLevels.WARN ? ' ' : '';
-    const filteredArgs = optionalParams?.filter((arg) => !!arg);
-    const argsString = filteredArgs ? `: ${filteredArgs.join(' ')}` : '';
-    return `${logPrefix} [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${message}${argsString}`;
+
+    return `${logPrefix} [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${message}`;
   }
 
   private getCustomLoggerMethod(level: LogLevel) {

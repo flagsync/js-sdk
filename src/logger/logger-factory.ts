@@ -1,12 +1,11 @@
-import { FsSettings } from '~config/types.internal';
-
-import { LogLevels, Logger } from '~logger/logger';
-import { ILogger } from '~logger/types';
+import { FsSettings } from '../config/types.internal';
+import { LogLevels, Logger } from './logger';
+import { ILogger } from './types';
 
 const defaultLevel = LogLevels.NONE;
 
 export function loggerFactory(
-  settings: FsSettings,
+  settings: Partial<FsSettings>,
   customLogger: Partial<ILogger> | undefined,
 ): ILogger {
   const { logLevel } = settings;
