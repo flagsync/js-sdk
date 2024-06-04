@@ -74,6 +74,10 @@ export class Logger implements ILogger {
     ...optionalParams: [...any, string?, string?]
   ) {
     if (this.customLogger) {
+      console.log(...optionalParams.length);
+      console.log(...optionalParams);
+      console.log(...(optionalParams.length > 0 ? optionalParams : 'EMPTY'));
+
       const method = this.getCustomLoggerMethod(level);
       method(message, ...optionalParams);
       return;
