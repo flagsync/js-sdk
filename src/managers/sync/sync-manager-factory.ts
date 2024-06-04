@@ -1,4 +1,5 @@
-import { FsSettings, SyncType } from '~config/types';
+import { SyncType } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { pollManager } from '~managers/sync/poll-manager';

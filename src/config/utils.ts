@@ -1,7 +1,8 @@
 import deepmerge from 'deepmerge';
 
 import { DEFAULT_CONFIG } from '~config/constants';
-import { FlagSyncConfig, FsSettings } from '~config/types';
+import { FsConfig } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
 
@@ -52,12 +53,9 @@ function validateSettings(settings: FsSettings): void {
   }
 }
 
-export function buildSettingsFromConfig(config: FlagSyncConfig): FsSettings {
-  const settings = deepmerge<FsSettings, FlagSyncConfig>(
-    DEFAULT_CONFIG,
-    config,
-  );
-  settings.log = loggerFactory(settings);
+export function buildSettingsFromConfig(config: FsConfig): FsSettings {
+  const settings = deepmerge<FsSettings, FsConfig>(DEFAULT_CONFIG, config);
+  settings.log = loggerFactory(settings, config.logger);
 
   validateSettings(settings);
 

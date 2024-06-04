@@ -4,7 +4,7 @@ import {
   FlagSyncErrorResponse,
   FsServiceError,
   ServiceErrorCode,
-} from '~api/error/service-error';
+} from './service-error';
 
 type WithData = {
   response: {

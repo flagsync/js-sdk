@@ -1,4 +1,5 @@
-import { FsFlagSet, FsSettings, StorageType } from '~config/types';
+import { FsFlagSet, StorageType } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { isLocalStorageAvailable } from '~managers/storage/is-local-storage-available';

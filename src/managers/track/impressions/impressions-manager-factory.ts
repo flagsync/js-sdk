@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { impressionsManager } from '~managers/track/impressions/impressions-manager';

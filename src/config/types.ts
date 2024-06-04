@@ -1,5 +1,3 @@
-import { SdkUserContext } from '~api/data-contracts';
-
 import { ILogger, LogLevel } from '~logger/types';
 
 export type FsFlagValue = any;
@@ -7,6 +5,11 @@ export type FsFlagSet = Record<string, FsFlagValue>;
 
 export type CustomAttributeValue = any;
 export type CustomAttributes = Record<string, CustomAttributeValue>;
+
+export type FsCore = {
+  key: string;
+  attributes: CustomAttributes;
+};
 
 export const StorageType = {
   Memory: 'memory',
@@ -24,12 +27,9 @@ export const Platform = {
   Browser: 'browser',
 } as const;
 
-export interface FlagSyncConfig {
+export interface FsConfig {
   readonly sdkKey: string;
-  readonly core: {
-    key: string;
-    attributes?: CustomAttributes;
-  };
+  readonly core: FsCore;
   readonly bootstrap?: FsFlagSet;
   readonly storage?: {
     type?: (typeof StorageType)[keyof typeof StorageType];
@@ -52,39 +52,6 @@ export interface FlagSyncConfig {
   readonly urls?: {
     sdk?: string;
   };
+  logger?: Partial<ILogger>;
   readonly logLevel?: LogLevel;
-}
-
-export interface FsSettings {
-  readonly sdkKey: string;
-  readonly core: {
-    key: string;
-    attributes: CustomAttributes;
-  };
-  readonly bootstrap?: FsFlagSet;
-  readonly storage: {
-    type: (typeof StorageType)[keyof typeof StorageType];
-    prefix: string;
-  };
-  readonly sync: {
-    type: (typeof SyncType)[keyof typeof SyncType];
-    pollRate: number;
-  };
-  readonly tracking: {
-    impressions: {
-      maxQueueSize: number;
-      pushRate: number;
-    };
-    events: {
-      maxQueueSize: number;
-      pushRate: number;
-    };
-  };
-  readonly urls: {
-    sdk: string;
-  };
-  readonly logLevel?: LogLevel;
-  log: ILogger;
-  context: SdkUserContext;
-  platform: (typeof Platform)[keyof typeof Platform];
 }

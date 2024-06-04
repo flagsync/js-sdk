@@ -1,4 +1,5 @@
-import { FsFlagSet, FsSettings } from '~config/types';
+import { FsFlagSet } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { IStoreManager } from '~managers/storage/types';
 

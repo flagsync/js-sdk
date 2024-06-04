@@ -5,8 +5,8 @@ import {
   FlagSyncErrorResponse,
   FsServiceError,
   ServiceErrorCode,
-} from '~api/error/service-error';
-import { ServiceErrorFactory } from '~api/error/service-error-factory';
+} from './service-error';
+import { ServiceErrorFactory } from './service-error-factory';
 
 export function createFakeResponse({
   status,

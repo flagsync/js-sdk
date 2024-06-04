@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { SdkTrackImpression } from '~api/data-contracts';
 

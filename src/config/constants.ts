@@ -1,4 +1,6 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
+
+export const UNREADY_FLAG_VALUE = 'control';
 
 export const DEFAULT_CONFIG = {
   sdkKey: undefined,

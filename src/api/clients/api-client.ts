@@ -1,10 +1,10 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { Sdk } from '~api/sdk';
 import { Sse } from '~api/sse';
 import { Track } from '~api/track';
 
-type ApiClient = {
+export type ApiClient = {
   sdk: Sdk<any>;
   sse: Sse<any>;
   track: Track<any>;

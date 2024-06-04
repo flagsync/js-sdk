@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { apiClientFactory } from '~api/clients/api-client';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';

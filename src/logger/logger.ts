@@ -1,6 +1,8 @@
 import { ILogger, LogLevel } from './types';
 import { formatISODateToCustom } from './utils';
 
+const logPrefix = 'flagsync';
+
 export const LogLevels = {
   DEBUG: 'DEBUG',
   INFO: 'INFO',
@@ -19,33 +21,46 @@ const LogLevelIndices = {
 
 export class Logger implements ILogger {
   private logLevel: number;
+  private readonly customLogger: Partial<ILogger> | undefined;
 
-  constructor({ logLevel }: { logLevel: LogLevel }) {
+  constructor({
+    logLevel,
+    customLogger,
+  }: {
+    logLevel: LogLevel;
+    customLogger: Partial<ILogger> | undefined;
+  }) {
     this.logLevel = LogLevelIndices[logLevel];
+    this.customLogger = customLogger;
   }
 
   setLogLevel(level: LogLevel) {
     this.logLevel = LogLevelIndices[level];
   }
 
-  debug(msg: string | number, args?: any[] | undefined): void {
+  debug(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.DEBUG)) {
-      this.log(LogLevels.DEBUG, msg, args);
+      this._log(LogLevels.DEBUG, message, optionalParams);
     }
   }
-  info(msg: string | number, args?: any[] | undefined): void {
+  log(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.INFO)) {
-      this.log(LogLevels.INFO, msg, args);
+      this._log(LogLevels.INFO, message, optionalParams);
     }
   }
-  warn(msg: string | number, args?: any[] | undefined): void {
+  info(message: any, ...optionalParams: [...any, string?, string?]): void {
+    if (this.canLog(LogLevelIndices.INFO)) {
+      this._log(LogLevels.INFO, message, optionalParams);
+    }
+  }
+  warn(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.WARN)) {
-      this.log(LogLevels.WARN, msg, args);
+      this._log(LogLevels.WARN, message, optionalParams);
     }
   }
-  error(msg: string | number, args?: any[] | undefined): void {
+  error(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.ERROR)) {
-      this.log(LogLevels.ERROR, msg, args);
+      this._log(LogLevels.ERROR, message, optionalParams);
     }
   }
 
@@ -53,20 +68,60 @@ export class Logger implements ILogger {
     return level >= this.logLevel;
   }
 
-  private log(level: LogLevel, msg: string | number, args?: any[] | undefined) {
-    const message = this.buildMessage(level, msg, args);
-    console.log(message);
+  private _log(
+    level: LogLevel,
+    message: any,
+    ...optionalParams: [...any, string?, string?]
+  ) {
+    if (this.customLogger) {
+      const method = this.getCustomLoggerMethod(level);
+      method(message, ...optionalParams);
+    }
+
+    const msg = this.buildMessage(level, message, optionalParams);
+    console.log(msg);
   }
 
   private buildMessage(
     level: LogLevel,
-    msg: string | number,
-    args?: any[] | undefined,
+    message: any,
+    ...optionalParams: [...any, string?, string?]
   ) {
     const padding =
       level === LogLevels.INFO || level === LogLevels.WARN ? ' ' : '';
-    const filteredArgs = args?.filter((arg) => !!arg);
+    const filteredArgs = optionalParams?.filter((arg) => !!arg);
     const argsString = filteredArgs ? `: ${filteredArgs.join(' ')}` : '';
-    return `flagsync [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${msg}${argsString}`;
+    return `${logPrefix} [${formatISODateToCustom(new Date())}] [${level}]${padding} => ${message}${argsString}`;
+  }
+
+  private getCustomLoggerMethod(level: LogLevel) {
+    if (!this.customLogger) {
+      return console.log;
+    }
+
+    let method;
+    switch (level) {
+      case LogLevels.DEBUG:
+        method = this.customLogger.debug;
+        break;
+      case LogLevels.INFO:
+        method = this.customLogger.info || this.customLogger.log;
+        break;
+      case LogLevels.WARN:
+        method = this.customLogger.warn;
+        break;
+      case LogLevels.ERROR:
+        method = this.customLogger.error;
+        break;
+    }
+
+    if (method) {
+      return method;
+    }
+
+    console.error(
+      `Custom logger does not have a method for ${level}. Falling back to console.log`,
+    );
+    return console.log;
   }
 }

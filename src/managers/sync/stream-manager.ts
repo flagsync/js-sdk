@@ -1,6 +1,7 @@
 import { EventSource } from 'extended-eventsource';
 
-import { FsFlagSet, FsSettings } from '~config/types';
+import { FsFlagSet } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { ISyncManager } from '~managers/sync/types';

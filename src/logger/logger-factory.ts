@@ -1,14 +1,29 @@
-import { FsSettings } from '~config/types';
+import { FsSettings } from '~config/types.internal';
 
 import { LogLevels, Logger } from '~logger/logger';
 import { ILogger } from '~logger/types';
 
 const defaultLevel = LogLevels.NONE;
 
-export function loggerFactory(settings: FsSettings): ILogger {
+export function loggerFactory(
+  settings: FsSettings,
+  customLogger: Partial<ILogger> | undefined,
+): ILogger {
   const { logLevel } = settings;
 
   const derivedLevel = logLevel || defaultLevel;
 
-  return new Logger({ logLevel: derivedLevel });
+  if (customLogger) {
+    if (
+      !customLogger.debug &&
+      !customLogger.info &&
+      !customLogger.warn &&
+      !customLogger.error &&
+      !customLogger.log
+    ) {
+      throw new Error('Custom logger must have at least one log method');
+    }
+  }
+
+  return new Logger({ logLevel: derivedLevel, customLogger });
 }
