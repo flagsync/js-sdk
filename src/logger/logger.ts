@@ -40,27 +40,27 @@ export class Logger implements ILogger {
 
   debug(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.DEBUG)) {
-      this._log(LogLevels.DEBUG, message, optionalParams);
+      this._log(LogLevels.DEBUG, message, ...optionalParams);
     }
   }
   log(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.INFO)) {
-      this._log(LogLevels.INFO, message, optionalParams);
+      this._log(LogLevels.INFO, message, ...optionalParams);
     }
   }
   info(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.INFO)) {
-      this._log(LogLevels.INFO, message, optionalParams);
+      this._log(LogLevels.INFO, message, ...optionalParams);
     }
   }
   warn(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.WARN)) {
-      this._log(LogLevels.WARN, message, optionalParams);
+      this._log(LogLevels.WARN, message, ...optionalParams);
     }
   }
   error(message: any, ...optionalParams: [...any, string?, string?]): void {
     if (this.canLog(LogLevelIndices.ERROR)) {
-      this._log(LogLevels.ERROR, message, optionalParams);
+      this._log(LogLevels.ERROR, message, ...optionalParams);
     }
   }
 
@@ -74,6 +74,7 @@ export class Logger implements ILogger {
     ...optionalParams: [...any, string?, string?]
   ) {
     if (this.customLogger) {
+      console.log(!!optionalParams);
       console.log(optionalParams.length);
       console.log(optionalParams);
       console.log(optionalParams.length > 0 ? optionalParams : 'EMPTY');
