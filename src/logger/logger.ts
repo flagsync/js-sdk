@@ -75,7 +75,8 @@ export class Logger implements ILogger {
   ) {
     if (this.customLogger) {
       const method = this.getCustomLoggerMethod(level);
-      method(message, ...optionalParams);
+      method(message, optionalParams?.length ? optionalParams : undefined);
+      return;
     }
 
     const msg = this.buildMessage(level, message, optionalParams);
