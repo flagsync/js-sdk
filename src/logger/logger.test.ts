@@ -39,7 +39,7 @@ describe('Logger', () => {
 
       expect(consoleLogMock).toBeCalledWith(
         'flagsync [02/01/2024, 12:00:00 AM] [DEBUG] => This is a debug message',
-        ['another one'],
+        'another one',
       );
     });
 
@@ -52,7 +52,7 @@ describe('Logger', () => {
 
       expect(consoleLogMock).toBeCalledWith(
         'flagsync [02/01/2024, 12:00:00 AM] [INFO]  => This is a debug message',
-        ['another one'],
+        'another one',
       );
     });
 
@@ -65,7 +65,7 @@ describe('Logger', () => {
 
       expect(consoleLogMock).toBeCalledWith(
         'flagsync [02/01/2024, 12:00:00 AM] [WARN]  => This is a debug message',
-        ['another one'],
+        'another one',
       );
     });
 
@@ -78,7 +78,7 @@ describe('Logger', () => {
 
       expect(consoleLogMock).toBeCalledWith(
         'flagsync [02/01/2024, 12:00:00 AM] [ERROR] => This is a debug message',
-        ['another one'],
+        'another one',
       );
     });
   });
@@ -94,9 +94,10 @@ describe('Logger', () => {
         },
       });
       logger.debug('This is a debug message', 'another one');
-      expect(consoleLogMock).toBeCalledWith('This is a debug message', [
+      expect(consoleLogMock).toBeCalledWith(
+        'This is a debug message',
         'another one',
-      ]);
+      );
     });
 
     test('debug message', () => {
@@ -109,9 +110,10 @@ describe('Logger', () => {
         },
       });
       logger.debug('This is a debug message', 'another one');
-      expect(consoleLogMock).toBeCalledWith('This is a debug message', [
+      expect(consoleLogMock).toBeCalledWith(
+        'This is a debug message',
         'another one',
-      ]);
+      );
     });
 
     test('warn message', () => {
@@ -124,9 +126,10 @@ describe('Logger', () => {
         },
       });
       logger.info('This is a debug message', 'another one');
-      expect(consoleLogMock).toBeCalledWith('This is a debug message', [
+      expect(consoleLogMock).toBeCalledWith(
+        'This is a debug message',
         'another one',
-      ]);
+      );
     });
 
     test('error message', () => {
@@ -139,9 +142,10 @@ describe('Logger', () => {
         },
       });
       logger.error('This is a debug message', 'another one');
-      expect(consoleLogMock).toBeCalledWith('This is a debug message', [
+      expect(consoleLogMock).toBeCalledWith(
+        'This is a debug message',
         'another one',
-      ]);
+      );
     });
   });
 });
