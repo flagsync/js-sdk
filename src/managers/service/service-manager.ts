@@ -1,5 +1,3 @@
-import { UNREADY_FLAG_VALUE } from '~config/constants';
-import { FsFlagSet } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 
 import { FsServiceError } from '~api/error/service-error';
@@ -49,26 +47,7 @@ export function serviceManager(
     });
   });
 
-  async function flagAsync<T>(flagKey: string, defaultValue?: T): Promise<T> {
-    if (!flagKey || typeof flagKey !== 'string') {
-      return Promise.resolve(UNREADY_FLAG_VALUE as T);
-    }
-    try {
-      await sdk.sdkControllerInitContext({
-        context,
-      });
-      const res = await sdk.sdkControllerGetFlag(flagKey, {
-        context,
-      });
-      const flags = (res?.flag ?? {}) as FsFlagSet;
-      return flags[flagKey] ?? defaultValue ?? UNREADY_FLAG_VALUE;
-    } catch (e) {
-      throw ServiceErrorFactory.create(e);
-    }
-  }
-
   return {
-    flagAsync,
     initWithCatch,
     initWithWithThrow,
   };
