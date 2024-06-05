@@ -111,7 +111,6 @@ function clientFactory(settings: FsSettings) {
     once: eventEmitter.once,
     off: eventEmitter.off,
     track: trackManager.eventsManager.track,
-    flagAsync: service.flagAsync,
     waitForReady: () => service.initWithCatch,
     waitForReadyCanThrow: () => service.initWithWithThrow,
     Event: FsEvent,

@@ -1,3 +1,4 @@
+import { Platform } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 
 import {
@@ -101,7 +102,7 @@ export function trackManagerFactory(
    * and events managers via the XHR transport (axios)
    */
   function stop() {
-    if (settings.platform === 'browser') {
+    if (settings.platform === Platform.Browser) {
       impressionsManager.softStop();
       eventsManager.softStop();
       flushWithBeacon();

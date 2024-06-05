@@ -1,4 +1,4 @@
-import { SyncType } from '~config/types';
+import { Platform, SyncType } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
@@ -12,23 +12,30 @@ export function syncManagerFactory(
   settings: FsSettings,
   eventManager: IEventManager,
 ): ISyncManager {
-  const { sync } = settings;
+  const { sync, platform } = settings;
 
   let manager: ISyncManager;
 
-  switch (sync.type) {
-    case SyncType.Poll:
-      manager = pollManager(settings, eventManager);
-      break;
-    case SyncType.Stream:
-      manager = streamManager(settings, eventManager);
-      break;
-    default:
-      manager = {
-        start: noop,
-        stop: noop,
-      };
-      break;
+  if (platform === Platform.Browser) {
+    switch (sync.type) {
+      case SyncType.Poll:
+        manager = pollManager(settings, eventManager);
+        break;
+      case SyncType.Stream:
+        manager = streamManager(settings, eventManager);
+        break;
+      default:
+        manager = {
+          start: noop,
+          stop: noop,
+        };
+        break;
+    }
+  } else {
+    manager = {
+      start: noop,
+      stop: noop,
+    };
   }
 
   eventManager.on(FsEvent.SDK_READY, () => {
