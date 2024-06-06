@@ -4,33 +4,35 @@ import { Sdk } from '~api/sdk';
 import { Sse } from '~api/sse';
 import { Track } from '~api/track';
 
-export type ApiClient = {
-  sdk: Sdk<any>;
-  sse: Sse<any>;
-  track: Track<any>;
-};
+export class ApiClientFactory {
+  private readonly sdk: Sdk<any>;
+  private readonly sse: Sse<any>;
+  private readonly track: Track<any>;
 
-let client: ApiClient;
+  constructor(params: FsSettings) {
+    const apiParams = {
+      baseURL: params.urls.sdk,
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-ridgeline-key': params.sdkKey,
+      },
+    };
 
-export function apiClientFactory(params: FsSettings) {
-  if (client) {
-    return client;
+    this.sdk = new Sdk(apiParams);
+    this.sse = new Sse(apiParams);
+    this.track = new Track(apiParams);
   }
 
-  const apiParams = {
-    baseURL: params.urls.sdk,
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json',
-      'x-ridgeline-key': params.sdkKey,
-    },
-  };
+  public getSdk(): Sdk<any> {
+    return this.sdk;
+  }
 
-  client = {
-    sdk: new Sdk(apiParams),
-    sse: new Sse(apiParams),
-    track: new Track(apiParams),
-  };
+  public getSse(): Sse<any> {
+    return this.sse;
+  }
 
-  return client;
+  public getTrack(): Track<any> {
+    return this.track;
+  }
 }
