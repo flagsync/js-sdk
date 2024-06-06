@@ -1,18 +1,28 @@
-import { UNREADY_FLAG_VALUE } from '~config/constants';
-import { FsConfig, FsFlagSet } from '~config/types';
+import { FlagManager } from '~sdk/external/FlagManager';
+import { KillManager } from '~sdk/external/KillManager';
+import { IFlagManager } from '~sdk/external/types';
+import { EventManager } from '~sdk/modules/event/event-manager-factory';
+import {
+  EventCallback,
+  FsEvent,
+  FsEventType,
+  IEventManager,
+} from '~sdk/modules/event/types';
+import { ServiceManager } from '~sdk/modules/service/ServiceManager';
+import { StorageManagerFactory } from '~sdk/modules/storage/StorageManagerFactory';
+import { SyncManagerFactory } from '~sdk/modules/sync/SyncManagerFactory';
+import { TrackManager } from '~sdk/modules/track/TrackManager';
+import { IEventsManager } from '~sdk/modules/track/events/types';
+import { IImpressionsManager } from '~sdk/modules/track/impressions/types';
+import { ITrackManager } from '~sdk/modules/track/types';
+
+import { FsConfig, FsCore, FsFlagSet } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 import { buildSettingsFromConfig } from '~config/utils';
 
-import { apiClientFactory } from '~api/clients/api-client';
+import { ApiClientFactory } from '~api/clients/api-client';
 import { FsServiceError } from '~api/error/service-error';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
-
-import { eventManagerFactory } from '~managers/event/event-manager-factory';
-import { FsEvent } from '~managers/event/types';
-import { serviceManager } from '~managers/service/service-manager';
-import { storageManagerFactory } from '~managers/storage/storage-manger-factory';
-import { syncManagerFactory } from '~managers/sync/sync-manager-factory';
-import { trackManagerFactory } from '~managers/track/track-manager-factory';
 
 export { FsServiceError };
 export { ServiceErrorFactory };
@@ -25,96 +35,144 @@ export type FsErrorEvent = {
   error: Error | FsServiceError;
 };
 
-const logPrefix = 'client';
-
 function clientInstanceFactory(settings: FsSettings): () => FsClient {
-  const instance = clientFactory(settings);
+  const instance = new FlagSyncClient(settings);
 
   return function client() {
     return instance;
   };
 }
 
-export type FsClient = ReturnType<typeof clientFactory>;
+interface IFsClient {
+  waitForReady: () => Promise<void>;
+  waitForReadyCanThrow: () => Promise<void>;
+  kill: () => void;
+  flag: <T>(flagKey: string, defaultValue?: T) => T;
+  flags: (defaultValues?: FsFlagSet) => FsFlagSet;
+  on: <T extends FsEventType>(event: T, callback: EventCallback<T>) => void;
+  once: <T extends FsEventType>(event: T, callback: EventCallback<T>) => void;
+  off: <T extends FsEventType>(event: T, callback?: EventCallback<T>) => void;
+  track: (
+    eventKey: string,
+    value?: number | null | undefined,
+    properties?: Record<string, any>,
+  ) => void;
+}
 
-function clientFactory(settings: FsSettings) {
-  const { core, log } = settings;
+export type FsClient = IFsClient & {
+  core: FsCore;
+  Event: typeof FsEvent;
+};
 
-  const { sdk } = apiClientFactory(settings);
+class FlagSyncClient implements IFsClient {
+  private readonly api: ApiClientFactory;
+  private readonly sdk: any;
+  private readonly eventManager: IEventManager;
+  private readonly syncFactory: SyncManagerFactory;
+  private readonly syncManager: any;
+  private readonly trackManager: ITrackManager;
+  private readonly impressionsManager: IImpressionsManager;
+  private readonly eventsManager: IEventsManager;
+  private readonly storageFactory: StorageManagerFactory;
+  private readonly storageManager: any;
+  private readonly service: ServiceManager;
+  private readonly flagManager: IFlagManager;
+  private readonly killManager: KillManager;
 
-  const eventEmitter = eventManagerFactory();
-  const syncManager = syncManagerFactory(settings, eventEmitter);
-  const storageManager = storageManagerFactory(settings, eventEmitter);
-  const trackManager = trackManagerFactory(settings, eventEmitter);
-  const service = serviceManager(settings, sdk, storageManager, eventEmitter);
+  public core: FsCore;
+  public Event: typeof FsEvent;
 
-  function flag<T>(flagKey: string, defaultValue?: T): T {
-    if (!flagKey || typeof flagKey !== 'string') {
-      return UNREADY_FLAG_VALUE as T;
-    }
+  constructor(private settings: FsSettings) {
+    this.core = settings.core;
+    this.Event = FsEvent;
 
-    const flags = storageManager.get();
-    const flagValue = flags[flagKey] ?? defaultValue ?? UNREADY_FLAG_VALUE;
+    this.api = new ApiClientFactory(settings);
+    this.sdk = this.api.getSdk();
 
-    trackManager.impressionsManager.track({
-      flagKey,
-      flagValue,
-    });
+    this.eventManager = new EventManager();
 
-    return flagValue as T;
+    this.syncFactory = new SyncManagerFactory(
+      settings,
+      this.eventManager,
+      this.sdk,
+    );
+    this.syncManager = this.syncFactory.createManager();
+
+    this.trackManager = new TrackManager(settings, this.eventManager, this.api);
+    this.impressionsManager = this.trackManager.getImpressionsManager();
+    this.eventsManager = this.trackManager.getEventsManager();
+
+    this.storageFactory = new StorageManagerFactory(
+      settings,
+      this.eventManager,
+    );
+    this.storageManager = this.storageFactory.createManager();
+
+    this.service = new ServiceManager(
+      settings,
+      this.sdk,
+      this.storageManager,
+      this.eventManager,
+    );
+
+    this.flagManager = new FlagManager(
+      this.storageManager,
+      this.impressionsManager,
+    );
+
+    this.killManager = new KillManager(
+      settings,
+      this.syncManager,
+      this.trackManager,
+      this.eventManager,
+    );
   }
 
-  function flags(defaultValues: FsFlagSet = {}): FsFlagSet {
-    const flags: FsFlagSet = {};
-    const cached = storageManager.get();
-
-    for (const flagKey in cached) {
-      const flagValue = cached[flagKey] ?? defaultValues[flagKey] ?? 'control';
-      flags[flagKey] = flagValue;
-      trackManager.impressionsManager.track({
-        flagKey,
-        flagValue,
-      });
-    }
-
-    return flags;
+  public waitForReady() {
+    return this.service.initWithCatch();
   }
 
-  let isKilling = false;
-  function kill() {
-    if (!isKilling) {
-      isKilling = true;
-      log.info(`${logPrefix}: SDK shutting down`);
-      for (const eventKey in FsEvent) {
-        eventEmitter.off(FsEvent[eventKey as keyof typeof FsEvent]);
-      }
-      syncManager.stop();
-      trackManager.stop();
-      eventEmitter.stop();
-    } else {
-      log.info(`${logPrefix}: already handling kill, skipping...`);
-    }
+  waitForReadyCanThrow() {
+    return this.service.initWithThrow();
   }
 
-  if (typeof window === 'undefined') {
-    process.on('exit', kill); // Process termination event
-    process.on('SIGINT', kill); // Signal handling (SIGINT)
-    process.on('SIGTERM', kill); // Signal handling (SIGTERM)
+  public flag<T>(flagKey: string, defaultValue?: T): T {
+    return this.flagManager.flag(flagKey, defaultValue);
   }
 
-  return {
-    core,
-    flag,
-    flags,
-    kill,
-    on: eventEmitter.on,
-    once: eventEmitter.once,
-    off: eventEmitter.off,
-    track: trackManager.eventsManager.track,
-    waitForReady: () => service.initWithCatch,
-    waitForReadyCanThrow: () => service.initWithWithThrow,
-    Event: FsEvent,
-  };
+  public flags(defaultValues: FsFlagSet = {}): FsFlagSet {
+    return this.flagManager.flags(defaultValues);
+  }
+
+  public kill() {
+    this.killManager.kill();
+  }
+
+  public on<T extends FsEventType>(event: T, callback: EventCallback<T>): void {
+    this.eventManager.on(event, callback);
+  }
+
+  public once<T extends FsEventType>(
+    event: T,
+    callback: EventCallback<T>,
+  ): void {
+    this.eventManager.once(event, callback);
+  }
+
+  public off<T extends FsEventType>(
+    event: T,
+    callback?: EventCallback<T>,
+  ): void {
+    this.eventManager.off(event, callback);
+  }
+
+  public track(
+    eventKey: string,
+    value?: number | null | undefined,
+    properties?: Record<string, any>,
+  ) {
+    this.eventsManager.submitEvent(eventKey, value, properties);
+  }
 }
 
 export function FlagSyncFactory(config: FsConfig): {
