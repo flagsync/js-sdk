@@ -26,8 +26,6 @@ Compatible with Node.js 16+ and ES5.
 > a single user server-side.
 > 
 > For server-side applications, including SSR web applications, we strongly recommend using the [Node.js SDK](https://github.com/flagsync/node-client).
-> 
-> For React applications, we recommend using the [React SDK](https://github.com/flagsync/react-client).
 
 ## Installation
 
@@ -49,6 +47,6 @@ Refer to the [SDK documentation](https://docs.flagsync.com/sdks/node-javascript)
 
 ## React
 
-This SDK is not framework-specific and can be used in both Node.js and web browser environments. For React applications, we provide a separate [React SDK](https://github.com/flagsync/react-client) that integrates better with the React ecosystem.
+This SDK is not framework-specific and is intended to be used in browser environments. For React applications, we provide a separate [React SDK](https://github.com/flagsync/react-client) that integrates better with the React ecosystem.
 
 
