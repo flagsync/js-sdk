@@ -82,10 +82,12 @@ export function beaconManager(
    */
   function flushQueues() {
     const { urls, context } = settings;
-    log.debug(formatter(MESSAGE.BEACON_FLUSHING));
 
     if (!impressionsManager.isEmpty()) {
       const impressions = impressionsManager.pop();
+      log.debug(
+        `${formatter(MESSAGE.BEACON_FLUSHING)} (${impressions.length} impressions)`,
+      );
       _sendBeacon(`${urls.sdk}/track/impressions`, {
         context,
         impressions,
@@ -94,6 +96,9 @@ export function beaconManager(
 
     if (!eventsManager.isEmpty()) {
       const events = eventsManager.pop();
+      log.debug(
+        `${formatter(MESSAGE.BEACON_FLUSHING)} (${events.length} events)`,
+      );
       _sendBeacon(`${urls.sdk}/track/events`, {
         context,
         events,
