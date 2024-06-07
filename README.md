@@ -15,7 +15,19 @@ That's why we developed an affordable, user-friendly platform that delivers the 
 
 ---
 ## Compatibility
-This SDK is an isomorphic library capable of running on Node.js and web browsers. Compatible with Node.js 16+ and ES5.
+This SDK is an isomorphic library capable of running on Node.js and web browsers. 
+However, it is meant for single-user contexts in browser environments, such as mobile or desktop web applications. 
+
+Compatible with Node.js 16+ and ES5.
+
+> **Note on Node.js**
+>
+> While this SDK is stable in Node.js 16+, this is to support uncommon, one-off cases where you may need to initialize feature flags for 
+> a single user server-side.
+> 
+> For server-side applications, including SSR web applications, we strongly recommend using the [Node.js SDK](https://github.com/flagsync/node-client).
+> 
+> For React applications, we recommend using the [React SDK](https://github.com/flagsync/react-client).
 
 ## Installation
 
