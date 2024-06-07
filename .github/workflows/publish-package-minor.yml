@@ -1,4 +1,4 @@
-name: Publish Package
+name: Publish Package (Minor)
 
 on:
   workflow_dispatch:
@@ -40,7 +40,7 @@ jobs:
           git config --global user.name 'Mike Chabot'
           git config --global user.email 'mikechabot@users.noreply.github.com'
           npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
-          pnpm version patch
+          pnpm version minor
           pnpm pack
           pnpm publish --no-git-checks --access public
         env:
@@ -83,7 +83,7 @@ jobs:
         run: |
           git config --local user.email "mikechabot@users.noreply.github.com"
           git config --local user.name "Mike Chabot"
-          pnpm version patch
+          pnpm version minor
           git add .
           pnpm pack
           pnpm publish --no-git-checks
