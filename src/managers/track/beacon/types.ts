@@ -1,4 +1,4 @@
-export interface ISyncManager {
+export interface IBeaconManager {
   start: () => void;
   kill: () => void;
 }

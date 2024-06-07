@@ -7,9 +7,12 @@ import { FsEvent, IEventManager } from '~managers/event/types';
 import { EventsCache } from '~managers/track/events/events-cache';
 import { IEventsManager } from '~managers/track/events/types';
 
-const logPrefix = 'events-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
 
 const START_DELAY_MS = 3000;
+
+const formatter = formatMsg.bind(null, 'events-manager');
 
 export function eventsManager(
   settings: FsSettings,
@@ -47,15 +50,18 @@ export function eventsManager(
         events: sendQueue,
       })
       .then(() => {
-        log.debug(`${logPrefix}: batch sent ${sendQueue.length} events`);
+        log.debug(
+          `${formatter(MESSAGE.TRACK_BATCH_SENT)} (${sendQueue.length} events)`,
+        );
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error(`${logPrefix}: batch send failed`, [
+        log.error(
+          formatter(MESSAGE.TRACK_SEND_FAIL),
           error.path,
           error.errorCode,
           error.message,
-        ]);
+        );
         eventManager.emit(FsEvent.ERROR, {
           type: 'api',
           error: error,
@@ -67,32 +73,32 @@ export function eventsManager(
   }
 
   async function flushQueue() {
-    log.debug(`${logPrefix}: flushing queue`);
+    log.debug(formatter(MESSAGE.TRACK_FLUSHING));
     await batchSend();
   }
 
   function start() {
-    log.debug(`${logPrefix}: submitter starting in ${START_DELAY_MS}ms`);
+    log.debug(`${formatter(MESSAGE.TRACK_STARTING)} (${START_DELAY_MS}ms)`);
     timeout = setTimeout(batchSend, START_DELAY_MS);
   }
 
-  function stop() {
-    flushQueue().then(() => {
-      if (timeout) {
-        log.debug(`${logPrefix}: gracefully stopping submitter`);
-        clearTimeout(timeout);
-      }
+  function flushQueueAndStop() {
+    flushQueue().finally(() => {
+      stopSubmitter();
     });
+  }
+
+  function stopSubmitter() {
+    if (timeout) {
+      log.debug(formatter(MESSAGE.TRACK_STOPPING));
+      clearTimeout(timeout);
+    }
   }
 
   return {
     start,
-    stop,
-    softStop: () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    },
+    stopSubmitter,
+    flushQueueAndStop,
     pop: () => cache.pop(),
     isEmpty: () => cache.isEmpty(),
     track: cache.track.bind(cache),

@@ -6,6 +6,11 @@ import { TrackCache } from '~managers/track/caches/track-cache';
 import { ITrackCache } from '~managers/track/caches/types';
 import { EventLogStrategy } from '~managers/track/events/events-log-strategy';
 
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+const formatter = formatMsg.bind(null, 'events-cache');
+
 export interface IEventsCache extends ITrackCache<SdkTrackEvent> {
   track(
     eventKey: string,
@@ -38,17 +43,17 @@ export class EventsCache
       value !== null &&
       value !== undefined
     ) {
-      this.log.warn('Value must be a finite number, null, or undefined');
+      this.log.warn(formatter(MESSAGE.INVALID_NUMBER));
     }
 
     // Validate properties to ensure it's a plain object, null, or undefined
     if (properties !== null && properties !== undefined) {
       if (!(typeof properties === 'object' && !Array.isArray(properties))) {
-        this.log.warn('Properties must be a plain object, null, or undefined');
+        this.log.warn(formatter(MESSAGE.INVALID_PROPERTIES));
       }
       // Check for inclusions of prototypes or methods
       if (Object.getPrototypeOf(properties) !== Object.prototype) {
-        this.log.warn('Properties must be a plain object, null, or undefined');
+        this.log.warn(formatter(MESSAGE.INVALID_PROPERTIES));
       }
     }
 

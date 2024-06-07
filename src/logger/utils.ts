@@ -1,3 +1,5 @@
+import { MESSAGE } from '~logger/messages';
+
 export function formatISODateToCustom(date: Date) {
   const pad = (num: number) => num.toString().padStart(2, '0');
 
@@ -12,4 +14,11 @@ export function formatISODateToCustom(date: Date) {
   hours = hours ? pad(hours) : 12;
 
   return `${month}/${day}/${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+}
+
+export function formatMsg(
+  prefix: string,
+  message: (typeof MESSAGE)[keyof typeof MESSAGE],
+) {
+  return `${prefix}: ${message}`;
 }

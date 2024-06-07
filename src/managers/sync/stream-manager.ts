@@ -6,7 +6,10 @@ import { FsSettings } from '~config/types.internal';
 import { FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { ISyncManager } from '~managers/sync/types';
 
-const logPrefix = 'stream-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+const formatter = formatMsg.bind(null, 'stream-manager');
 
 export const streamManager = (
   settings: FsSettings,
@@ -33,7 +36,7 @@ export const streamManager = (
      * For debug only
      */
     es.onopen = () => {
-      log.debug(`${logPrefix}: connection established`);
+      log.debug(formatter(MESSAGE.STREAM_CONNECTED));
     };
 
     /**
@@ -45,41 +48,42 @@ export const streamManager = (
     es.onmessage = (event: MessageEvent<any>) => {
       try {
         const flagSet = JSON.parse(event.data) as FsFlagSet;
-        log.debug(`${logPrefix}: message received`);
+        log.debug(formatter(MESSAGE.STREAM_MESSAGE_RECEIVED));
         eventManager.internal.emit(FsIntervalEvent.UPDATE_RECEIVED, flagSet);
       } catch (error) {
-        log.error(`${logPrefix}: malformed message event`, [error?.toString()]);
+        log.error(formatter(MESSAGE.STREAM_MALFORMED_EVENT), error?.toString());
       }
     };
 
     es.onerror = (event: Event) => {
       switch (es.readyState) {
         case es.CONNECTING:
-          log.debug(`${logPrefix}: reestablishing connection`);
+          log.debug(formatter(MESSAGE.STREAM_RECONNECT));
           break;
         case es.OPEN:
-          log.debug(`${logPrefix}: connection is open`);
+          log.debug(formatter(MESSAGE.STREAM_CONN_OPEN));
           break;
         case es.CLOSED:
-          log.debug(`${logPrefix}: ungraceful connection close`);
+          log.debug(formatter(MESSAGE.STREAM_CONN_CLOSE));
           break;
         default:
-          log.debug(`${logPrefix} unknown error state "${es.readyState}"`, [
+          log.debug(
+            `${formatter(MESSAGE.STREAM_UNKNOWN_EVENT_STATE)}: "${es.readyState}"`,
             event.toString(),
-          ]);
+          );
       }
     };
   }
 
-  function stop() {
+  function kill() {
     if (es) {
-      log.debug(`${logPrefix}: gracefully closing event stream`);
+      log.debug(formatter(MESSAGE.STREAM_CONN_CLOSING));
       es.close();
     }
   }
 
   return {
     start,
-    stop,
+    kill,
   };
 };

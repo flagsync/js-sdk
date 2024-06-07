@@ -4,7 +4,9 @@ import {
   ITrackCacheLogStrategy,
 } from '~managers/track/caches/types';
 
+import { MESSAGE } from '~logger/messages';
 import { ILogger } from '~logger/types';
+import { formatMsg } from '~logger/utils';
 
 export class TrackCache<T> implements ITrackCache<T> {
   private queue: T[] = [];
@@ -37,7 +39,10 @@ export class TrackCache<T> implements ITrackCache<T> {
     this.queue.push(item);
 
     const vals = this.logStrategy.getLogItem(item);
-    this.log.debug(`${this.logPrefix}: item enqueued`, vals);
+    this.log.debug(
+      formatMsg(this.logPrefix, MESSAGE.CACHE_ITEM_ENQUEUED),
+      ...vals,
+    );
 
     if (this.queue.length >= this.maxQueueSize && this.onFullQueue) {
       this.onFullQueue();

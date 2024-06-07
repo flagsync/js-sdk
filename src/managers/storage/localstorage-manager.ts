@@ -3,7 +3,10 @@ import { FsSettings } from '~config/types.internal';
 
 import { IStoreManager } from '~managers/storage/types';
 
-const logPrefix = 'localstorage-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+const formatter = formatMsg.bind(null, 'localstorage-manager');
 
 export function localStorageManager(settings: FsSettings): IStoreManager {
   const { log, bootstrap, storage } = settings;
@@ -21,12 +24,12 @@ export function localStorageManager(settings: FsSettings): IStoreManager {
       ...flagSet,
       ...incoming,
     };
-    log.debug(`${logPrefix}: persisting flags`);
+    log.debug(formatter(MESSAGE.STORAGE_SET_FLAGS));
     localStorage.setItem(buildKey(), JSON.stringify(flagSet));
   }
 
   function get(): FsFlagSet {
-    log.debug(`${logPrefix}: getting flags`);
+    log.debug(formatter(MESSAGE.STORAGE_GET_FLAGS));
     const cached = localStorage.getItem(buildKey());
 
     if (!cached) {
@@ -43,12 +46,9 @@ export function localStorageManager(settings: FsSettings): IStoreManager {
     } catch (e: unknown) {
       const args = e instanceof Error ? [e.message, e.stack] : undefined;
       if (e instanceof Error) {
-        log.error(`${logPrefix}: failed to parse flags from storage`, [
-          e.message,
-          e.stack,
-        ]);
+        log.error(formatter(MESSAGE.STORAGE_PARSE_FAIL), e.message, e.stack);
       }
-      log.error(`${logPrefix}: Failed to parse flags from storage`, args);
+      log.error(formatter(MESSAGE.STORAGE_PARSE_FAIL), args);
       return flagSet;
     }
   }

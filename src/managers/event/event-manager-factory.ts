@@ -57,7 +57,7 @@ export function eventManagerFactory(): IEventManager {
     },
   };
 
-  const stop = () => {
+  const kill = () => {
     emitter.removeAllListeners();
   };
 
@@ -67,6 +67,6 @@ export function eventManagerFactory(): IEventManager {
     emit,
     off,
     internal,
-    stop,
+    kill,
   };
 }

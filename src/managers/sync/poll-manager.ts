@@ -6,7 +6,10 @@ import { ServiceErrorFactory } from '~api/error/service-error-factory';
 import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { ISyncManager } from '~managers/sync/types';
 
-const logPrefix = 'poll-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+const formatter = formatMsg.bind(null, 'poll-manager');
 
 export function pollManager(
   settings: FsSettings,
@@ -25,7 +28,7 @@ export function pollManager(
         context,
       })
       .then((res) => {
-        log.debug(`${logPrefix}: polling success`);
+        log.debug(formatter(MESSAGE.POLL_SUCCESS));
         eventManager.internal.emit(
           FsIntervalEvent.UPDATE_RECEIVED,
           res?.flags ?? {},
@@ -33,11 +36,12 @@ export function pollManager(
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error(`${logPrefix}: polling failed`, [
+        log.error(
+          formatter(MESSAGE.POLL_FAILED),
           error.path,
           error.errorCode,
           error.message,
-        ]);
+        );
 
         eventManager.emit(FsEvent.ERROR, {
           type: 'api',
@@ -50,19 +54,19 @@ export function pollManager(
   }
 
   function start() {
-    log.debug(`${logPrefix}: polling started`);
+    log.debug(formatter(MESSAGE.POLL_STARTED));
     timeout = setTimeout(poll, interval);
   }
 
-  function stop() {
+  function kill() {
     if (timeout) {
-      log.debug(`${logPrefix}: gracefully stopping poller`);
+      log.debug(formatter(MESSAGE.POLL_STOPPED));
       clearTimeout(timeout);
     }
   }
 
   return {
     start,
-    stop,
+    kill,
   };
 }

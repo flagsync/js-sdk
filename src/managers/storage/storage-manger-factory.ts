@@ -5,9 +5,13 @@ import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { isLocalStorageAvailable } from '~managers/storage/is-local-storage-available';
 import { localStorageManager } from '~managers/storage/localstorage-manager';
 import { memoryManager } from '~managers/storage/memory-manager';
-import { IStoreManager } from '~managers/storage/types';
 
-const logPrefix = 'storage-manager-factory';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+import { IStoreManager } from './types';
+
+const formatter = formatMsg.bind(null, 'storage-manager-factory');
 
 export function storageManagerFactory(
   params: FsSettings,
@@ -20,12 +24,10 @@ export function storageManagerFactory(
   if (storage.type === StorageType.LocalStorage) {
     if (isLocalStorageAvailable()) {
       manager = localStorageManager(params);
-      log.info(`${logPrefix}: SDK ready from store'`);
+      log.info(formatter(MESSAGE.STORAGE_READY));
       eventManager.emit(FsEvent.SDK_READY_FROM_STORE);
     } else {
-      log.warn(
-        `${logPrefix}: LocalStorage not available, falling back to memory store`,
-      );
+      log.warn(formatter(MESSAGE.STORAGE_FALLBACK));
       manager = memoryManager(params);
     }
   } else {

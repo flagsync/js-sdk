@@ -15,7 +15,7 @@ export interface IEventManager {
   once<T extends FsEventType>(event: T, callback: EventCallback<T>): void;
   emit<T extends FsEventType>(event: T, payload?: FsEventTypePayload[T]): void;
   off<T extends FsEventType>(event: T, callback?: EventCallback<T>): void;
-  stop: () => void;
+  kill: () => void;
   internal: {
     on<T extends FsIntervalEventType>(
       event: T,

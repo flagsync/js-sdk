@@ -27,14 +27,14 @@ export function syncManagerFactory(
       default:
         manager = {
           start: noop,
-          stop: noop,
+          kill: noop,
         };
         break;
     }
   } else {
     manager = {
       start: noop,
-      stop: noop,
+      kill: noop,
     };
   }
 

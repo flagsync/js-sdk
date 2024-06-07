@@ -2,10 +2,10 @@ import { SdkTrackEvent } from '~api/data-contracts';
 
 export interface IEventsManager {
   start: () => void;
-  stop: () => void;
   pop: () => SdkTrackEvent[];
   isEmpty: () => boolean;
-  softStop: () => void;
+  flushQueueAndStop: () => void;
+  stopSubmitter: () => void;
   track: (
     eventKey: string,
     value?: number | null | undefined,

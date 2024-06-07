@@ -7,7 +7,10 @@ import { Sdk } from '~api/sdk';
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { IStoreManager } from '~managers/storage/types';
 
-const logPrefix = 'service-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
+
+const format = formatMsg.bind(null, 'service-manager');
 
 export function serviceManager(
   settings: FsSettings,
@@ -28,7 +31,7 @@ export function serviceManager(
     )
     .then((res) => {
       storageManager.set(res?.flags ?? {});
-      log.debug(`${logPrefix}: SDK ready`);
+      log.debug(format(MESSAGE.SDK_READY));
       eventEmitter.emit(FsEvent.SDK_READY);
     })
     .catch((e: unknown) => {
@@ -36,11 +39,7 @@ export function serviceManager(
     });
 
   const initWithCatch = initWithWithThrow.catch((e: FsServiceError) => {
-    log.error(`${logPrefix}: SDK init failed`, [
-      e.path,
-      e.errorCode,
-      e.message,
-    ]);
+    log.error(format(MESSAGE.SDK_FAILED), e.path, e.errorCode, e.message);
     eventEmitter.emit(FsEvent.ERROR, {
       type: 'api',
       error: e,

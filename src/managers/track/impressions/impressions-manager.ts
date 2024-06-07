@@ -10,9 +10,12 @@ import {
   PartialTrackImpression,
 } from '~managers/track/impressions/types';
 
-const logPrefix = 'impressions-manager';
+import { MESSAGE } from '~logger/messages';
+import { formatMsg } from '~logger/utils';
 
 const START_DELAY_MS = 3000;
+
+const formatter = formatMsg.bind(null, 'impressions-manager');
 
 export function impressionsManager(
   settings: FsSettings,
@@ -50,15 +53,18 @@ export function impressionsManager(
         impressions: sendQueue,
       })
       .then(() => {
-        log.debug(`${logPrefix}: batch sent ${sendQueue.length} impressions`);
+        log.debug(
+          `${formatter(MESSAGE.TRACK_BATCH_SENT)} (${sendQueue.length} impressions)`,
+        );
       })
       .catch(async (e: unknown) => {
         const error = ServiceErrorFactory.create(e);
-        log.error(`${logPrefix}: batch send failed`, [
+        log.error(
+          formatter(MESSAGE.TRACK_SEND_FAIL),
           error.path,
           error.errorCode,
           error.message,
-        ]);
+        );
         eventManager.emit(FsEvent.ERROR, {
           type: 'api',
           error: error,
@@ -70,22 +76,26 @@ export function impressionsManager(
   }
 
   async function flushQueue() {
-    log.debug(`${logPrefix}: flushing queue`);
+    log.debug(formatter(MESSAGE.TRACK_FLUSHING));
     await batchSend();
   }
 
   function start() {
-    log.debug(`${logPrefix}: submitter starting in ${START_DELAY_MS}ms`);
+    log.debug(`${formatter(MESSAGE.TRACK_STARTING)} (${START_DELAY_MS}ms)`);
     timeout = setTimeout(batchSend, START_DELAY_MS);
   }
 
-  function stop() {
-    flushQueue().then(() => {
-      if (timeout) {
-        log.debug(`${logPrefix}: gracefully stopping submitter`);
-        clearTimeout(timeout);
-      }
+  function flushQueueAndStop() {
+    flushQueue().finally(() => {
+      stopSubmitter();
     });
+  }
+
+  function stopSubmitter() {
+    if (timeout) {
+      log.debug(formatter(MESSAGE.TRACK_STOPPING));
+      clearTimeout(timeout);
+    }
   }
 
   function publicTrack(impression: PartialTrackImpression) {
@@ -97,12 +107,8 @@ export function impressionsManager(
 
   return {
     start,
-    stop,
-    softStop: () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    },
+    flushQueueAndStop,
+    stopSubmitter,
     pop: () => cache.pop(),
     isEmpty: () => cache.isEmpty(),
     track: publicTrack,
