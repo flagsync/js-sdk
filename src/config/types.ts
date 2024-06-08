@@ -54,4 +54,5 @@ export interface FsConfig {
   };
   logger?: Partial<ILogger>;
   readonly logLevel?: LogLevel;
+  readonly metadata?: Record<string, any>;
 }

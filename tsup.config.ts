@@ -1,4 +1,24 @@
-import { defineConfig, Options } from 'tsup';
+import replaceInFile from 'replace-in-file';
+import { Options, defineConfig } from 'tsup';
+
+import packageJson from './package.json';
+
+async function injectSdkDetails(dist: string) {
+  try {
+    await replaceInFile({
+      files: `${dist}/**/*`,
+      from: /__SDK_NAME__/g,
+      to: packageJson.name,
+    });
+    await replaceInFile({
+      files: `${dist}/**/*`,
+      from: /__SDK_VERSION__/g,
+      to: packageJson.version,
+    });
+  } catch (error) {
+    console.error('[injectSdkDetails]:', error);
+  }
+}
 
 export function modernConfig(opts: Options): Options {
   return {
@@ -17,6 +37,9 @@ export function modernConfig(opts: Options): Options {
     dts: true,
     sourcemap: true,
     clean: true,
+    async onSuccess() {
+      await injectSdkDetails('dist/modern');
+    },
   };
 }
 
@@ -29,6 +52,9 @@ export function legacyConfig(opts: Options): Options {
     dts: true,
     sourcemap: true,
     clean: true,
+    async onSuccess() {
+      await injectSdkDetails('dist/legacy');
+    },
   };
 }
 

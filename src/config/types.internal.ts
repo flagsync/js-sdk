@@ -40,4 +40,5 @@ export interface FsSettings {
   customLogger: Partial<ILogger>;
   context: SdkUserContext;
   platform: (typeof Platform)[keyof typeof Platform];
+  metadata: Record<string, any>;
 }

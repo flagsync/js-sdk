@@ -59,6 +59,11 @@ export function buildSettingsFromConfig(config: FsConfig): FsSettings {
 
   validateSettings(settings);
 
+  (settings as FsSettings).metadata = config.metadata ?? {
+    sdkName: '__SDK_NAME__',
+    sdkVersion: '__SDK_VERSION__',
+  };
+
   settings.context = {
     key: settings.core.key,
     attributes: settings.core.attributes ?? {},
