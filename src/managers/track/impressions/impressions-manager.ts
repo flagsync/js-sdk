@@ -24,6 +24,7 @@ export function impressionsManager(
   const {
     log,
     context,
+    sdkContext,
     tracking: {
       impressions: { pushRate },
     },
@@ -48,9 +49,10 @@ export function impressionsManager(
     const sendQueue = cache.pop();
 
     track
-      .sdkTrackControllerPostBatchImpressions({
+      .sdkTrackControllerPostClientBatchImpressions({
         context,
         impressions: sendQueue,
+        sdkContext,
       })
       .then(() => {
         log.debug(

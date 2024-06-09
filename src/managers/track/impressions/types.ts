@@ -1,7 +1,7 @@
-import { SdkTrackImpression } from '~api/data-contracts';
+import { SdkClientTrackImpression } from '~api/data-contracts';
 
 export type PartialTrackImpression = Pick<
-  SdkTrackImpression,
+  SdkClientTrackImpression,
   'flagKey' | 'flagValue'
 >;
 
@@ -10,6 +10,6 @@ export interface IImpressionsManager {
   flushQueueAndStop: () => void;
   stopSubmitter: () => void;
   isEmpty: () => boolean;
-  pop: () => SdkTrackImpression[];
+  pop: () => SdkClientTrackImpression[];
   track: (impression: PartialTrackImpression) => void;
 }

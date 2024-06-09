@@ -1,8 +1,8 @@
-import { SdkTrackEvent } from '~api/data-contracts';
+import { SdkClientTrackEvent } from '~api/data-contracts';
 
 export interface IEventsManager {
   start: () => void;
-  pop: () => SdkTrackEvent[];
+  pop: () => SdkClientTrackEvent[];
   isEmpty: () => boolean;
   flushQueueAndStop: () => void;
   stopSubmitter: () => void;

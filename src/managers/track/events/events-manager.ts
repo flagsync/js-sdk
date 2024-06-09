@@ -21,6 +21,7 @@ export function eventsManager(
   const {
     log,
     context,
+    sdkContext,
     tracking: {
       events: { pushRate },
     },
@@ -45,8 +46,9 @@ export function eventsManager(
     const sendQueue = cache.pop();
 
     track
-      .sdkTrackControllerPostBatchEvents({
+      .sdkTrackControllerPostClientBatchEvents({
         context,
+        sdkContext,
         events: sendQueue,
       })
       .then(() => {

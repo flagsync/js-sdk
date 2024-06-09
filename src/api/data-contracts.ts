@@ -153,18 +153,25 @@ export interface SdkEnvironmentFlagGetResponse {
   context: SdkUserContext;
 }
 
+export interface SdkClientTrackEvent {
+  eventKey: string;
+  value?: number | null;
+  properties?: object | null;
+  timestamp: string;
+}
+
+export interface SdkClientTrackEventRequest {
+  context: SdkUserContext;
+  events: SdkClientTrackEvent[];
+  sdkContext: SdkSdkContext;
+}
+
 export interface SdkServerTrackEvent {
   eventKey: string;
   value?: number | null;
   properties?: object | null;
   timestamp: string;
   context: SdkUserContext;
-}
-
-export interface SdkClientTrackEventRequest {
-  context: SdkUserContext;
-  events: SdkServerTrackEvent[];
-  sdkContext: SdkSdkContext;
 }
 
 export interface SdkServerTrackEventRequest {

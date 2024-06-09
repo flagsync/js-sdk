@@ -1,17 +1,18 @@
 import { FsSettings } from '~config/types.internal';
 
-import { SdkTrackImpression } from '~api/data-contracts';
+import { SdkClientTrackImpression } from '~api/data-contracts';
 
 import { TrackCache } from '~managers/track/caches/track-cache';
 import { ITrackCache } from '~managers/track/caches/types';
 import { ImpressionLogStrategy } from '~managers/track/impressions/impressions-log-strategy';
 
-export interface IImpressionCache extends ITrackCache<SdkTrackImpression> {
-  track(event: SdkTrackImpression): void;
+export interface IImpressionCache
+  extends ITrackCache<SdkClientTrackImpression> {
+  track(event: SdkClientTrackImpression): void;
 }
 
 export class ImpressionsCache
-  extends TrackCache<SdkTrackImpression>
+  extends TrackCache<SdkClientTrackImpression>
   implements IImpressionCache
 {
   constructor(settings: FsSettings, onFullQueue: () => void) {
@@ -24,7 +25,7 @@ export class ImpressionsCache
     });
   }
 
-  track(impression: SdkTrackImpression): void {
+  track(impression: SdkClientTrackImpression): void {
     this.push(impression);
   }
 }

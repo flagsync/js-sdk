@@ -1,11 +1,11 @@
-import { SdkTrackImpression } from '~api/data-contracts';
+import { SdkClientTrackImpression } from '~api/data-contracts';
 
 import { ITrackCacheLogStrategy } from '~managers/track/caches/types';
 
 export class ImpressionLogStrategy
-  implements ITrackCacheLogStrategy<SdkTrackImpression>
+  implements ITrackCacheLogStrategy<SdkClientTrackImpression>
 {
-  getLogItem(item: SdkTrackImpression): [string, string] {
+  getLogItem(item: SdkClientTrackImpression): [string, string] {
     return [item.flagKey, JSON.stringify(item.flagValue)];
   }
 }
