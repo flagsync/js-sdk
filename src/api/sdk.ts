@@ -17,14 +17,9 @@ import {
 } from '~api/clients/http-client';
 
 import {
-  SdkEnvironmentFlagGetRequest,
-  SdkEnvironmentFlagGetResponse,
-  SdkEnvironmentFlagRulesGetRequest,
-  SdkEnvironmentFlagRulesGetResponse,
   SdkEnvironmentFlagsGetRequest,
   SdkEnvironmentFlagsGetResponse,
   SdkInitClientRequest,
-  SdkInitServerRequest,
 } from './data-contracts';
 
 export class Sdk<
@@ -60,26 +55,6 @@ export class Sdk<
   ) =>
     this.request<SdkEnvironmentFlagsGetResponse, void>({
       path: `/sdk/flags`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      format: 'json',
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @name SdkControllerGetFlag
-   * @request POST:/sdk/flag/{flagKey}
-   */
-  sdkControllerGetFlag = (
-    flagKey: string,
-    data: SdkEnvironmentFlagGetRequest,
-    params: RequestParams = {},
-  ) =>
-    this.request<SdkEnvironmentFlagGetResponse, void>({
-      path: `/sdk/flag/${flagKey}`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
