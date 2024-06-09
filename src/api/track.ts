@@ -15,10 +15,13 @@ import {
   HttpClient,
   RequestParams,
 } from '~api/clients/http-client';
+
 import {
-  SdkTrackEventRequest,
-  SdkTrackImpressionsRequest,
-} from '~api/data-contracts';
+  SdkClientTrackEventRequest,
+  SdkClientTrackImpressionsRequest,
+  SdkServerTrackEventRequest,
+  SdkServerTrackImpressionsRequest,
+} from './data-contracts';
 
 export class Track<
   SecurityDataType = unknown,
@@ -26,32 +29,33 @@ export class Track<
   /**
    * No description
    *
-   * @name SdkTrackControllerPostBatchEvents
-   * @request POST:/track/events
+   * @name SdkTrackControllerPostClientBatchEvents
+   * @request POST:/track/events/client
    */
-  sdkTrackControllerPostBatchEvents = (
-    data: SdkTrackEventRequest,
+  sdkTrackControllerPostClientBatchEvents = (
+    data: SdkClientTrackEventRequest,
     params: RequestParams = {},
   ) =>
     this.request<void, void>({
-      path: `/track/events`,
+      path: `/track/events/client`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
       ...params,
     });
+
   /**
    * No description
    *
-   * @name SdkTrackControllerPostBatchImpressions
-   * @request POST:/track/impressions
+   * @name SdkTrackControllerPostClientBatchImpressions
+   * @request POST:/track/impressions/client
    */
-  sdkTrackControllerPostBatchImpressions = (
-    data: SdkTrackImpressionsRequest,
+  sdkTrackControllerPostClientBatchImpressions = (
+    data: SdkClientTrackImpressionsRequest,
     params: RequestParams = {},
   ) =>
     this.request<void, void>({
-      path: `/track/impressions`,
+      path: `/track/impressions/client`,
       method: 'POST',
       body: data,
       type: ContentType.Json,

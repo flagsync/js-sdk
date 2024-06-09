@@ -18,15 +18,17 @@ export function serviceManager(
   storageManager: IStoreManager,
   eventEmitter: IEventManager,
 ) {
-  const { log, context } = settings;
+  const { log, context, sdkContext } = settings;
 
   const initWithWithThrow = sdk
-    .sdkControllerInitContext({
+    .sdkControllerInitClientContext({
       context,
+      sdkContext,
     })
     .then(() =>
       sdk.sdkControllerGetFlags({
         context,
+        sdkContext,
       }),
     )
     .then((res) => {

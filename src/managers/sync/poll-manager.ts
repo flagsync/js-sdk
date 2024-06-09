@@ -15,42 +15,40 @@ export function pollManager(
   settings: FsSettings,
   eventManager: IEventManager,
 ): ISyncManager {
-  const { log, sync, context } = settings;
+  const { log, sync, context, sdkContext } = settings;
 
   const { sdk } = apiClientFactory(settings);
 
   let timeout: number | NodeJS.Timeout;
   const interval = sync.pollRate * 1000;
 
-  function poll() {
-    sdk
-      .sdkControllerGetFlags({
+  async function poll() {
+    try {
+      const res = await sdk.sdkControllerGetFlags({
         context,
-      })
-      .then((res) => {
-        log.debug(formatter(MESSAGE.POLL_SUCCESS));
-        eventManager.internal.emit(
-          FsIntervalEvent.UPDATE_RECEIVED,
-          res?.flags ?? {},
-        );
-      })
-      .catch(async (e: unknown) => {
-        const error = ServiceErrorFactory.create(e);
-        log.error(
-          formatter(MESSAGE.POLL_FAILED),
-          error.path,
-          error.errorCode,
-          error.message,
-        );
-
-        eventManager.emit(FsEvent.ERROR, {
-          type: 'api',
-          error: error,
-        });
-      })
-      .finally(() => {
-        timeout = setTimeout(poll, interval);
+        sdkContext,
       });
+      log.debug(formatter(MESSAGE.POLL_SUCCESS));
+      eventManager.internal.emit(
+        FsIntervalEvent.UPDATE_RECEIVED,
+        res?.flags ?? {},
+      );
+    } catch (e) {
+      const error = ServiceErrorFactory.create(e);
+      log.error(
+        formatter(MESSAGE.POLL_FAILED),
+        error.path,
+        error.errorCode,
+        error.message,
+      );
+
+      eventManager.emit(FsEvent.ERROR, {
+        type: 'api',
+        error: error,
+      });
+    } finally {
+      timeout = setTimeout(poll, interval);
+    }
   }
 
   function start() {

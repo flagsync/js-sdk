@@ -1,8 +1,8 @@
 import { FsSettings } from '~config/types.internal';
 
 import {
-  SdkTrackEventRequest,
-  SdkTrackImpressionsRequest,
+  SdkClientTrackEventRequest,
+  SdkClientTrackImpressionsRequest,
 } from '~api/data-contracts';
 
 import { IBeaconManager } from '~managers/track/beacon/types';
@@ -81,16 +81,17 @@ export function beaconManager(
    * Flush the queues with the pseudo-Beacon requests.
    */
   function flushQueues() {
-    const { urls, context } = settings;
+    const { urls, context, sdkContext } = settings;
 
     if (!impressionsManager.isEmpty()) {
       const impressions = impressionsManager.pop();
       log.debug(
         `${formatter(MESSAGE.BEACON_FLUSHING)} (${impressions.length} impressions)`,
       );
-      _sendBeacon(`${urls.sdk}/track/impressions`, {
+      _sendBeacon(`${urls.sdk}/track/impressions/client`, {
         context,
         impressions,
+        sdkContext,
       });
     }
 
@@ -99,9 +100,10 @@ export function beaconManager(
       log.debug(
         `${formatter(MESSAGE.BEACON_FLUSHING)} (${events.length} events)`,
       );
-      _sendBeacon(`${urls.sdk}/track/events`, {
+      _sendBeacon(`${urls.sdk}/track/events/client`, {
         context,
         events,
+        sdkContext,
       });
     }
   }
@@ -118,7 +120,7 @@ export function beaconManager(
    */
   function _sendBeacon(
     url: string,
-    payload: SdkTrackEventRequest | SdkTrackImpressionsRequest,
+    payload: SdkClientTrackEventRequest | SdkClientTrackImpressionsRequest,
   ) {
     try {
       fetch(url, {

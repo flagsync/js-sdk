@@ -23,7 +23,7 @@ export const streamManager = (
     /**
      * Create a new EventSource instance and listen for incoming flag updates.
      */
-    es = new EventSource(`${urls.sdk}/sse/sdk-updates`, {
+    es = new EventSource(`${urls.sdk}/sse/sdk-updates/client`, {
       withCredentials: true,
       disableLogger: true,
       headers: {

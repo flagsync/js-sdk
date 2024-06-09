@@ -15,12 +15,17 @@ import {
   HttpClient,
   RequestParams,
 } from '~api/clients/http-client';
+
 import {
   SdkEnvironmentFlagGetRequest,
   SdkEnvironmentFlagGetResponse,
+  SdkEnvironmentFlagRulesGetRequest,
+  SdkEnvironmentFlagRulesGetResponse,
   SdkEnvironmentFlagsGetRequest,
   SdkEnvironmentFlagsGetResponse,
-} from '~api/data-contracts';
+  SdkInitClientRequest,
+  SdkInitServerRequest,
+} from './data-contracts';
 
 export class Sdk<
   SecurityDataType = unknown,
@@ -28,20 +33,21 @@ export class Sdk<
   /**
    * No description
    *
-   * @name SdkControllerInitContext
-   * @request POST:/sdk/init
+   * @name SdkControllerInitClientContext
+   * @request POST:/sdk/init-client
    */
-  sdkControllerInitContext = (
-    data: SdkEnvironmentFlagsGetRequest,
+  sdkControllerInitClientContext = (
+    data: SdkInitClientRequest,
     params: RequestParams = {},
   ) =>
     this.request<void, void>({
-      path: `/sdk/init`,
+      path: `/sdk/init-client`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
       ...params,
     });
+
   /**
    * No description
    *
@@ -60,6 +66,7 @@ export class Sdk<
       format: 'json',
       ...params,
     });
+
   /**
    * No description
    *
