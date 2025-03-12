@@ -1,17 +1,13 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import type { FsConfig } from '~config/types';
 
 import { FlagSyncFactory, FsEvent } from './index';
 
 describe('FlagSyncFactory', () => {
-  beforeEach(() => {
-    // Reset any global state if needed
-  });
-
   it('should handle initialization errors', async () => {
     const invalidConfig: FsConfig = {
-      sdkKey: '123', // Invalid SDK key
+      sdkKey: '0x123',
       core: {
         key: 'test-key',
       },
