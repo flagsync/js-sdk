@@ -1,10 +1,10 @@
-import { FsFlagSet } from '~config/types';
-import { FsSettings } from '~config/types.internal';
+import type { FsFlagSet } from '~config/types';
+import type { FsSettings } from '~config/types.internal';
 
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';
 
-import { IStoreManager } from './types';
+import type { IStoreManager } from './types';
 
 const formatter = formatMsg.bind(null, 'memory-manager');
 

@@ -1,29 +1,28 @@
 import { Container } from '~di/container';
 
-import { FsConfig, FsFlagSet } from '~config/types';
+import type { FsConfig, FsFlagSet } from '~config/types';
 import { buildSettingsFromConfig } from '~config/utils';
 
 import { apiClientFactory } from '~api/clients/api-client';
 
 import { eventManagerFactory } from '~managers/event/event-manager-factory';
-import {
+import type {
   EventCallback,
-  FsEvent,
   FsEventType,
   IEventManager,
 } from '~managers/event/types';
 import { flagManager } from '~managers/flag/flag-manager';
-import { IFlagManager } from '~managers/flag/types';
+import type { IFlagManager } from '~managers/flag/types';
 import { killManager } from '~managers/kill/kill-manager';
-import { IKillManager } from '~managers/kill/types';
+import type { IKillManager } from '~managers/kill/types';
 import { serviceManager } from '~managers/service/service-manager';
-import { IServiceManager } from '~managers/service/types';
+import type { IServiceManager } from '~managers/service/types';
 import { storageManagerFactory } from '~managers/storage/storage-manger-factory';
-import { IStoreManager } from '~managers/storage/types';
+import type { IStoreManager } from '~managers/storage/types';
 import { syncManagerFactory } from '~managers/sync/sync-manager-factory';
-import { ISyncManager } from '~managers/sync/types';
+import type { ISyncManager } from '~managers/sync/types';
 import { trackManagerFactory } from '~managers/track/track-manager-factory';
-import { ITrackManager } from '~managers/track/types';
+import type { ITrackManager } from '~managers/track/types';
 
 export class FsClient {
   private readonly container: Container;
@@ -149,6 +148,4 @@ export class FsClient {
     return this.container.get<IServiceManager>('serviceManager')
       .initWithWithThrow;
   }
-
-  public static Event = FsEvent;
 }

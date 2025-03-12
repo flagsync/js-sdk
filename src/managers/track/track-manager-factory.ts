@@ -1,10 +1,10 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
-import { IEventManager } from '~managers/event/types';
+import type { IEventManager } from '~managers/event/types';
 import { beaconManagerFactory } from '~managers/track/beacon/beacon-manager-factory';
 import { eventsManagerFactory } from '~managers/track/events/events-manager-factory';
 import { impressionsManagerFactory } from '~managers/track/impressions/impressions-manager-factory';
-import { ITrackManager } from '~managers/track/types';
+import type { ITrackManager } from '~managers/track/types';
 
 export function trackManagerFactory(
   settings: FsSettings,

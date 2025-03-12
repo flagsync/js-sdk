@@ -1,4 +1,4 @@
-import { ILogger, LogLevel } from './types';
+import type { ILogger, LogLevel } from './types';
 import { formatISODateToCustom } from './utils';
 
 const logPrefix = 'flagsync';

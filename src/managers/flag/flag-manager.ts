@@ -1,9 +1,9 @@
 import { UNREADY_FLAG_VALUE } from '~config/constants';
-import { FsFlagSet } from '~config/types';
+import type { FsFlagSet } from '~config/types';
 
-import { IFlagManager } from '~managers/flag/types';
-import { IStoreManager } from '~managers/storage/types';
-import { ITrackManager } from '~managers/track/types';
+import type { IFlagManager } from '~managers/flag/types';
+import type { IStoreManager } from '~managers/storage/types';
+import type { ITrackManager } from '~managers/track/types';
 
 export function flagManager(
   storageManager: IStoreManager,

@@ -1,6 +1,7 @@
-import { FsSettings } from '../config/types.internal';
+import type { FsSettings } from '~config/types.internal';
+
 import { LogLevels, Logger } from './logger';
-import { ILogger } from './types';
+import type { ILogger } from './types';
 
 const defaultLevel = LogLevels.NONE;
 

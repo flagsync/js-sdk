@@ -1,6 +1,6 @@
-import { SdkClientTrackImpression } from '~api/data-contracts';
+import type { SdkClientTrackImpression } from '~api/data-contracts';
 
-import { ITrackCacheLogStrategy } from '~managers/track/caches/types';
+import type { ITrackCacheLogStrategy } from '~managers/track/caches/types';
 
 export class ImpressionLogStrategy
   implements ITrackCacheLogStrategy<SdkClientTrackImpression>

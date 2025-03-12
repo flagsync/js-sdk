@@ -1,16 +1,16 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsServiceError } from '~api/error/service-error';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 import { Sdk } from '~api/sdk';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
-import { IStoreManager } from '~managers/storage/types';
+import type { IStoreManager } from '~managers/storage/types';
 
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';
 
-import { IServiceManager } from './types';
+import type { IServiceManager } from './types';
 
 const format = formatMsg.bind(null, 'service-manager');
 

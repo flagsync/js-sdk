@@ -1,8 +1,8 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { impressionsManager } from '~managers/track/impressions/impressions-manager';
-import { IImpressionsManager } from '~managers/track/impressions/types';
+import type { IImpressionsManager } from '~managers/track/impressions/types';
 
 export function impressionsManagerFactory(
   settings: FsSettings,

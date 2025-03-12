@@ -1,9 +1,9 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
-import { IKillManager } from '~managers/kill/types';
-import { ISyncManager } from '~managers/sync/types';
-import { ITrackManager } from '~managers/track/types';
+import type { IKillManager } from '~managers/kill/types';
+import type { ISyncManager } from '~managers/sync/types';
+import type { ITrackManager } from '~managers/track/types';
 
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';

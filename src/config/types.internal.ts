@@ -1,4 +1,4 @@
-import {
+import type {
   FsCore,
   FsFlagSet,
   Platform,
@@ -6,9 +6,9 @@ import {
   SyncType,
 } from '~config/types';
 
-import { SdkSdkContext, SdkUserContext } from '~api/data-contracts';
+import type { SdkSdkContext, SdkUserContext } from '~api/data-contracts';
 
-import { ILogger, LogLevel } from '~logger/types';
+import type { ILogger, LogLevel } from '~logger/types';
 
 export interface FsSettings {
   readonly sdkKey: string;

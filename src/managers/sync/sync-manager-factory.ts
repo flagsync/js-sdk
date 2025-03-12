@@ -1,10 +1,10 @@
 import { Platform, SyncType } from '~config/types';
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { pollManager } from '~managers/sync/poll-manager';
 import { streamManager } from '~managers/sync/stream-manager';
-import { ISyncManager } from '~managers/sync/types';
+import type { ISyncManager } from '~managers/sync/types';
 
 const noop = () => {};
 

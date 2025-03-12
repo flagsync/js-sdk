@@ -1,6 +1,6 @@
 import { FsClient } from '~sdk/client/fs-client';
 
-import { FsConfig } from '~config/types';
+import type { FsConfig } from '~config/types';
 
 import { FsServiceError } from '~api/error/service-error';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
@@ -13,8 +13,9 @@ export type {
   FsEventTypePayload,
   EventCallback,
   FsEventType,
-  FsEvent,
 } from '~managers/event/types';
+
+export { FsEvent } from '~managers/event/types';
 
 export type FsErrorSource = 'api' | 'sdk';
 export type FsErrorEvent = {

@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 export class Container {
   private static instance: Container;

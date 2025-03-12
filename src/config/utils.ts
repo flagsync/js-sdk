@@ -1,8 +1,8 @@
 import deepmerge from 'deepmerge';
 
 import { DEFAULT_CONFIG } from '~config/constants';
-import { FsConfig } from '~config/types';
-import { FsSettings } from '~config/types.internal';
+import type { FsConfig } from '~config/types';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
 

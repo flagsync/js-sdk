@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 export const UNREADY_FLAG_VALUE = 'control';
 

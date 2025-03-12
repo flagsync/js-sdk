@@ -1,6 +1,6 @@
-import { FsErrorEvent } from '~sdk/index';
+import type { FsErrorEvent } from '~sdk/index';
 
-import { FsFlagSet } from '~config/types';
+import type { FsFlagSet } from '~config/types';
 
 export type EventCallback<T extends FsEventType> = (
   payload: FsEventTypePayload[T],

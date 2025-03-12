@@ -1,7 +1,7 @@
 import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
 
-import { FsConfig } from './types';
-import { FsSettings } from './types.internal';
+import type { FsConfig } from './types';
+import type { FsSettings } from './types.internal';
 
 export class ConfigValidator {
   /**

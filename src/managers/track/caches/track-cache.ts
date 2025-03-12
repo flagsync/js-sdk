@@ -1,11 +1,11 @@
-import {
+import type {
   ITrackCache,
   ITrackCacheConfig,
   ITrackCacheLogStrategy,
 } from '~managers/track/caches/types';
 
 import { MESSAGE } from '~logger/messages';
-import { ILogger } from '~logger/types';
+import type { ILogger } from '~logger/types';
 import { formatMsg } from '~logger/utils';
 
 export class TrackCache<T> implements ITrackCache<T> {

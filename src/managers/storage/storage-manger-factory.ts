@@ -1,5 +1,5 @@
 import { FsFlagSet, StorageType } from '~config/types';
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsEvent, FsIntervalEvent, IEventManager } from '~managers/event/types';
 import { isLocalStorageAvailable } from '~managers/storage/is-local-storage-available';
@@ -9,7 +9,7 @@ import { memoryManager } from '~managers/storage/memory-manager';
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';
 
-import { IStoreManager } from './types';
+import type { IStoreManager } from './types';
 
 const formatter = formatMsg.bind(null, 'storage-manager-factory');
 

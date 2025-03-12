@@ -1,11 +1,11 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { apiClientFactory } from '~api/clients/api-client';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { EventsCache } from '~managers/track/events/events-cache';
-import { IEventsManager } from '~managers/track/events/types';
+import type { IEventsManager } from '~managers/track/events/types';
 
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';

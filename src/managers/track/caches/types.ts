@@ -1,4 +1,4 @@
-import { ILogger } from '~logger/types';
+import type { ILogger } from '~logger/types';
 
 export interface ITrackCacheLogStrategy<T> {
   getLogItem(item: T): [string, string];
