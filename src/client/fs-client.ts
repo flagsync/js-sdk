@@ -25,7 +25,7 @@ import { ISyncManager } from '~managers/sync/types';
 import { trackManagerFactory } from '~managers/track/track-manager-factory';
 import { ITrackManager } from '~managers/track/types';
 
-export class FsSdk {
+export class FsClient {
   private readonly container: Container;
   private initialized = false;
 

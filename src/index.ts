@@ -1,4 +1,4 @@
-import { FsSdk } from '~sdk/sdk/fs-sdk';
+import { FsClient } from '~sdk/client/fs-client';
 
 import { FsConfig } from '~config/types';
 
@@ -22,9 +22,11 @@ export type FsErrorEvent = {
   error: Error | FsServiceError;
 };
 
+export type { FsClient };
+
 export function FlagSyncFactory(config: FsConfig) {
-  const sdk = new FsSdk(config);
+  const client = new FsClient(config);
   return {
-    client: () => sdk,
+    client: () => client,
   };
 }
