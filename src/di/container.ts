@@ -1,19 +1,28 @@
-import type { FsSettings } from '~config/types.internal';
+import { FsSettings } from '~config/types.internal';
 
 export class Container {
-  private static instance: Container;
-  private services: Map<string, any> = new Map();
-  private settings: FsSettings;
+  private static instance: Container | null = null;
+  private readonly services: Map<string, any> = new Map();
+  private readonly factories: Map<string, (container: Container) => any> =
+    new Map();
+  private readonly settings: FsSettings;
 
   private constructor(settings: FsSettings) {
     this.settings = settings;
   }
 
   static getInstance(settings?: FsSettings): Container {
+    if (!Container.instance && !settings) {
+      throw new Error('Container must be initialized with settings first');
+    }
     if (!Container.instance && settings) {
       Container.instance = new Container(settings);
     }
-    return Container.instance;
+    return Container.instance!;
+  }
+
+  static resetInstance(): void {
+    Container.instance = null;
   }
 
   getSettings(): FsSettings {
@@ -21,25 +30,34 @@ export class Container {
   }
 
   register<T>(key: string, factory: (container: Container) => T): void {
-    // Lazy initialization - only create the service when it's first requested
-    Object.defineProperty(this, key, {
-      get: () => {
-        if (!this.services.has(key)) {
-          this.services.set(key, factory(this));
-        }
-        return this.services.get(key);
-      },
-    });
+    if (this.factories.has(key)) {
+      throw new Error(`Service '${key}' is already registered`);
+    }
+    this.factories.set(key, factory);
   }
 
   get<T>(key: string): T {
-    if (!this.hasService(key)) {
-      throw new Error(`Service ${key} not found in container`);
+    if (!this.services.has(key)) {
+      if (!this.factories.has(key)) {
+        throw new Error(`No factory registered for service '${key}'`);
+      }
+      const factory = this.factories.get(key)!;
+      const instance = factory(this);
+      this.services.set(key, instance);
     }
-    return this[key as keyof Container] as T;
+    return this.services.get(key) as T;
   }
 
-  private hasService(key: string): boolean {
-    return Object.prototype.hasOwnProperty.call(this, key);
+  hasService(key: string): boolean {
+    return this.services.has(key);
+  }
+
+  isRegistered(key: string): boolean {
+    return this.factories.has(key);
+  }
+
+  clear(): void {
+    this.services.clear();
+    this.factories.clear();
   }
 }
