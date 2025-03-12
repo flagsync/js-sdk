@@ -10,6 +10,8 @@ export function trackManagerFactory(
   settings: FsSettings,
   eventManager: IEventManager,
 ): ITrackManager {
+  console.log('Initializing trackManagerFactory');
+
   const impressionsManager = impressionsManagerFactory(settings, eventManager);
   const eventsManager = eventsManagerFactory(settings, eventManager);
   const beaconManager = beaconManagerFactory(

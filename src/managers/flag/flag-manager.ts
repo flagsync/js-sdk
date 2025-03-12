@@ -9,6 +9,8 @@ export function flagManager(
   storageManager: IStoreManager,
   trackManager: ITrackManager,
 ): IFlagManager {
+  console.log('Initializing flagManager');
+
   function flag<T>(flagKey: string, defaultValue?: T): T {
     if (!flagKey || typeof flagKey !== 'string') {
       return UNREADY_FLAG_VALUE as T;
