@@ -10,6 +10,8 @@ import { IStoreManager } from '~managers/storage/types';
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';
 
+import { IServiceManager } from './types';
+
 const format = formatMsg.bind(null, 'service-manager');
 
 export function serviceManager(
@@ -17,7 +19,7 @@ export function serviceManager(
   sdk: Sdk<any>,
   storageManager: IStoreManager,
   eventEmitter: IEventManager,
-) {
+): IServiceManager {
   const { log, context, sdkContext } = settings;
 
   const initWithWithThrow = sdk

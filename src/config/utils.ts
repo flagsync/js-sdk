@@ -8,6 +8,8 @@ import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
 
 import { loggerFactory } from '~logger/logger-factory';
 
+import { ConfigValidator } from './validator';
+
 function validateSettings(settings: FsSettings): void {
   if (!settings.sdkKey) {
     throw new FsServiceError({
@@ -65,6 +67,8 @@ function validateSettings(settings: FsSettings): void {
 }
 
 export function buildSettingsFromConfig(config: FsConfig): FsSettings {
+  ConfigValidator.validateConfig(config);
+
   const settings = deepmerge<FsSettings, FsConfig>(DEFAULT_CONFIG, config);
   settings.log = loggerFactory(settings, config.logger);
 
@@ -91,6 +95,9 @@ export function buildSettingsFromConfig(config: FsConfig): FsSettings {
   settings.platform = typeof window !== 'undefined' ? 'browser' : 'node';
 
   validateSettings(settings);
+
+  ConfigValidator.validateSettings(settings);
+  ConfigValidator.validatePlatformSettings(settings);
 
   return settings;
 }
