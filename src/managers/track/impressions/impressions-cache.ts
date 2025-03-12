@@ -1,9 +1,9 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { SdkClientTrackImpression } from '~api/data-contracts';
 
 import { TrackCache } from '~managers/track/caches/track-cache';
-import { ITrackCache } from '~managers/track/caches/types';
+import type { ITrackCache } from '~managers/track/caches/types';
 import { ImpressionLogStrategy } from '~managers/track/impressions/impressions-log-strategy';
 
 export interface IImpressionCache

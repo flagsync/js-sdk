@@ -1,5 +1,5 @@
 import { DeferredEventEmitter } from '~managers/event/deferred-event-emitter';
-import {
+import type {
   EventCallback,
   EventInternalCallback,
   FsEventType,

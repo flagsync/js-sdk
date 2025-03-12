@@ -1,4 +1,4 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { Sdk } from '~api/sdk';
 import { Sse } from '~api/sse';

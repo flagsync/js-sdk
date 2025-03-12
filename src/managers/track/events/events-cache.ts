@@ -1,9 +1,9 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
-import { SdkClientTrackEvent } from '~api/data-contracts';
+import type { SdkClientTrackEvent } from '~api/data-contracts';
 
 import { TrackCache } from '~managers/track/caches/track-cache';
-import { ITrackCache } from '~managers/track/caches/types';
+import type { ITrackCache } from '~managers/track/caches/types';
 import { EventLogStrategy } from '~managers/track/events/events-log-strategy';
 
 import { MESSAGE } from '~logger/messages';

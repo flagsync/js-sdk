@@ -1,13 +1,13 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
-import {
+import type {
   SdkClientTrackEventRequest,
   SdkClientTrackImpressionsRequest,
 } from '~api/data-contracts';
 
-import { IBeaconManager } from '~managers/track/beacon/types';
-import { IEventsManager } from '~managers/track/events/types';
-import { IImpressionsManager } from '~managers/track/impressions/types';
+import type { IBeaconManager } from '~managers/track/beacon/types';
+import type { IEventsManager } from '~managers/track/events/types';
+import type { IImpressionsManager } from '~managers/track/impressions/types';
 import { canListenToDocument, canListenToWindow } from '~managers/track/utils';
 
 import { MESSAGE } from '~logger/messages';

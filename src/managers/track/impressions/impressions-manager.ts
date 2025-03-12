@@ -1,11 +1,11 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { apiClientFactory } from '~api/clients/api-client';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { ImpressionsCache } from '~managers/track/impressions/impressions-cache';
-import {
+import type {
   IImpressionsManager,
   PartialTrackImpression,
 } from '~managers/track/impressions/types';

@@ -1,7 +1,7 @@
-import { FsFlagSet } from '~config/types';
-import { FsSettings } from '~config/types.internal';
+import type { FsFlagSet } from '~config/types';
+import type { FsSettings } from '~config/types.internal';
 
-import { IStoreManager } from '~managers/storage/types';
+import type { IStoreManager } from '~managers/storage/types';
 
 import { MESSAGE } from '~logger/messages';
 import { formatMsg } from '~logger/utils';

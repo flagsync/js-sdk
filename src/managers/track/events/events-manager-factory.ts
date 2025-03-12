@@ -1,8 +1,8 @@
-import { FsSettings } from '~config/types.internal';
+import type { FsSettings } from '~config/types.internal';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
 import { eventsManager } from '~managers/track/events/events-manager';
-import { IEventsManager } from '~managers/track/events/types';
+import type { IEventsManager } from '~managers/track/events/types';
 
 export function eventsManagerFactory(
   settings: FsSettings,

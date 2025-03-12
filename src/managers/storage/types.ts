@@ -1,4 +1,4 @@
-import { FsFlagSet } from '~config/types';
+import type { FsFlagSet } from '~config/types';
 
 export interface IStoreManager {
   set: (flagSet: FsFlagSet) => void;

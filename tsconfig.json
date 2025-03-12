@@ -33,6 +33,7 @@
     "paths": {
       "~sdk/*": ["src/*"],
       "~api/*": ["src/api/*"],
+      "~di/*": ["src/di/*"],
       "~config/*": ["src/config/*"],
       "~logger/*": ["src/logger/*"],
       "~managers/*": ["src/managers/*"],

@@ -1,6 +1,6 @@
-import { SdkClientTrackEvent } from '~api/data-contracts';
+import type { SdkClientTrackEvent } from '~api/data-contracts';
 
-import { ITrackCacheLogStrategy } from '~managers/track/caches/types';
+import type { ITrackCacheLogStrategy } from '~managers/track/caches/types';
 
 export class EventLogStrategy
   implements ITrackCacheLogStrategy<SdkClientTrackEvent>

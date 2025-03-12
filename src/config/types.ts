@@ -1,4 +1,4 @@
-import { ILogger, LogLevel } from '~logger/types';
+import type { ILogger, LogLevel } from '~logger/types';
 
 export type FsFlagValue = any;
 export type FsFlagSet = Record<string, FsFlagValue>;
