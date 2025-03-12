@@ -90,11 +90,15 @@ describe('Container', () => {
       expect(container.get('test')).toBe(mockService);
     });
 
-    it('should throw when registering the same service twice', () => {
-      container.register('test', () => ({}));
-      expect(() => {
-        container.register('test', () => ({}));
-      }).toThrowError("Service 'test' is already registered");
+    it('should allow service re-registration', () => {
+      const mockService1 = { test: 'service1' };
+      const mockService2 = { test: 'service2' };
+
+      container.register('test', () => mockService1);
+      expect(container.get('test')).toBe(mockService1);
+
+      container.register('test', () => mockService2);
+      expect(container.get('test')).toBe(mockService2);
     });
 
     it('should throw when getting non-existent service', () => {
