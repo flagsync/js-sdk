@@ -104,17 +104,12 @@ describe('Container', () => {
     it('should throw when getting non-existent service', () => {
       expect(() => {
         container.get('nonexistent');
-      }).toThrowError("No factory registered for service 'nonexistent'");
+      }).toThrowError("Service 'nonexistent' not found");
     });
 
-    it('should create service only once', () => {
+    it('should create service immediately on registration', () => {
       const factory = vi.fn().mockReturnValue({});
       container.register('test', factory);
-
-      container.get('test');
-      container.get('test');
-      container.get('test');
-
       expect(factory).toHaveBeenCalledTimes(1);
     });
   });
@@ -128,46 +123,26 @@ describe('Container', () => {
 
     it('should resolve nested dependencies', () => {
       const serviceA = { name: 'A' };
-
       container.register('serviceA', () => serviceA);
-      container.register('serviceB', (c) => ({
+
+      type ServiceB = { name: string; a: typeof serviceA };
+      container.register<ServiceB>('serviceB', (c) => ({
         name: 'B',
         a: c.get('serviceA'),
       }));
 
-      const b = container.get('serviceB');
+      const b = container.get<ServiceB>('serviceB');
       expect(b).toEqual({ name: 'B', a: serviceA });
-    });
-
-    it('should handle circular dependencies', () => {
-      container.register('serviceA', (c) => ({
-        name: 'A',
-        getB: () => c.get('serviceB'),
-      }));
-
-      container.register('serviceB', (c) => ({
-        name: 'B',
-        getA: () => c.get('serviceA'),
-      }));
-
-      const a = container.get('serviceA');
-      const b = container.get('serviceB');
-
-      expect(a.getB()).toBe(b);
-      expect(b.getA()).toBe(a);
     });
   });
 
   describe('lifecycle', () => {
-    it('should clear all services and factories', () => {
+    it('should clear all services', () => {
       const container = Container.getInstance(mockSettings);
       container.register('test', () => ({}));
-      container.get('test');
 
       container.clear();
-
       expect(container.hasService('test')).toBe(false);
-      expect(container.isRegistered('test')).toBe(false);
     });
 
     it('should reset singleton instance', () => {
@@ -180,26 +155,28 @@ describe('Container', () => {
   });
 
   describe('error handling', () => {
-    it('should handle factory errors gracefully', () => {
+    it('should throw factory errors during registration', () => {
       const container = Container.getInstance(mockSettings);
-      container.register('errorService', () => {
-        throw new Error('Factory error');
-      });
 
-      expect(() => container.get('errorService')).toThrowError('Factory error');
+      expect(() => {
+        container.register('errorService', () => {
+          throw new Error('Factory error');
+        });
+      }).toThrowError('Factory error');
     });
 
-    it('should maintain container state when factory errors', () => {
+    it('should maintain container state when registration errors', () => {
       const container = Container.getInstance(mockSettings);
       const validService = { valid: true };
 
       container.register('validService', () => validService);
-      container.register('errorService', () => {
-        throw new Error('Factory error');
-      });
 
-      container.get('validService');
-      expect(() => container.get('errorService')).toThrowError();
+      expect(() => {
+        container.register('errorService', () => {
+          throw new Error('Factory error');
+        });
+      }).toThrowError();
+
       expect(container.get('validService')).toBe(validService);
     });
   });

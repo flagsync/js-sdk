@@ -17,8 +17,6 @@ export function storageManagerFactory(
   params: FsSettings,
   eventManager: IEventManager,
 ): IStoreManager {
-  console.log('Initializing storageManagerFactory');
-
   const { storage, log } = params;
 
   let manager: IStoreManager;

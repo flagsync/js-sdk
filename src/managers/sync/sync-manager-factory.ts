@@ -12,8 +12,6 @@ export function syncManagerFactory(
   settings: FsSettings,
   eventManager: IEventManager,
 ): ISyncManager {
-  console.log('Initializing syncManagerFactory');
-
   const { sync, platform } = settings;
 
   let manager: ISyncManager;

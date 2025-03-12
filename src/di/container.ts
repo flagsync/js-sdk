@@ -3,8 +3,6 @@ import { FsSettings } from '~config/types.internal';
 export class Container {
   private static instance: Container | null = null;
   private readonly services: Map<string, any> = new Map();
-  private readonly factories: Map<string, (container: Container) => any> =
-    new Map();
   private readonly settings: FsSettings;
 
   private constructor(settings: FsSettings) {
@@ -30,19 +28,13 @@ export class Container {
   }
 
   register<T>(key: string, factory: (container: Container) => T): void {
-    this.factories.set(key, factory);
-    // Clear existing service instance if it exists to ensure new factory is used
-    this.services.delete(key);
+    const instance = factory(this);
+    this.services.set(key, instance);
   }
 
   get<T>(key: string): T {
     if (!this.services.has(key)) {
-      if (!this.factories.has(key)) {
-        throw new Error(`No factory registered for service '${key}'`);
-      }
-      const factory = this.factories.get(key)!;
-      const instance = factory(this);
-      this.services.set(key, instance);
+      throw new Error(`Service '${key}' not found`);
     }
     return this.services.get(key) as T;
   }
@@ -51,12 +43,7 @@ export class Container {
     return this.services.has(key);
   }
 
-  isRegistered(key: string): boolean {
-    return this.factories.has(key);
-  }
-
   clear(): void {
     this.services.clear();
-    this.factories.clear();
   }
 }

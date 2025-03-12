@@ -20,8 +20,6 @@ export function serviceManager(
   storageManager: IStoreManager,
   eventEmitter: IEventManager,
 ): IServiceManager {
-  console.log('Initializing serviceManager');
-
   const { log, context, sdkContext } = settings;
 
   const initWithWithThrow = sdk

@@ -10,8 +10,6 @@ import type {
 } from '~managers/event/types';
 
 export function eventManagerFactory(): IEventManager {
-  console.log('Initializing eventManagerFactory');
-
   const emitter = new DeferredEventEmitter();
 
   function on<T extends FsEventType>(event: T, callback: EventCallback<T>) {

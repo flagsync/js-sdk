@@ -37,7 +37,6 @@ export class FsClient {
   private registerServices(): void {
     if (this.initialized) return;
 
-    // Register event manager first as many services depend on it
     this.container.register('eventManager', () => {
       return eventManagerFactory();
     });
