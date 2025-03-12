@@ -30,8 +30,9 @@ export class Container {
   }
 
   register<T>(key: string, factory: (container: Container) => T): void {
-    if (this.factories.has(key)) {
-      throw new Error(`Service '${key}' is already registered`);
+    if (!this.factories.has(key)) {
+      console.warn(`Service '${key}' is already registered`);
+      return;
     }
     this.factories.set(key, factory);
   }
