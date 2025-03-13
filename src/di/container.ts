@@ -1,8 +1,11 @@
+import { ServiceKey } from '~di/services';
+import { ServiceTypes } from '~di/types';
+
 import { FsSettings } from '~config/types.internal';
 
 export class Container {
   private static instance: Container | null = null;
-  private readonly services: Map<string, any> = new Map();
+  private readonly services: Map<ServiceKey, any> = new Map();
   private readonly settings: FsSettings;
 
   private constructor(settings: FsSettings) {
@@ -27,19 +30,22 @@ export class Container {
     return this.settings;
   }
 
-  register<T>(key: string, factory: (container: Container) => T): void {
+  register<K extends ServiceKey>(
+    key: K,
+    factory: (container: Container) => ServiceTypes[K],
+  ): void {
     const instance = factory(this);
     this.services.set(key, instance);
   }
 
-  get<T>(key: string): T {
+  get<K extends ServiceKey>(key: K): ServiceTypes[K] {
     if (!this.services.has(key)) {
       throw new Error(`Service '${key}' not found`);
     }
-    return this.services.get(key) as T;
+    return this.services.get(key) as ServiceTypes[K];
   }
 
-  hasService(key: string): boolean {
+  hasService(key: ServiceKey): boolean {
     return this.services.has(key);
   }
 

@@ -1,4 +1,5 @@
 import { Container } from '~di/container';
+import { ServiceKeys } from '~di/services';
 
 import type { FsConfig, FsFlagSet } from '~config/types';
 import { buildSettingsFromConfig } from '~config/utils';
@@ -6,23 +7,13 @@ import { buildSettingsFromConfig } from '~config/utils';
 import { apiClientFactory } from '~api/clients/api-client';
 
 import { eventManagerFactory } from '~managers/event/event-manager-factory';
-import type {
-  EventCallback,
-  FsEventType,
-  IEventManager,
-} from '~managers/event/types';
+import type { EventCallback, FsEventType } from '~managers/event/types';
 import { flagManager } from '~managers/flag/flag-manager';
-import type { IFlagManager } from '~managers/flag/types';
 import { killManager } from '~managers/kill/kill-manager';
-import type { IKillManager } from '~managers/kill/types';
 import { serviceManager } from '~managers/service/service-manager';
-import type { IServiceManager } from '~managers/service/types';
 import { storageManagerFactory } from '~managers/storage/storage-manger-factory';
-import type { IStoreManager } from '~managers/storage/types';
 import { syncManagerFactory } from '~managers/sync/sync-manager-factory';
-import type { ISyncManager } from '~managers/sync/types';
 import { trackManagerFactory } from '~managers/track/track-manager-factory';
-import type { ITrackManager } from '~managers/track/types';
 
 export class FsClient {
   private readonly container: Container;
@@ -37,54 +28,64 @@ export class FsClient {
   private registerServices(): void {
     if (this.initialized) return;
 
-    this.container.register('eventManager', () => {
+    this.container.register(ServiceKeys.ApiClient, () =>
+      apiClientFactory(this.container.getSettings()),
+    );
+
+    this.container.register(ServiceKeys.EventManager, () => {
       return eventManagerFactory();
     });
 
     // Register storage manager
-    this.container.register('storageManager', (container) => {
-      const settings = container.getSettings();
-      const eventManager = container.get<IEventManager>('eventManager');
-      return storageManagerFactory(settings, eventManager);
+    this.container.register(ServiceKeys.StorageManager, (c) => {
+      return storageManagerFactory(
+        c.getSettings(),
+        c.get(ServiceKeys.EventManager),
+      );
     });
 
     // Register sync manager
-    this.container.register('syncManager', (container) => {
-      const settings = container.getSettings();
-      const eventManager = container.get<IEventManager>('eventManager');
-      return syncManagerFactory(settings, eventManager);
+    this.container.register(ServiceKeys.SyncManager, (c) => {
+      return syncManagerFactory(
+        c.getSettings(),
+        c.get(ServiceKeys.EventManager),
+      );
     });
 
     // Register track manager
-    this.container.register('trackManager', (container) => {
-      const settings = container.getSettings();
-      const eventManager = container.get<IEventManager>('eventManager');
-      return trackManagerFactory(settings, eventManager);
+    this.container.register(ServiceKeys.TrackManager, (c) => {
+      return trackManagerFactory(
+        c.getSettings(),
+        c.get(ServiceKeys.EventManager),
+      );
     });
 
     // Register service manager
-    this.container.register('serviceManager', (container) => {
-      const settings = container.getSettings();
-      const { sdk } = apiClientFactory(settings);
-      const eventManager = container.get<IEventManager>('eventManager');
-      const storageManager = container.get<IStoreManager>('storageManager');
-      return serviceManager(settings, sdk, storageManager, eventManager);
+    this.container.register(ServiceKeys.ServiceManager, (c) => {
+      return serviceManager(
+        c.getSettings(),
+        c.get(ServiceKeys.ApiClient).sdk,
+        c.get(ServiceKeys.StorageManager),
+        c.get(ServiceKeys.EventManager),
+      );
     });
 
     // Register kill manager
-    this.container.register('killManager', (container) => {
-      const settings = container.getSettings();
-      const eventManager = container.get<IEventManager>('eventManager');
-      const syncManager = container.get<ISyncManager>('syncManager');
-      const trackManager = container.get<ITrackManager>('trackManager');
-      return killManager(settings, eventManager, syncManager, trackManager);
+    this.container.register(ServiceKeys.KillManager, (c) => {
+      return killManager(
+        c.getSettings(),
+        c.get(ServiceKeys.EventManager),
+        c.get(ServiceKeys.SyncManager),
+        c.get(ServiceKeys.TrackManager),
+      );
     });
 
     // Register flag manager
-    this.container.register('flagManager', (container) => {
-      const storageManager = container.get<IStoreManager>('storageManager');
-      const trackManager = container.get<ITrackManager>('trackManager');
-      return flagManager(storageManager, trackManager);
+    this.container.register(ServiceKeys.FlagManager, (c) => {
+      return flagManager(
+        c.get(ServiceKeys.StorageManager),
+        c.get(ServiceKeys.TrackManager),
+      );
     });
 
     this.initialized = true;
@@ -93,40 +94,34 @@ export class FsClient {
   // Public API methods
   public flag<T>(flagKey: string, defaultValue?: T): T {
     return this.container
-      .get<IFlagManager>('flagManager')
+      .get(ServiceKeys.FlagManager)
       .flag(flagKey, defaultValue);
   }
 
   public flags(defaultValues?: FsFlagSet): FsFlagSet {
-    return this.container.get<IFlagManager>('flagManager').flags(defaultValues);
+    return this.container.get(ServiceKeys.FlagManager).flags(defaultValues);
   }
 
   public kill(): void {
-    return this.container.get<IKillManager>('killManager').kill();
+    return this.container.get(ServiceKeys.KillManager).kill();
   }
 
   public on<T extends FsEventType>(event: T, callback: EventCallback<T>): void {
-    return this.container
-      .get<IEventManager>('eventManager')
-      .on(event, callback);
+    return this.container.get(ServiceKeys.EventManager).on(event, callback);
   }
 
   public once<T extends FsEventType>(
     event: T,
     callback: EventCallback<T>,
   ): void {
-    return this.container
-      .get<IEventManager>('eventManager')
-      .once(event, callback);
+    return this.container.get(ServiceKeys.EventManager).once(event, callback);
   }
 
   public off<T extends FsEventType>(
     event: T,
     callback?: EventCallback<T>,
   ): void {
-    return this.container
-      .get<IEventManager>('eventManager')
-      .off(event, callback);
+    return this.container.get(ServiceKeys.EventManager).off(event, callback);
   }
 
   public track(
@@ -135,16 +130,15 @@ export class FsClient {
     properties?: Record<string, any>,
   ): void {
     return this.container
-      .get<ITrackManager>('trackManager')
+      .get(ServiceKeys.TrackManager)
       .eventsManager.track(eventKey, value, properties);
   }
 
   public async waitForReady(): Promise<void> {
-    return this.container.get<IServiceManager>('serviceManager').initWithCatch;
+    return this.container.get(ServiceKeys.ServiceManager).initWithCatch;
   }
 
   public async waitForReadyCanThrow(): Promise<void> {
-    return this.container.get<IServiceManager>('serviceManager')
-      .initWithWithThrow;
+    return this.container.get(ServiceKeys.ServiceManager).initWithWithThrow;
   }
 }

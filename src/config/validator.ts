@@ -3,119 +3,91 @@ import { FsServiceError, ServiceErrorCode } from '~api/error/service-error';
 import type { FsConfig } from './types';
 import type { FsSettings } from './types.internal';
 
+interface ValidationRule {
+  validate: (settings: FsSettings) => boolean;
+  message: string;
+}
+
 export class ConfigValidator {
-  /**
-   * Validates the raw configuration before it's transformed into settings
-   */
-  static validateConfig(config: FsConfig): void {
-    if (!config.core) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'core configuration is required',
-      });
-    }
+  private static rules: ValidationRule[] = [
+    {
+      validate: (settings) => Boolean(settings.sdkKey),
+      message: 'sdkKey is required',
+    },
+    {
+      validate: (settings) => Boolean(settings.core?.key),
+      message: 'core.key is required',
+    },
+    {
+      validate: (settings) => settings.tracking.impressions.pushRate >= 30,
+      message: 'tracking.impressions.pushRate must be >= 30',
+    },
+    {
+      validate: (settings) => settings.tracking.impressions.maxQueueSize >= 50,
+      message: 'tracking.impressions.maxQueueSize must be >= 50',
+    },
+    {
+      validate: (settings) => settings.tracking.events.pushRate >= 30,
+      message: 'tracking.events.pushRate must be >= 30',
+    },
+    {
+      validate: (settings) => settings.tracking.events.maxQueueSize >= 50,
+      message: 'tracking.events.maxQueueSize must be >= 50',
+    },
+    {
+      validate: (settings) => settings.sync.pollRate >= 30,
+      message: 'sync.pollRate must be >= 30',
+    },
+    {
+      validate: (settings) =>
+        Boolean(settings.metadata.sdkName && settings.metadata.sdkVersion),
+      message:
+        'Unable to determine SDK name or version. Please contact support.',
+    },
+    {
+      validate: (settings) => ['browser', 'node'].includes(settings.platform),
+      message: 'Invalid platform setting. Must be either "browser" or "node".',
+    },
+  ];
 
-    if (!config.core.key) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'core.key is required',
-      });
-    }
-  }
+  private static configRules: ValidationRule[] = [
+    {
+      validate: (config: FsConfig) => Boolean(config.core),
+      message: 'core configuration is required',
+    },
+    {
+      validate: (config: FsConfig) => Boolean(config.core?.key),
+      message: 'core.key is required',
+    },
+  ];
 
-  /**
-   * Validates the transformed settings after merging with defaults
-   */
-  static validateSettings(settings: FsSettings): void {
-    this.validateSdkKey(settings);
-    this.validateTrackingSettings(settings);
-    this.validateSyncSettings(settings);
-    this.validateMetadata(settings);
-  }
-
-  private static validateSdkKey(settings: FsSettings): void {
-    if (!settings.sdkKey) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'sdkKey is required',
-      });
-    }
-  }
-
-  private static validateTrackingSettings(settings: FsSettings): void {
-    // Validate impressions settings
-    if (settings.tracking.impressions.pushRate < 30) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'tracking.impressions.pushRate must be greater than 30',
-      });
-    }
-
-    if (settings.tracking.impressions.maxQueueSize < 50) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'tracking.impressions.maxQueueSize must be greater than 50',
-      });
-    }
-
-    // Validate events settings
-    if (settings.tracking.events.pushRate < 30) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'tracking.events.pushRate must be greater than 30',
-      });
-    }
-
-    if (settings.tracking.events.maxQueueSize < 50) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'tracking.events.maxQueueSize must be greater than 50',
-      });
+  public static validate(settings: FsSettings): void {
+    for (const rule of this.rules) {
+      if (!rule.validate(settings)) {
+        throw new FsServiceError({
+          errorCode: ServiceErrorCode.InvalidConfiguration,
+          message: rule.message,
+        });
+      }
     }
   }
 
-  private static validateSyncSettings(settings: FsSettings): void {
-    if (settings.sync.pollRate < 30) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message: 'sync.pollRate must be greater than 30',
-      });
+  public static validateConfig(config: FsConfig): void {
+    for (const rule of this.configRules) {
+      if (!rule.validate(config as any)) {
+        throw new FsServiceError({
+          errorCode: ServiceErrorCode.InvalidConfiguration,
+          message: rule.message,
+        });
+      }
     }
   }
 
-  private static validateMetadata(settings: FsSettings): void {
-    if (!settings.metadata.sdkName || !settings.metadata.sdkVersion) {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message:
-          'Unable to determine SDK name or version. Please contact support.',
-      });
-    }
+  public static addRule(rule: ValidationRule): void {
+    this.rules.push(rule);
   }
 
-  /**
-   * Validates platform-specific settings
-   */
-  static validatePlatformSettings(settings: FsSettings): void {
-    const platform = settings.platform;
-
-    if (platform !== 'browser' && platform !== 'node') {
-      throw new FsServiceError({
-        errorCode: ServiceErrorCode.InvalidConfiguration,
-        message:
-          'Invalid platform setting. Must be either "browser" or "node".',
-      });
-    }
-
-    // Add platform-specific validation rules here
-    if (platform === 'browser') {
-      this.validateBrowserSettings(settings);
-    } else {
-      this.validateNodeSettings(settings);
-    }
+  public static addConfigRule(rule: ValidationRule): void {
+    this.configRules.push(rule);
   }
-
-  private static validateBrowserSettings(settings: FsSettings): void {}
-
-  private static validateNodeSettings(settings: FsSettings): void {}
 }
