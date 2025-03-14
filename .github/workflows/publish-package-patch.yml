@@ -74,10 +74,10 @@ jobs:
           run_install: false
 
       - name: Install dependencies
-        run: PATCH=true pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        run: PATCH=true pnpm build
 
       - name: Publish
         run: |
