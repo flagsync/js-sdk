@@ -1,3 +1,5 @@
+import deepEqual from 'fast-deep-equal';
+
 import { Container } from '~di/container';
 import { ServiceKeys } from '~di/services';
 
@@ -20,8 +22,23 @@ export class FsClient {
   private initialized = false;
 
   constructor(config: FsConfig) {
+    const unsafeInstance = Container.getInstanceUnsafe();
+
+    /**
+     * If FsClient is constructed with a new configuration, clear the old
+     * Container singleton and reinitialize all its services.
+     */
+    if (unsafeInstance) {
+      if (!deepEqual(unsafeInstance.getConfig(), config)) {
+        this.kill();
+        unsafeInstance.clear();
+        Container.resetInstance();
+        this.initialized = false;
+      }
+    }
+
     const settings = buildSettingsFromConfig(config);
-    this.container = Container.getInstance(settings);
+    this.container = Container.getInstance(settings, config);
     this.registerServices();
   }
 
