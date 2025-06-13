@@ -1,40 +1,29 @@
 import { ServiceKey } from '~di/services';
 import { ServiceTypes } from '~di/types';
 
-import { FsConfig } from '~config/types';
 import { FsSettings } from '~config/types.internal';
 
 export class Container {
   private static instance: Container | null = null;
   private readonly services: Map<ServiceKey, any> = new Map();
   private readonly settings: FsSettings;
-  private readonly config: FsConfig;
 
-  private constructor(settings: FsSettings, config: FsConfig) {
+  private constructor(settings: FsSettings) {
     this.settings = settings;
-    this.config = config;
   }
 
-  static getInstance(settings: FsSettings, config: FsConfig): Container {
+  static getInstance(settings?: FsSettings): Container {
     if (!Container.instance && !settings) {
       throw new Error('Container must be initialized with settings first');
     }
     if (!Container.instance && settings) {
-      Container.instance = new Container(settings, config);
+      Container.instance = new Container(settings);
     }
     return Container.instance!;
   }
 
-  static getInstanceUnsafe(): Container | null {
-    return Container.instance;
-  }
-
   static resetInstance(): void {
     Container.instance = null;
-  }
-
-  getConfig(): FsConfig {
-    return this.config;
   }
 
   getSettings(): FsSettings {
