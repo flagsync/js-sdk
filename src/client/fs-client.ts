@@ -105,7 +105,7 @@ export class FsClient {
    *
    * @example With FlagSync CLI generated types (recommended for full type-safety and DX):
    * ```ts
-   * declare module '@flagsync/node-sdk' {
+   * declare module '@flagsync/js-sdk' {
    *   interface FeatureFlags {
    *     'price-discount': 0.1 | 0.2;
    *     'layout': 'v1' | 'v2' | 'v3';
