@@ -21,9 +21,3 @@ export interface IFlagManager {
 }
 
 export interface FeatureFlags {}
-
-export type TypedFeatureFlags = keyof FeatureFlags extends never
-  ? Record<string, unknown>
-  : { [K in keyof FeatureFlags]: FeatureFlags[K] };
-
-export type FlagKey = keyof TypedFeatureFlags;
