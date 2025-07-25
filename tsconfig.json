@@ -20,7 +20,6 @@
     /* Building for a library: */
     "declaration": true,
 
-
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,

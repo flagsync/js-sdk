@@ -1,6 +1,6 @@
 {
   "name": "@flagsync/js-sdk",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "FlagSync SDK for JavaScript",
   "author": "Mike Chabot",
   "license": "Apache-2.0",
@@ -45,8 +45,7 @@
     "axios": "^1.6.8",
     "deepmerge": "^4.3.1",
     "eventemitter3": "^5.0.1",
-    "extended-eventsource": "^1.4.9",
-    "fast-deep-equal": "^3.1.3"
+    "extended-eventsource": "^1.4.9"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

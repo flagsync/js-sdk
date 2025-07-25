@@ -15,6 +15,13 @@ export type {
   FsEventType,
 } from '~managers/event/types';
 
+export type {
+  FeatureFlags,
+  NoExplicitReturnType,
+  IsFeatureFlagsEmpty,
+  FlagReturnType,
+} from '~managers/flag/types';
+
 export { FsEvent } from '~managers/event/types';
 
 export type FsErrorSource = 'api' | 'sdk';
