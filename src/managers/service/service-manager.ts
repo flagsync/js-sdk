@@ -30,7 +30,6 @@ export function serviceManager(
     .then(() =>
       sdk.sdkControllerGetFlags({
         context,
-        sdkContext,
       }),
     )
     .then((res) => {

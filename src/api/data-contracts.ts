@@ -24,22 +24,13 @@ export interface SdkInitClientRequest {
   sdkContext: SdkSdkContext;
 }
 
-export interface SdkInitServerRequest {
-  sdkContext: SdkSdkContext;
-}
-
 export interface SdkEnvironmentFlagsGetRequest {
   context: SdkUserContext;
-  sdkContext: SdkSdkContext;
 }
 
 export interface SdkEnvironmentFlagsGetResponse {
   flags: object;
   context: SdkUserContext;
-}
-
-export interface SdkEnvironmentFlagRulesGetRequest {
-  sdkContext: SdkSdkContext;
 }
 
 export interface VariantDto {
@@ -136,21 +127,6 @@ export interface FeatureFlagEnvironmentDetailDto {
   environmentId: number;
   featureFlag: FeatureFlagDto;
   state: FeatureFlagStateDto;
-}
-
-export interface SdkEnvironmentFlagRulesGetResponse {
-  placeholder: FeatureFlagEnvironmentDetailDto[];
-  flags: Record<string, FeatureFlagEnvironmentDetailDto>;
-}
-
-export interface SdkEnvironmentFlagGetRequest {
-  context: SdkUserContext;
-  sdkContext: SdkSdkContext;
-}
-
-export interface SdkEnvironmentFlagGetResponse {
-  flag: object;
-  context: SdkUserContext;
 }
 
 export interface SdkClientTrackEvent {

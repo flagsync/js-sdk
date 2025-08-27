@@ -36,7 +36,7 @@ export class Sdk<
     params: RequestParams = {},
   ) =>
     this.request<void, void>({
-      path: `/sdk/init-client`,
+      path: `/worker/sdk/init-client`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -54,7 +54,7 @@ export class Sdk<
     params: RequestParams = {},
   ) =>
     this.request<SdkEnvironmentFlagsGetResponse, void>({
-      path: `/sdk/flags`,
+      path: `/worker/sdk/flags`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
