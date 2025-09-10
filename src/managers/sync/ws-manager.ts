@@ -19,7 +19,7 @@ export const wsManager = (
   let reconnectTimeout: NodeJS.Timeout | null = null;
   const RECONNECT_DELAY = 5000;
 
-  const url = new URL(`${urls.ws.replace('https', 'wss')}/worker/sdk/connect`);
+  const url = new URL(`${urls.ws.replace('https', 'wss')}/sdk/connect`);
   url.searchParams.append('x-ridgeline-key', settings.sdkKey);
   url.searchParams.append('x-ridgeline-user-ctx', JSON.stringify(context));
 
