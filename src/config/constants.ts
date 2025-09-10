@@ -2,6 +2,11 @@ import type { FsSettings } from '~config/types.internal';
 
 export const UNREADY_FLAG_VALUE = 'control';
 
+const SDK_URLS = {
+  api: 'https://sdk.flagsync.com',
+  worker: 'https://sdk.flagsync.com/worker',
+};
+
 export const DEFAULT_CONFIG = {
   sdkKey: undefined,
   core: {
@@ -14,21 +19,24 @@ export const DEFAULT_CONFIG = {
     prefix: 'flagsync',
   },
   sync: {
-    type: 'stream',
-    pollRate: 60,
+    type: 'ws',
+    pollRateInSec: 60,
   },
   tracking: {
     impressions: {
       maxQueueSize: 50,
-      pushRate: 60,
+      pushRateInSec: 60,
     },
     events: {
       maxQueueSize: 50,
-      pushRate: 60,
+      pushRateInSec: 60,
     },
   },
   urls: {
-    sdk: 'https://sdk.flagsync.com',
+    ws: SDK_URLS.worker,
+    flags: SDK_URLS.worker,
+    sse: SDK_URLS.api,
+    events: SDK_URLS.api,
   },
   debug: false,
 } as unknown as FsSettings;

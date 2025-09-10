@@ -1,6 +1,6 @@
 import type { FsSettings } from '~config/types.internal';
 
-import { apiClientFactory } from '~api/clients/api-client';
+import { Track } from '~api/clients/track-client';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
@@ -19,6 +19,7 @@ const formatter = formatMsg.bind(null, 'impressions-manager');
 
 export function impressionsManager(
   settings: FsSettings,
+  track: Track,
   eventManager: IEventManager,
 ): IImpressionsManager {
   const {
@@ -26,16 +27,14 @@ export function impressionsManager(
     context,
     sdkContext,
     tracking: {
-      impressions: { pushRate },
+      impressions: { pushRateInSec },
     },
   } = settings;
 
   const cache = new ImpressionsCache(settings, flushQueue);
 
-  const { track } = apiClientFactory(settings);
-
   let timeout: number | NodeJS.Timeout;
-  const interval = pushRate * 1000;
+  const interval = pushRateInSec * 1000;
 
   async function batchSend() {
     if (cache.isEmpty()) {
@@ -60,7 +59,7 @@ export function impressionsManager(
         );
       })
       .catch(async (e: unknown) => {
-        const error = ServiceErrorFactory.create(e);
+        const error = await ServiceErrorFactory.create(e);
         log.error(
           formatter(MESSAGE.TRACK_SEND_FAIL),
           error.path,

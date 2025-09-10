@@ -1,6 +1,6 @@
 import { IServiceManager } from '~sdk/managers/service/types';
 
-import { ApiClient } from '~api/clients/api-client';
+import { ApiClientFactory } from '~api/api-client-factory';
 
 import { IEventManager } from '~managers/event/types';
 import { IFlagManager } from '~managers/flag/types';
@@ -12,7 +12,7 @@ import { ITrackManager } from '~managers/track/types';
 import { ServiceKeys } from './services';
 
 export type ServiceTypes = {
-  [ServiceKeys.ApiClient]: ApiClient;
+  [ServiceKeys.ApiClient]: ApiClientFactory;
   [ServiceKeys.EventManager]: IEventManager;
   [ServiceKeys.SyncManager]: ISyncManager;
   [ServiceKeys.StorageManager]: IStoreManager;

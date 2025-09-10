@@ -1,38 +1,10 @@
-/* eslint-disable */
-
-/* tslint:disable */
-
-/*
- * ---------------------------------------------------------------
- * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
- * ##                                                           ##
- * ## AUTHOR: acacode                                           ##
- * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
- * ---------------------------------------------------------------
- */
-import type {
-  AxiosInstance,
-  AxiosRequestConfig,
-  HeadersDefaults,
-  ResponseType,
-} from 'axios';
-import axios from 'axios';
-
 export type QueryParamsType = Record<string | number, any>;
 
 export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
-  /** set parameter to `true` for call `securityWorker` for this request */
+  extends Omit<RequestInit, 'body' | 'signal'> {
   secure?: boolean;
-  /** request path */
   path: string;
-  /** content type of request body */
-  type?: ContentType;
-  /** query params */
   query?: QueryParamsType;
-  /** format of response (i.e. response.json() -> format: "json") */
-  format?: ResponseType;
-  /** request body */
   body?: unknown;
 }
 
@@ -41,145 +13,77 @@ export type RequestParams = Omit<
   'body' | 'method' | 'query' | 'path'
 >;
 
-export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
-  securityWorker?: (
-    securityData: SecurityDataType | null,
-  ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
-  secure?: boolean;
-  format?: ResponseType;
+export interface ApiConfig extends Omit<RequestInit, 'body'> {
+  baseURL?: string;
 }
 
-export enum ContentType {
-  Json = 'application/json',
-  FormData = 'multipart/form-data',
-  UrlEncoded = 'application/x-www-form-urlencoded',
-  Text = 'text/plain',
-}
+export class HttpClient {
+  private readonly baseURL: string = '';
+  private readonly defaultRequestInit?: RequestInit;
 
-export class HttpClient<SecurityDataType = unknown> {
-  public instance: AxiosInstance;
-  private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
-  private secure?: boolean;
-  private format?: ResponseType;
-
-  constructor({
-    securityWorker,
-    secure,
-    format,
-    ...axiosConfig
-  }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({
-      ...axiosConfig,
-      baseURL: axiosConfig.baseURL || '',
-    });
-    this.secure = secure;
-    this.format = format;
-    this.securityWorker = securityWorker;
+  constructor({ baseURL = '', ...fetchConfig }: ApiConfig = {}) {
+    this.baseURL = baseURL;
+    this.defaultRequestInit = fetchConfig;
   }
 
-  public setSecurityData = (data: SecurityDataType | null) => {
-    this.securityData = data;
-  };
-
   protected mergeRequestParams(
-    params1: AxiosRequestConfig,
-    params2?: AxiosRequestConfig,
-  ): AxiosRequestConfig {
-    const method = params1.method || (params2 && params2.method);
-
+    params1: RequestInit,
+    params2?: RequestInit,
+  ): RequestInit {
     return {
-      ...this.instance.defaults,
+      ...this.defaultRequestInit,
       ...params1,
-      ...(params2 || {}),
+      ...params2,
       headers: {
-        ...((method &&
-          this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
-          ]) ||
-          {}),
-        ...(params1.headers || {}),
-        ...((params2 && params2.headers) || {}),
+        ...((this.defaultRequestInit?.headers as Record<string, string>) || {}),
+        ...((params1.headers as Record<string, string>) || {}),
+        ...((params2?.headers as Record<string, string>) || {}),
       },
     };
   }
 
-  protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === 'object' && formItem !== null) {
-      return JSON.stringify(formItem);
-    } else {
-      return `${formItem}`;
-    }
-  }
-
-  protected createFormData(input: Record<string, unknown>): FormData {
-    return Object.keys(input || {}).reduce((formData, key) => {
-      const property = input[key];
-      const propertyContent: any[] =
-        property instanceof Array ? property : [property];
-
-      for (const formItem of propertyContent) {
-        const isFileType = formItem instanceof Blob || formItem instanceof File;
-        formData.append(
-          key,
-          isFileType ? formItem : this.stringifyFormItem(formItem),
-        );
-      }
-
-      return formData;
-    }, new FormData());
-  }
-
-  public request = async <T = any, _E = any>({
-    secure,
+  public request = async <T = any>({
     path,
-    type,
     query,
-    format,
     body,
     ...params
   }: FullRequestParams): Promise<T> => {
-    const secureParams =
-      ((typeof secure === 'boolean' ? secure : this.secure) &&
-        this.securityWorker &&
-        (await this.securityWorker(this.securityData))) ||
-      {};
-    const requestParams = this.mergeRequestParams(params, secureParams);
-    const responseFormat = format || this.format || undefined;
+    const requestParams = this.mergeRequestParams(params);
+    const url = new URL(`${this.baseURL}${path}`);
 
-    if (
-      type === ContentType.FormData &&
-      body &&
-      body !== null &&
-      typeof body === 'object'
-    ) {
-      body = this.createFormData(body as Record<string, unknown>);
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        url.searchParams.append(key, query[key]);
+      });
     }
 
-    if (
-      type === ContentType.Text &&
-      body &&
-      body !== null &&
-      typeof body !== 'string'
-    ) {
-      body = JSON.stringify(body);
-    }
+    const finalRequestInit: RequestInit = {
+      ...requestParams,
+      body: body ? JSON.stringify(body) : undefined,
+      method: requestParams.method || 'GET',
+      headers: {
+        ...requestParams.headers,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    };
 
-    return this.instance
-      .request({
-        ...requestParams,
-        headers: {
-          ...(requestParams.headers || {}),
-          ...(type && type !== ContentType.FormData
-            ? { 'Content-Type': type }
-            : {}),
-        },
-        params: query,
-        responseType: responseFormat,
-        data: body,
-        url: path,
-      })
-      .then((response) => response.data);
+    try {
+      const response = await fetch(url.toString(), finalRequestInit);
+
+      const hasContent = response.headers.get('Content-Length') !== '0';
+
+      if (!response.ok) {
+        throw response;
+      }
+
+      if (hasContent) {
+        return (await response.json()) as T;
+      } else {
+        return null as T;
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 }

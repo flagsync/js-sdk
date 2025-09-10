@@ -1,100 +1,104 @@
-import { AxiosError, isAxiosError } from 'axios';
-
 import {
   FlagSyncErrorResponse,
   FsServiceError,
   ServiceErrorCode,
 } from './service-error';
 
-type WithData = {
-  response: {
-    data: FlagSyncErrorResponse;
-  };
+type ApiErrorResponse = {
+  errorCode: ServiceErrorCode;
+  message: string;
+  statusCode: number;
+  path: string;
 };
 
-/**
- * Possible bug in Axios? The "isAxiosError" is not appearing on true
- * AxiosError objects from valid HTTP errors. This function is a workaround
- * to check if the error matches the AxiosError interface.
- * @param e
- */
-function isDerivedAxiosError(e: unknown): e is AxiosError & WithData {
+function isApiErrorResponse(obj: any): obj is ApiErrorResponse {
   return (
-    (e as AxiosError)?.response?.data !== undefined &&
-    (e as AxiosError)?.config !== undefined
+    obj !== null &&
+    typeof obj === 'object' &&
+    typeof obj.errorCode === 'string' &&
+    typeof obj.message === 'string' &&
+    typeof obj.statusCode === 'number' &&
+    typeof obj.path === 'string'
   );
 }
 
 export class ServiceErrorFactory {
   /**
-   * If the error is of type "Error" then either we encountered a JS error,
-   * the service is down, or client's network is down. Essentially,
-   * the browser is unable to contact the server.
+   * Creates a ServiceError from a thrown object.
    *
-   * Otherwise, we got an error response from the server, so parse it.
-   * @param e
+   * @param e The thrown error object, which could be an Error or a Response.
    */
-  static create(
-    e: AxiosError<FlagSyncErrorResponse> | Error | unknown,
-  ): FsServiceError {
-    if (isAxiosError(e) && e.response?.data) {
-      return this.createFromAxios(e, e.response.data);
+  static async create(e: unknown): Promise<FsServiceError> {
+    if (e instanceof Response) {
+      try {
+        const data = await e.json();
+
+        if (isApiErrorResponse(data)) {
+          return this.createFromResponse(e.status, data);
+        }
+      } catch (jsonError) {
+        // If parsing fails, we'll treat it as a generic error below.
+      }
+
+      return this.createGeneric(e);
     }
-    if (isDerivedAxiosError(e)) {
-      return this.createFromAxios(e, e.response.data);
+
+    if (e instanceof Error) {
+      return this.createGeneric(e);
     }
-    return this.createGeneric(e);
+
+    return new FsServiceError();
   }
 
   /**
-   * Certain endpoints respond with varying types of error status.
-   * Use a mapper function if it's available, otherwise use the default mapper.
-   * @param e
-   * @param res
+   * Creates a ServiceError from a Response object with structured error data.
+   * @param status The HTTP status code.
+   * @param res The parsed JSON body of the error response.
    */
-  private static createFromAxios(
-    e: AxiosError<FlagSyncErrorResponse>,
+  private static createFromResponse(
+    status: number,
     res: FlagSyncErrorResponse,
-  ) {
-    const { statusCode } = res;
-    if (statusCode) {
-      return this.createDefault(e, res);
-    }
-    return this.createGeneric(e);
-  }
-
-  /**
-   * Create ServiceError from AxiosHttpError
-   * @param e
-   * @param error
-   * @private
-   */
-  private static createDefault(
-    e: AxiosError<FlagSyncErrorResponse>,
-    error: FlagSyncErrorResponse,
-  ) {
+  ): FsServiceError {
     return new FsServiceError({
-      statusCode: error.statusCode,
-      errorCode: error.errorCode,
-      message: error.message,
-      path: error.path,
+      statusCode: res.statusCode || status,
+      errorCode: res.errorCode || ServiceErrorCode.UnknownError,
+      message: res.message,
+      path: res.path,
     });
   }
 
   /**
-   * Create ServiceError from Error
-   * @param e
-   * @private
+   * Creates a generic ServiceError from an unknown or Error object.
+   * @param e The error object.
    */
-  private static createGeneric(e: Error | unknown) {
+  private static createGeneric(e: unknown): FsServiceError {
+    const defaultMessage = 'An unknown error occurred.';
+    const defaultStatusCode = 500;
+
+    if (e instanceof Response) {
+      return new FsServiceError({
+        message: e.statusText || defaultMessage,
+        path: '/',
+        errorCode: ServiceErrorCode.UnknownError,
+        statusCode: e.status || defaultStatusCode,
+      });
+    }
+
     if (e instanceof Error) {
       return new FsServiceError({
         message: e.message,
         path: '/',
         errorCode: ServiceErrorCode.UnknownError,
-        statusCode: 500,
+        statusCode: defaultStatusCode,
       });
     }
-    return new FsServiceError();
+
+    // For any other unknown object, use the default message.
+    return new FsServiceError({
+      message: defaultMessage,
+      path: '/',
+      errorCode: ServiceErrorCode.UnknownError,
+      statusCode: defaultStatusCode,
+    });
   }
 }

@@ -19,24 +19,24 @@ export class ConfigValidator {
       message: 'core.key is required',
     },
     {
-      validate: (settings) => settings.tracking.impressions.pushRate >= 30,
-      message: 'tracking.impressions.pushRate must be >= 30',
+      validate: (settings) => settings.tracking.impressions.pushRateInSec >= 30,
+      message: 'tracking.impressions.pushRateInSec must be >= 30',
     },
     {
       validate: (settings) => settings.tracking.impressions.maxQueueSize >= 50,
       message: 'tracking.impressions.maxQueueSize must be >= 50',
     },
     {
-      validate: (settings) => settings.tracking.events.pushRate >= 30,
-      message: 'tracking.events.pushRate must be >= 30',
+      validate: (settings) => settings.tracking.events.pushRateInSec >= 30,
+      message: 'tracking.events.pushRateInSec must be >= 30',
     },
     {
       validate: (settings) => settings.tracking.events.maxQueueSize >= 50,
       message: 'tracking.events.maxQueueSize must be >= 50',
     },
     {
-      validate: (settings) => settings.sync.pollRate >= 30,
-      message: 'sync.pollRate must be >= 30',
+      validate: (settings) => settings.sync.pollRateInSec >= 30,
+      message: 'sync.pollRateInSec must be >= 30',
     },
     {
       validate: (settings) =>
@@ -52,11 +52,11 @@ export class ConfigValidator {
 
   private static configRules: ValidationRule[] = [
     {
-      validate: (config: FsConfig) => Boolean(config.core),
+      validate: (config) => Boolean(config.core),
       message: 'core configuration is required',
     },
     {
-      validate: (config: FsConfig) => Boolean(config.core?.key),
+      validate: (config) => Boolean(config.core?.key),
       message: 'core.key is required',
     },
   ];

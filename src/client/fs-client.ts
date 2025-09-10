@@ -4,7 +4,7 @@ import { ServiceKeys } from '~di/services';
 import type { FsConfig, FsFlagSet } from '~config/types';
 import { buildSettingsFromConfig } from '~config/utils';
 
-import { apiClientFactory } from '~api/clients/api-client';
+import { apiClientFactory } from '~api/api-client-factory';
 
 import { eventManagerFactory } from '~managers/event/event-manager-factory';
 import type { EventCallback, FsEventType } from '~managers/event/types';
@@ -62,6 +62,7 @@ export class FsClient {
     this.container.register(ServiceKeys.TrackManager, (c) => {
       return trackManagerFactory(
         c.getSettings(),
+        c.get(ServiceKeys.ApiClient).track,
         c.get(ServiceKeys.EventManager),
       );
     });

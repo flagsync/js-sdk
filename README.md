@@ -7,7 +7,7 @@ The `@flagsync/js-sdk` integrates into web applications for client-side feature 
 
 ## Compatibility 
 
-* Compatible with Node.js 16+ and ES5.
+* Compatible with Node.js 18+ and ES5.
 * TypeScript is fully supported
 
 ## Getting Started

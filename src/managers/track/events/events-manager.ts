@@ -1,6 +1,6 @@
 import type { FsSettings } from '~config/types.internal';
 
-import { apiClientFactory } from '~api/clients/api-client';
+import { Track } from '~api/clients/track-client';
 import { ServiceErrorFactory } from '~api/error/service-error-factory';
 
 import { FsEvent, IEventManager } from '~managers/event/types';
@@ -16,6 +16,7 @@ const formatter = formatMsg.bind(null, 'events-manager');
 
 export function eventsManager(
   settings: FsSettings,
+  track: Track,
   eventManager: IEventManager,
 ): IEventsManager {
   const {
@@ -23,16 +24,14 @@ export function eventsManager(
     context,
     sdkContext,
     tracking: {
-      events: { pushRate },
+      events: { pushRateInSec },
     },
   } = settings;
 
   const cache = new EventsCache(settings, flushQueue);
 
-  const { track } = apiClientFactory(settings);
-
   let timeout: number | NodeJS.Timeout;
-  const interval = pushRate * 1000;
+  const interval = pushRateInSec * 1000;
 
   async function batchSend() {
     if (cache.isEmpty()) {
@@ -57,7 +56,7 @@ export function eventsManager(
         );
       })
       .catch(async (e: unknown) => {
-        const error = ServiceErrorFactory.create(e);
+        const error = await ServiceErrorFactory.create(e);
         log.error(
           formatter(MESSAGE.TRACK_SEND_FAIL),
           error.path,

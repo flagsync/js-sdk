@@ -88,7 +88,7 @@ export function beaconManager(
       log.debug(
         `${formatter(MESSAGE.BEACON_FLUSHING)} (${impressions.length} impressions)`,
       );
-      _sendBeacon(`${urls.sdk}/track/impressions/client`, {
+      _sendBeacon(`${urls.events}/track/impressions/client`, {
         context,
         impressions,
         sdkContext,
@@ -100,7 +100,7 @@ export function beaconManager(
       log.debug(
         `${formatter(MESSAGE.BEACON_FLUSHING)} (${events.length} events)`,
       );
-      _sendBeacon(`${urls.sdk}/track/events/client`, {
+      _sendBeacon(`${urls.events}/track/events/client`, {
         context,
         events,
         sdkContext,

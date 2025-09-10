@@ -20,20 +20,23 @@ export interface FsSettings {
   };
   readonly sync: {
     type: (typeof SyncType)[keyof typeof SyncType];
-    pollRate: number;
+    pollRateInSec: number;
   };
   readonly tracking: {
     impressions: {
       maxQueueSize: number;
-      pushRate: number;
+      pushRateInSec: number;
     };
     events: {
       maxQueueSize: number;
-      pushRate: number;
+      pushRateInSec: number;
     };
   };
   readonly urls: {
-    sdk: string;
+    ws: string;
+    sse: string;
+    flags: string;
+    events: string;
   };
   readonly logLevel?: LogLevel;
   log: ILogger;

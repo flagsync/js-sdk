@@ -1,6 +1,6 @@
 {
   "name": "@flagsync/js-sdk",
-  "version": "0.6.4-alpha.0",
+  "version": "0.6.4-alpha.3",
   "description": "FlagSync SDK for JavaScript",
   "author": "Mike Chabot",
   "license": "Apache-2.0",
@@ -38,11 +38,10 @@
   "scripts": {
     "build": "tsup",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" --fix",
+    "lint": "tsc --noEmit && eslint \"src/**/*.ts\" --fix",
     "test": "vitest"
   },
   "dependencies": {
-    "axios": "^1.6.8",
     "deepmerge": "^4.3.1",
     "eventemitter3": "^5.0.1",
     "extended-eventsource": "^1.4.9"
